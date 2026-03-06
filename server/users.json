@@ -1,0 +1,38 @@
+[
+  {
+    "id": "u1",
+    "name": "Tyler Worthey",
+    "email": "tyler@wortheyaquatics.com",
+    "role": "admin",
+    "salesperson": "Tyler",
+    "password": "$2a$10$M4Nktzbs0L7WiihP15qjRO.tLF7uyaWrbt8BuAApEIPQ5CTx/jCtm",
+    "mustChangePassword": false
+  },
+  {
+    "id": "u2",
+    "name": "Ricardo Jaurez",
+    "email": "Ricardo@wortheyaquatics.com",
+    "role": "sales",
+    "salesperson": "Ricardo",
+    "password": "$2a$10$bjwimrIPz5Wvh7/0ETBBoevHoT4.ybRJQRz.fjJSEnvrnhnjwpMtS",
+    "mustChangePassword": true
+  },
+  {
+    "id": "u3",
+    "name": "Anibal Lopez",
+    "email": "anibal@wortheyaquatics.com",
+    "role": "sales",
+    "salesperson": "Anibal",
+    "password": "$2a$10$uwvQyXIULbHSXVskpWOSF.WK7ZzZL4dSQWDvdWO/Jgavhj34Is6Cm",
+    "mustChangePassword": true
+  },
+  {
+    "id": "u4",
+    "name": "Richard Castille",
+    "email": "Richardc@wortheyaquatics.com",
+    "role": "service",
+    "salesperson": "Richard",
+    "password": "$2a$10$4Cw39kAcDH6OdiiNxB0zX.6JvqUY9EoUAfZm6IltLcYHgikaiwRlG",
+    "mustChangePassword": true
+  }
+]

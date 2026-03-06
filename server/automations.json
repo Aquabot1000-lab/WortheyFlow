@@ -1,0 +1,128 @@
+[
+  {
+    "id": "auto-001",
+    "name": "New Lead Assigned",
+    "enabled": true,
+    "trigger": {
+      "type": "lead_created",
+      "stage": "any"
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.salesperson_phone}}",
+        "message": "🔔 New lead assigned to you: {{lead.name}} ({{lead.jobType}}). Value: {{lead.quoteAmount}}. Source: {{lead.source}}. Next action: {{lead.nextAction}}"
+      }
+    ]
+  },
+  {
+    "id": "auto-002",
+    "name": "Lead Untouched >10min",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "New",
+      "durationMinutes": 10
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "+12105598725",
+        "message": "⚠️ Lead untouched >10 min: {{lead.name}} ({{lead.jobType}}) assigned to {{lead.salesperson}}. Created {{lead.createdAgo}} ago."
+      }
+    ]
+  },
+  {
+    "id": "auto-003",
+    "name": "Lead Untouched >1hr",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "New",
+      "durationMinutes": 60
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Lead untouched >1 hour! {{lead.name}} ({{lead.jobType}}, {{lead.quoteAmount}}) assigned to {{lead.salesperson}}. Needs immediate attention!"
+      }
+    ]
+  },
+  {
+    "id": "auto-004",
+    "name": "Stage Change Notification",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_change",
+      "stage": "any"
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "email",
+        "to": "{{lead.salesperson_email}}",
+        "subject": "Lead Stage Updated: {{lead.name}} → {{lead.stage}}",
+        "body": "Hi {{lead.salesperson}},\n\nLead \"{{lead.name}}\" has moved to stage: {{lead.stage}}.\n\nJob Type: {{lead.jobType}}\nQuote: {{lead.quoteAmount}}\nNext Action: {{lead.nextAction}}\n\n— WortheyFlow"
+      }
+    ]
+  },
+  {
+    "id": "auto-005",
+    "name": "Stalled Deal Alert (14 days)",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "any",
+      "durationMinutes": 20160
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "email",
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: {{lead.name}} — {{lead.stage}} for 14+ days",
+        "body": "Deal Alert!\n\n{{lead.name}} has been in \"{{lead.stage}}\" for over 14 days.\n\nSalesperson: {{lead.salesperson}}\nJob Type: {{lead.jobType}}\nQuote: {{lead.quoteAmount}}\nNext Action: {{lead.nextAction}}\n\nThis deal may need intervention.\n\n— WortheyFlow"
+      }
+    ]
+  },
+  {
+    "id": "auto-006",
+    "name": "Deal Signed 🎉",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_enter",
+      "stage": "Signed"
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "email",
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "🎉 Deal Signed: {{lead.name}} — {{lead.quoteAmount}}",
+        "body": "Great news! A deal has been signed!\n\nCustomer: {{lead.name}}\nJob Type: {{lead.jobType}}\nValue: {{lead.quoteAmount}}\nSalesperson: {{lead.salesperson}}\nSource: {{lead.source}}\n\nCongratulations! 🏊‍♂️\n\n— WortheyFlow"
+      }
+    ]
+  },
+  {
+    "id": "auto-007",
+    "name": "Deal Lost",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_enter",
+      "stage": "Lost"
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "email",
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "❌ Deal Lost: {{lead.name}} — {{lead.quoteAmount}}",
+        "body": "A deal has been lost.\n\nCustomer: {{lead.name}}\nJob Type: {{lead.jobType}}\nValue: {{lead.quoteAmount}}\nSalesperson: {{lead.salesperson}}\nSource: {{lead.source}}\nLoss Reason: {{lead.lossReason}}\n\nReview and follow up if appropriate.\n\n— WortheyFlow"
+      }
+    ]
+  }
+]

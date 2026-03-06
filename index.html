@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WortheyFlow V2.1 — Pool Service CRM</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2E86C1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WortheyFlow">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-screen">
+        <div class="login-card">
+            <img src="logo.png" alt="Worthey Aquatics" class="login-logo">
+            <h2>WortheyFlow CRM</h2>
+            <p class="login-subtitle">Sign in to continue</p>
+            <form id="login-form">
+                <div class="form-group"><label>Email</label><input class="form-control" id="login-email" type="email" required placeholder="you@wortheyaquatics.com" autocomplete="email"></div>
+                <div class="form-group"><label>Password</label><input class="form-control" id="login-password" type="password" required placeholder="Enter password" autocomplete="current-password"></div>
+                <div id="login-error" class="login-error hidden"></div>
+                <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <nav id="sidebar">
+        <div class="sidebar-header">
+            <img src="logo.png" alt="Worthey Aquatics" class="sidebar-logo">
+            <span class="version-badge">V2.1</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" data-page="dashboard" class="active"><span class="nav-icon">📊</span> Dashboard</a></li>
+            <li><a href="#" data-page="inbox"><span class="nav-icon">📥</span> Lead Inbox</a></li>
+            <li><a href="#" data-page="pipeline"><span class="nav-icon">🔄</span> Pipeline</a></li>
+            <li><a href="#" data-page="addlead"><span class="nav-icon">➕</span> Add Lead</a></li>
+            <li><a href="#" data-page="heatmap"><span class="nav-icon">🗺️</span> Heat Map</a></li>
+            <li><a href="#" data-page="serviceroutes"><span class="nav-icon">🚐</span> Service Routes</a></li>
+            <li><a href="#" data-page="weeklyreview"><span class="nav-icon">📋</span> Weekly Review</a></li>
+            <li><a href="#" data-page="automations"><span class="nav-icon">🤖</span> Automations</a></li>
+            <li><a href="#" data-page="settings"><span class="nav-icon">⚙️</span> Settings</a></li>
+        </ul>
+        <div style="padding:8px 20px 4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#6b7280">Mission Control</div>
+        <ul class="nav-links" style="padding-top:0">
+            <li><a href="mission-control.html"><span class="nav-icon">⚡</span> Command Center</a></li>
+            <li><a href="mc-agents.html"><span class="nav-icon">🤖</span> Agent Hub</a></li>
+            <li><a href="mc-revenue.html"><span class="nav-icon">💰</span> Revenue</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Top Bar -->
+        <header id="topbar">
+            <button id="sidebar-toggle" class="mobile-only">☰</button>
+            <h1 id="page-title">Dashboard</h1>
+            <div class="topbar-actions">
+                <span id="topbar-user" class="topbar-user"></span>
+                <div id="notification-bell" class="bell-wrapper">
+                    <span class="bell-icon">🔔</span>
+                    <span id="bell-badge" class="bell-badge hidden">0</span>
+                </div>
+                <button id="logout-btn" class="btn btn-sm btn-secondary" style="margin-left:8px" onclick="WF.logout()">Log Out</button>
+            </div>
+        </header>
+
+        <!-- Notification Panel -->
+        <div id="notification-panel" class="notification-panel hidden">
+            <div class="notif-header">
+                <h3>Notifications</h3>
+                <button id="notif-close">✕</button>
+            </div>
+            <div id="notif-list" class="notif-list"></div>
+        </div>
+
+        <!-- Pages -->
+        <div id="page-dashboard" class="page active"></div>
+        <div id="page-inbox" class="page"></div>
+        <div id="page-pipeline" class="page"></div>
+        <div id="page-addlead" class="page"></div>
+        <div id="page-heatmap" class="page"></div>
+        <div id="page-serviceroutes" class="page"></div>
+        <div id="page-weeklyreview" class="page"></div>
+        <div id="page-settings" class="page"></div>
+        <div id="page-automations" class="page"></div>
+        <div id="page-leaddetail" class="page"></div>
+        <div id="page-salesman" class="page"></div>
+    </main>
+
+    <!-- Lead Detail Modal / Mobile Fast Edit -->
+    <div id="modal-overlay" class="modal-overlay hidden">
+        <div id="modal-content" class="modal-content"></div>
+    </div>
+
+    <!-- Loss Reason Modal -->
+    <div id="loss-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content modal-sm">
+            <h3>Loss Reason</h3>
+            <p>Why was this lead lost?</p>
+            <select id="loss-reason-select">
+                <option value="">-- Select Reason --</option>
+                <option value="Price">Price</option>
+                <option value="Went with Competitor">Went with Competitor</option>
+                <option value="Timing">Timing</option>
+                <option value="No Financing">No Financing</option>
+                <option value="Scope Mismatch">Scope Mismatch</option>
+                <option value="No Response">No Response</option>
+                <option value="Other">Other</option>
+            </select>
+            <div class="modal-actions">
+                <button id="loss-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="loss-confirm" class="btn btn-danger">Confirm Loss</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Duplicate Warning Modal -->
+    <div id="dup-modal-overlay" class="modal-overlay hidden">
+        <div class="modal-content modal-sm">
+            <h3>⚠️ Possible Duplicate</h3>
+            <p id="dup-modal-msg"></p>
+            <div class="modal-actions">
+                <button id="dup-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="dup-proceed" class="btn btn-primary">Add Anyway</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+    <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/service-worker.js');
+    }
+    </script>
+</body>
+</html>

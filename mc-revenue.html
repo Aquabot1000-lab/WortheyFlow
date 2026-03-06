@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revenue Dashboard — Mission Control V2</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="mc-shared.css">
+</head>
+<body>
+    <nav class="mc-sidebar" id="sidebar">
+        <div class="mc-sidebar-header">
+            <img src="logo.png" alt="Worthey Aquatics">
+            <span class="mc-badge">MC V2</span>
+        </div>
+        <ul class="mc-nav">
+            <li class="mc-nav-section">Mission Control</li>
+            <li><a href="mission-control.html"><span class="nav-icon">🏠</span> Command Center</a></li>
+            <li><a href="mc-agents.html"><span class="nav-icon">🤖</span> Agent Hub</a></li>
+            <li><a href="mc-revenue.html" class="active"><span class="nav-icon">💰</span> Revenue</a></li>
+            <li class="mc-nav-section">WortheyFlow CRM</li>
+            <li><a href="index.html"><span class="nav-icon">📊</span> Dashboard</a></li>
+            <li><a href="index.html#pipeline"><span class="nav-icon">🔄</span> Pipeline</a></li>
+            <li><a href="index.html#serviceroutes"><span class="nav-icon">🚐</span> Service Routes</a></li>
+        </ul>
+    </nav>
+
+    <div class="mc-main">
+        <header class="mc-topbar">
+            <div style="display:flex;align-items:center;gap:12px">
+                <button class="mc-hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+                <h1>💰 Revenue Dashboard</h1>
+            </div>
+            <div class="mc-topbar-right">
+                <div class="mc-live-dot"></div>
+                <span class="mc-timestamp" id="clock"></span>
+            </div>
+        </header>
+
+        <div class="mc-content">
+            <!-- Revenue KPIs -->
+            <div class="mc-grid mc-grid-4" style="margin-bottom:24px">
+                <div class="mc-card" style="border-top:3px solid var(--green)">
+                    <div class="mc-card-body" style="text-align:center;padding:24px 16px">
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px">Total MRR</div>
+                        <div style="font-size:36px;font-weight:800;color:var(--green);margin:8px 0">$26,910</div>
+                        <div style="font-size:12px;color:var(--green)">↑ 12.4% from last month</div>
+                    </div>
+                </div>
+                <div class="mc-card" style="border-top:3px solid var(--blue-light)">
+                    <div class="mc-card-body" style="text-align:center;padding:24px 16px">
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px">Annual Run Rate</div>
+                        <div style="font-size:36px;font-weight:800;color:var(--blue-light);margin:8px 0">$322.9K</div>
+                        <div style="font-size:12px;color:var(--gray-400)">Based on current MRR</div>
+                    </div>
+                </div>
+                <div class="mc-card" style="border-top:3px solid var(--yellow)">
+                    <div class="mc-card-body" style="text-align:center;padding:24px 16px">
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px">Projected (Mar)</div>
+                        <div style="font-size:36px;font-weight:800;color:var(--yellow);margin:8px 0">$29,400</div>
+                        <div style="font-size:12px;color:var(--yellow)">Target: $30,000</div>
+                    </div>
+                </div>
+                <div class="mc-card" style="border-top:3px solid var(--wa)">
+                    <div class="mc-card-body" style="text-align:center;padding:24px 16px">
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.5px">Revenue Sources</div>
+                        <div style="font-size:36px;font-weight:800;color:var(--wa);margin:8px 0">5</div>
+                        <div style="font-size:12px;color:var(--gray-400)">Active businesses</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue by Business (Pie + Breakdown) -->
+            <div class="mc-grid mc-grid-2" style="margin-bottom:24px">
+                <div class="mc-card">
+                    <div class="mc-card-header"><h3>💹 Revenue by Business</h3></div>
+                    <div class="mc-card-body">
+                        <div class="mc-chart-container">
+                            <canvas id="pieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mc-card">
+                    <div class="mc-card-header"><h3>📊 Revenue Breakdown</h3></div>
+                    <div class="mc-card-body" id="revenue-breakdown"></div>
+                </div>
+            </div>
+
+            <!-- Monthly Trend -->
+            <div class="mc-section-title">📈 Monthly Revenue Trend</div>
+            <div class="mc-card" style="margin-bottom:24px">
+                <div class="mc-card-body">
+                    <div class="mc-chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Projected vs Actual -->
+            <div class="mc-section-title">🎯 Projected vs Actual</div>
+            <div class="mc-card" style="margin-bottom:24px">
+                <div class="mc-card-body">
+                    <div class="mc-chart-container">
+                        <canvas id="projChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Per-Business Deep Dive -->
+            <div class="mc-section-title">🔍 Business Revenue Details</div>
+            <div class="mc-grid mc-grid-1">
+                <!-- WA Revenue -->
+                <div class="mc-card wa">
+                    <div class="mc-card-header">
+                        <h3>🏊 Worthey Aquatics — Revenue Breakdown</h3>
+                        <span style="font-size:14px;font-weight:700;color:var(--wa)">$19,200/mo</span>
+                    </div>
+                    <div class="mc-card-body">
+                        <div class="mc-grid mc-grid-3" style="gap:12px">
+                            <div>
+                                <div class="mc-stat-label">New Construction</div>
+                                <div class="mc-stat-value color-wa">$12,400</div>
+                                <div class="mc-progress"><div class="mc-progress-bar" style="width:65%;background:var(--wa)"></div></div>
+                                <div style="font-size:11px;color:var(--gray-500);margin-top:4px">2 pools signed this month • Avg $62K contract</div>
+                            </div>
+                            <div>
+                                <div class="mc-stat-label">Service & Maintenance</div>
+                                <div class="mc-stat-value color-wa">$5,200</div>
+                                <div class="mc-progress"><div class="mc-progress-bar" style="width:27%;background:var(--wa)"></div></div>
+                                <div style="font-size:11px;color:var(--gray-500);margin-top:4px">147 accounts • 5 routes • $3,680 avg/route</div>
+                            </div>
+                            <div>
+                                <div class="mc-stat-label">Repairs & Equipment</div>
+                                <div class="mc-stat-value color-wa">$1,600</div>
+                                <div class="mc-progress"><div class="mc-progress-bar" style="width:8%;background:var(--wa)"></div></div>
+                                <div style="font-size:11px;color:var(--gray-500);margin-top:4px">8 repair jobs • 2 equipment upgrades</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- OA Revenue -->
+                <div class="mc-card oa" style="margin-top:12px">
+                    <div class="mc-card-header">
+                        <h3>⚖️ OverAssessed.ai — Revenue Model</h3>
+                        <span style="font-size:14px;font-weight:700;color:var(--oa)">$4,200/mo</span>
+                    </div>
+                    <div class="mc-card-body">
+                        <div class="mc-stat-row"><span class="label">Savings Generated</span><span class="value color-oa">$21,000</span></div>
+                        <div class="mc-stat-row"><span class="label">Revenue (20% of savings)</span><span class="value color-oa">$4,200</span></div>
+                        <div class="mc-stat-row"><span class="label">Avg Savings/Client</span><span class="value">$913</span></div>
+                        <div class="mc-stat-row"><span class="label">Avg Revenue/Client</span><span class="value">$183</span></div>
+                        <div class="mc-stat-row"><span class="label">Customer Acquisition Cost</span><span class="value">$66.07 (Google Ads)</span></div>
+                        <div class="mc-stat-row"><span class="label">LTV:CAC Ratio</span><span class="value" style="color:var(--green)">2.8x ✅</span></div>
+                    </div>
+                </div>
+
+                <!-- Digital Products Revenue -->
+                <div class="mc-card pb" style="margin-top:12px">
+                    <div class="mc-card-header">
+                        <h3>📦 ProfitBlueprintCo — Platform Revenue</h3>
+                        <span style="font-size:14px;font-weight:700;color:var(--pb)">$620/mo</span>
+                    </div>
+                    <div class="mc-card-body">
+                        <table class="mc-table">
+                            <thead><tr><th>Platform</th><th>Status</th><th>Products</th><th>Sales/Mo</th><th>Revenue</th><th>Conv Rate</th></tr></thead>
+                            <tbody>
+                                <tr><td>Gumroad</td><td><span class="mc-status running">Live</span></td><td>11</td><td>22</td><td style="color:var(--pb)">$380</td><td>3.2%</td></tr>
+                                <tr><td>Payhip</td><td><span class="mc-status running">Live</span></td><td>11</td><td>16</td><td style="color:var(--pb)">$240</td><td>2.8%</td></tr>
+                                <tr><td>Etsy</td><td><span class="mc-status error">Frozen</span></td><td>8</td><td>0</td><td style="color:var(--gray-500)">$0</td><td>—</td></tr>
+                                <tr><td>Creative Market</td><td><span class="mc-status pending">Pending</span></td><td>0</td><td>0</td><td style="color:var(--gray-500)">$0</td><td>—</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- MilePilot + AI Analyst -->
+                <div class="mc-grid mc-grid-2" style="margin-top:12px;gap:12px">
+                    <div class="mc-card mp">
+                        <div class="mc-card-header">
+                            <h3>🚗 MilePilot</h3>
+                            <span style="font-size:14px;font-weight:700;color:var(--mp)">$890/mo</span>
+                        </div>
+                        <div class="mc-card-body">
+                            <div class="mc-stat-row"><span class="label">Pro Subs (62 × $9.99)</span><span class="value color-mp">$619</span></div>
+                            <div class="mc-stat-row"><span class="label">Business Subs (5 × $24.99)</span><span class="value color-mp">$125</span></div>
+                            <div class="mc-stat-row"><span class="label">In-App Purchases</span><span class="value color-mp">$146</span></div>
+                            <div class="mc-stat-row"><span class="label">Churn Rate</span><span class="value">4.2%</span></div>
+                            <div class="mc-stat-row"><span class="label">Free→Pro Conversion</span><span class="value" style="color:var(--green)">31%</span></div>
+                        </div>
+                    </div>
+                    <div class="mc-card ai">
+                        <div class="mc-card-header">
+                            <h3>🧠 AI Analyst</h3>
+                            <span style="font-size:14px;font-weight:700;color:var(--ai)">$2,800/mo</span>
+                        </div>
+                        <div class="mc-card-body">
+                            <div class="mc-stat-row"><span class="label">Client 1 (Enterprise)</span><span class="value color-ai">$1,200/mo</span></div>
+                            <div class="mc-stat-row"><span class="label">Client 2 (Growth)</span><span class="value color-ai">$800/mo</span></div>
+                            <div class="mc-stat-row"><span class="label">Client 3 (Starter)</span><span class="value color-ai">$500/mo</span></div>
+                            <div class="mc-stat-row"><span class="label">Client 4 (Starter)</span><span class="value color-ai">$300/mo</span></div>
+                            <div class="mc-stat-row"><span class="label">Avg Revenue/Client</span><span class="value">$700</span></div>
+                            <div class="mc-stat-row"><span class="label">Pipeline (prospects)</span><span class="value" style="color:var(--yellow)">3 leads</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+    // Clock
+    function updateClock() {
+        document.getElementById('clock').textContent = new Date().toLocaleString('en-US', {
+            weekday:'short', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'
+        });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Pie Chart
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Worthey Aquatics', 'OverAssessed.ai', 'MilePilot', 'ProfitBlueprintCo', 'AI Analyst'],
+            datasets: [{
+                data: [19200, 4200, 890, 620, 2800],
+                backgroundColor: ['#00b4d8', '#6c5ce7', '#00b894', '#ff6b6b', '#ffd93d'],
+                borderWidth: 0,
+                hoverOffset: 8
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '55%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: '#9ca3af', font: { size: 12 }, padding: 16 }
+                }
+            }
+        }
+    });
+
+    // Revenue Breakdown
+    const bizRevenue = [
+        { name: 'Worthey Aquatics', amount: 19200, color: '#00b4d8', pct: 71.3 },
+        { name: 'OverAssessed.ai', amount: 4200, color: '#6c5ce7', pct: 15.6 },
+        { name: 'AI Analyst Service', amount: 2800, color: '#ffd93d', pct: 10.4 },
+        { name: 'MilePilot', amount: 890, color: '#00b894', pct: 3.3 },
+        { name: 'ProfitBlueprintCo', amount: 620, color: '#ff6b6b', pct: 2.3 },
+    ];
+
+    const rbDiv = document.getElementById('revenue-breakdown');
+    bizRevenue.forEach(b => {
+        rbDiv.innerHTML += `
+        <div style="margin-bottom:20px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px">
+                <span style="font-size:14px;font-weight:600">${b.name}</span>
+                <span style="font-size:16px;font-weight:700;color:${b.color}">$${b.amount.toLocaleString()}</span>
+            </div>
+            <div class="mc-progress" style="height:8px">
+                <div class="mc-progress-bar" style="width:${b.pct}%;background:${b.color}"></div>
+            </div>
+            <div style="font-size:11px;color:var(--gray-500);margin-top:4px">${b.pct}% of total</div>
+        </div>`;
+    });
+
+    // Monthly Trend
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: ['Sep 25','Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+            datasets: [
+                { label: 'Total MRR', data: [16300,18200,19100,21580,23570,25560,26910], borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,.15)', fill: true, tension: .4, borderWidth: 3 },
+                { label: 'Worthey Aquatics', data: [14200,15800,16100,17200,17800,18400,19200], borderColor: '#00b4d8', tension: .4, borderWidth: 1.5, borderDash:[4,4] },
+                { label: 'OverAssessed', data: [2100,2400,2800,3200,3600,3900,4200], borderColor: '#6c5ce7', tension: .4, borderWidth: 1.5, borderDash:[4,4] },
+                { label: 'Other', data: [0,0,200,1180,2170,3260,3510], borderColor: '#ff6b6b', tension: .4, borderWidth: 1.5, borderDash:[4,4] },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#9ca3af', font: { size: 11 } } } },
+            scales: {
+                y: { ticks: { color: '#6b7280', callback: v => '$' + (v/1000).toFixed(1) + 'K' }, grid: { color: 'rgba(255,255,255,.05)' } },
+                x: { ticks: { color: '#6b7280' }, grid: { color: 'rgba(255,255,255,.05)' } }
+            }
+        }
+    });
+
+    // Projected vs Actual
+    new Chart(document.getElementById('projChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Oct 25','Nov 25','Dec 25','Jan 26','Feb 26','Mar 26'],
+            datasets: [
+                { label: 'Projected', data: [17000,19000,21000,23000,25000,30000], backgroundColor: 'rgba(245,158,11,.25)', borderColor: '#f59e0b', borderWidth: 1.5 },
+                { label: 'Actual', data: [18200,19100,21580,23570,25560,26910], backgroundColor: 'rgba(16,185,129,.35)', borderColor: '#10b981', borderWidth: 1.5 },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#9ca3af', font: { size: 11 } } } },
+            scales: {
+                y: { ticks: { color: '#6b7280', callback: v => '$' + (v/1000).toFixed(0) + 'K' }, grid: { color: 'rgba(255,255,255,.05)' } },
+                x: { ticks: { color: '#6b7280' }, grid: { color: 'rgba(255,255,255,.05)' } }
+            }
+        }
+    });
+    </script>
+</body>
+</html>

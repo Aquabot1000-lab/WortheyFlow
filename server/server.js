@@ -1,0 +1,663 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const { v4: uuidv4 } = require('uuid');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+
+const app = express();
+app.use(cors());
+app.use(express.json({ limit: '10mb' }));
+
+const PORT = process.env.PORT || 3001;
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
+const AUTOMATIONS_FILE = path.join(__dirname, 'automations.json');
+const LOG_FILE = path.join(__dirname, 'notification-log.json');
+const USERS_FILE = path.join(__dirname, 'users.json');
+
+// ========== HELPERS ==========
+
+function loadAutomations() {
+    try {
+        return JSON.parse(fs.readFileSync(AUTOMATIONS_FILE, 'utf-8'));
+    } catch (e) {
+        return [];
+    }
+}
+
+function saveAutomations(rules) {
+    fs.writeFileSync(AUTOMATIONS_FILE, JSON.stringify(rules, null, 2));
+}
+
+function loadLog() {
+    try {
+        return JSON.parse(fs.readFileSync(LOG_FILE, 'utf-8'));
+    } catch (e) {
+        return [];
+    }
+}
+
+function appendLog(entry) {
+    const log = loadLog();
+    log.push({ ...entry, timestamp: new Date().toISOString() });
+    // Keep last 500 entries
+    if (log.length > 500) log.splice(0, log.length - 500);
+    fs.writeFileSync(LOG_FILE, JSON.stringify(log, null, 2));
+}
+
+// Template variable replacement
+function renderTemplate(template, lead, contactDir) {
+    if (!template) return '';
+    return template.replace(/\{\{lead\.(\w+)\}\}/g, (match, key) => {
+        if (key === 'salesperson_phone') {
+            const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+            return entry ? entry.phone : '(no phone on file)';
+        }
+        if (key === 'salesperson_email') {
+            const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+            return entry ? entry.email : '(no email on file)';
+        }
+        if (key === 'quoteAmount') {
+            const v = lead.quoteAmount || 0;
+            return '$' + v.toLocaleString('en-US');
+        }
+        if (key === 'createdAgo') {
+            if (!lead.createdAt) return 'unknown';
+            const mins = Math.floor((Date.now() - lead.createdAt) / 60000);
+            if (mins < 60) return mins + ' min';
+            if (mins < 1440) return Math.floor(mins / 60) + ' hr';
+            return Math.floor(mins / 1440) + ' days';
+        }
+        return lead[key] !== undefined && lead[key] !== null ? String(lead[key]) : '';
+    });
+}
+
+function resolveRecipient(toField, lead, contactDir) {
+    if (toField === '{{lead.salesperson_phone}}') {
+        const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+        return entry ? entry.phone : null;
+    }
+    if (toField === '{{lead.salesperson_email}}') {
+        const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+        return entry ? entry.email : null;
+    }
+    return renderTemplate(toField, lead, contactDir);
+}
+
+// ========== NOTIFICATION SENDERS ==========
+
+let twilioClient = null;
+let sgMail = null;
+
+function getTwilio() {
+    if (!twilioClient && process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+        const twilio = require('twilio');
+        twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    }
+    return twilioClient;
+}
+
+function getSendGrid() {
+    if (!sgMail && process.env.SENDGRID_API_KEY) {
+        sgMail = require('@sendgrid/mail');
+        sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+    }
+    return sgMail;
+}
+
+async function sendSMS(to, message) {
+    const client = getTwilio();
+    if (!client) {
+        console.log('[DRY RUN] SMS to', to, ':', message);
+        return { success: true, dry: true, to, message };
+    }
+    try {
+        const result = await client.messages.create({
+            body: message,
+            from: process.env.TWILIO_PHONE_NUMBER,
+            to
+        });
+        console.log('[SMS SENT]', to, result.sid);
+        return { success: true, sid: result.sid, to, message };
+    } catch (err) {
+        console.error('[SMS ERROR]', err.message);
+        return { success: false, error: err.message, to, message };
+    }
+}
+
+async function sendEmail(to, subject, body) {
+    const sg = getSendGrid();
+    if (!sg) {
+        console.log('[DRY RUN] Email to', to, ':', subject);
+        return { success: true, dry: true, to, subject };
+    }
+    try {
+        await sg.send({
+            to,
+            from: process.env.SENDGRID_FROM_EMAIL || 'notifications@wortheyaquatics.com',
+            subject,
+            text: body
+        });
+        console.log('[EMAIL SENT]', to, subject);
+        return { success: true, to, subject };
+    } catch (err) {
+        console.error('[EMAIL ERROR]', err.message);
+        return { success: false, error: err.message, to, subject };
+    }
+}
+
+// ========== AUTOMATION ENGINE ==========
+
+function evaluateConditions(conditions, lead) {
+    if (!conditions || conditions.length === 0) return true;
+    return conditions.every(cond => {
+        const val = lead[cond.field];
+        const target = cond.value;
+        switch (cond.operator) {
+            case 'equals': return String(val) === String(target);
+            case 'notEquals': return String(val) !== String(target);
+            case 'greaterThan': return Number(val) > Number(target);
+            case 'lessThan': return Number(val) < Number(target);
+            case 'contains': return String(val || '').toLowerCase().includes(String(target).toLowerCase());
+            default: return true;
+        }
+    });
+}
+
+function matchesTrigger(rule, event) {
+    const t = rule.trigger;
+    if (!t) return false;
+
+    if (t.type === 'lead_created' && event.type === 'lead_created') return true;
+    if (t.type === 'manual_flag' && event.type === 'manual_flag') return true;
+
+    if (t.type === 'stage_change' && event.type === 'stage_change') {
+        if (t.stage && t.stage !== 'any' && t.stage !== event.newStage) return false;
+        if (t.fromStage && t.fromStage !== event.oldStage) return false;
+        return true;
+    }
+
+    if (t.type === 'stage_enter' && event.type === 'stage_change') {
+        if (t.stage && t.stage !== 'any' && t.stage !== event.newStage) return false;
+        return true;
+    }
+
+    // stage_duration is handled by the check-durations endpoint
+    if (t.type === 'stage_duration' && event.type === 'stage_duration') {
+        if (t.stage && t.stage !== 'any' && t.stage !== event.lead?.stage) return false;
+        const mins = event.minutesInStage || 0;
+        return mins >= (t.durationMinutes || 0);
+    }
+
+    return false;
+}
+
+async function executeActions(actions, lead, contactDir) {
+    const results = [];
+    for (const action of actions) {
+        const to = resolveRecipient(action.to, lead, contactDir);
+        if (!to) {
+            results.push({ type: action.type, error: 'Could not resolve recipient', to: action.to });
+            continue;
+        }
+        if (action.type === 'sms') {
+            const msg = renderTemplate(action.message, lead, contactDir);
+            const r = await sendSMS(to, msg);
+            results.push({ type: 'sms', ...r });
+        } else if (action.type === 'email') {
+            const subject = renderTemplate(action.subject, lead, contactDir);
+            const body = renderTemplate(action.body, lead, contactDir);
+            const r = await sendEmail(to, subject, body);
+            results.push({ type: 'email', ...r });
+        }
+    }
+    return results;
+}
+
+// ========== AUTH ==========
+
+function loadUsers() {
+    try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8')); } catch (e) { return []; }
+}
+function saveUsers(users) { fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2)); }
+
+function authMiddleware(req, res, next) {
+    const header = req.headers.authorization;
+    if (!header || !header.startsWith('Bearer ')) return res.status(401).json({ error: 'No token provided' });
+    try {
+        const decoded = jwt.verify(header.slice(7), JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (e) { return res.status(401).json({ error: 'Invalid token' }); }
+}
+
+function adminOnly(req, res, next) {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
+    next();
+}
+
+// Login — no auth required
+app.post('/api/auth/login', (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+    const users = loadUsers();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user || !bcrypt.compareSync(password, user.password)) return res.status(401).json({ error: 'Invalid credentials' });
+    const token = jwt.sign({ userId: user.id, name: user.name, role: user.role, salesperson: user.salesperson }, JWT_SECRET, { expiresIn: '7d' });
+    res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, salesperson: user.salesperson, mustChangePassword: user.mustChangePassword } });
+});
+
+// Health check (no auth required)
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// ========== GHL WEBHOOK (no auth — secured by secret) ==========
+const GHL_WEBHOOK_SECRET = process.env.GHL_WEBHOOK_SECRET || 'worthey-ghl-2026';
+
+app.post('/api/webhook/ghl', async (req, res) => {
+    // Verify secret (passed as query param or header)
+    const secret = req.query.secret || req.headers['x-webhook-secret'];
+    if (secret !== GHL_WEBHOOK_SECRET) {
+        console.log('[GHL WEBHOOK] Rejected — invalid secret');
+        return res.status(403).json({ error: 'Invalid secret' });
+    }
+
+    const data = req.body;
+    console.log('[GHL WEBHOOK] Received:', JSON.stringify(data).slice(0, 500));
+
+    // Map GHL fields to WortheyFlow lead format
+    const lead = {
+        id: 'ghl-' + (data.contact_id || data.id || Date.now()),
+        name: [data.first_name, data.last_name].filter(Boolean).join(' ') || data.full_name || data.name || 'GHL Lead',
+        phone: data.phone || data.Phone || '',
+        email: data.email || data.Email || '',
+        emailHers: '',
+        source: 'GoHighLevel - ' + (data.tags || data.source || 'Quiz Funnel'),
+        stage: 'New Lead',
+        salesperson: '', // Will be auto-assigned by CRM
+        jobType: detectJobType(data),
+        quoteAmount: 0,
+        notes: buildGHLNotes(data),
+        address: data.address1 || data.address || '',
+        city: data.city || '',
+        state: data.state || 'TX',
+        zip: data.postal_code || data.zip || '',
+        createdAt: Date.now(),
+        stageChangedAt: Date.now(),
+        ghlContactId: data.contact_id || data.id || '',
+        ghlRaw: data // Store full payload for reference
+    };
+
+    // Auto-assign salesperson based on job type
+    if (['Pool Construction', 'Pool Remodel', 'Commercial'].includes(lead.jobType)) {
+        // Rotate between Ricardo and Anibal
+        const assignFile = path.join(__dirname, 'assign-counter.json');
+        let counter = 0;
+        try { counter = JSON.parse(fs.readFileSync(assignFile, 'utf-8')).counter || 0; } catch(e) {}
+        lead.salesperson = counter % 2 === 0 ? 'Ricardo Jaurez' : 'Anibal Lopez';
+        fs.writeFileSync(assignFile, JSON.stringify({ counter: counter + 1 }));
+    } else {
+        lead.salesperson = 'Richard Castille';
+    }
+
+    // Save lead to leads.json
+    const LEADS_FILE = path.join(__dirname, 'leads.json');
+    let leads = [];
+    try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
+
+    // Check for duplicate by phone
+    const existing = leads.find(l => l.phone && lead.phone && l.phone.replace(/\D/g,'') === lead.phone.replace(/\D/g,''));
+    if (existing) {
+        console.log('[GHL WEBHOOK] Duplicate phone detected:', lead.phone, '— updating existing lead');
+        existing.notes = (existing.notes || '') + '\n\n--- GHL Update ' + new Date().toLocaleString() + ' ---\n' + lead.notes;
+        if (lead.email && !existing.email) existing.email = lead.email;
+        existing.ghlContactId = lead.ghlContactId;
+        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+        return res.json({ success: true, action: 'updated', leadId: existing.id });
+    }
+
+    leads.push(lead);
+    fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+
+    // Fire lead_created automation triggers
+    const rules = loadAutomations();
+    const contactDir = loadContactDirectory();
+    const event = { type: 'lead_created' };
+    for (const rule of rules) {
+        if (!rule.enabled) continue;
+        if (!matchesTrigger(rule, event)) continue;
+        if (!evaluateConditions(rule.conditions, lead)) continue;
+        const actionResults = await executeActions(rule.actions, lead, contactDir);
+        appendLog({ action: 'ghl_webhook_trigger', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, actionResults });
+    }
+
+    console.log('[GHL WEBHOOK] Lead created:', lead.id, lead.name, '→', lead.salesperson);
+    res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
+});
+
+function detectJobType(data) {
+    const tags = (data.tags || '').toLowerCase();
+    const source = (data.source || '').toLowerCase();
+    const notes = (data.notes || '').toLowerCase();
+    const all = tags + ' ' + source + ' ' + notes;
+    if (all.includes('build') || all.includes('new pool') || all.includes('construction') || all.includes('new-build')) return 'Pool Construction';
+    if (all.includes('service') || all.includes('maintenance') || all.includes('clean')) return 'Pool Service';
+    if (all.includes('remodel') || all.includes('renovation') || all.includes('resurface')) return 'Pool Remodel';
+    if (all.includes('repair') || all.includes('equipment') || all.includes('pump') || all.includes('heater')) return 'Equipment Repair';
+    return 'Pool Construction'; // Default for quiz funnel leads
+}
+
+function buildGHLNotes(data) {
+    const parts = ['Source: GoHighLevel Quiz Funnel'];
+    if (data.tags) parts.push('Tags: ' + data.tags);
+    if (data.source) parts.push('Source: ' + data.source);
+    // Capture any custom fields / quiz answers
+    const skip = ['first_name','last_name','full_name','name','phone','Phone','email','Email','contact_id','id','address1','address','city','state','postal_code','zip','tags','source','country'];
+    for (const [key, val] of Object.entries(data)) {
+        if (!skip.includes(key) && val && typeof val !== 'object') {
+            parts.push(key.replace(/_/g,' ') + ': ' + val);
+        }
+    }
+    return parts.join('\n');
+}
+
+function loadContactDirectory() {
+    try {
+        const settingsFile = path.join(__dirname, 'contact-directory.json');
+        return JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
+    } catch(e) {
+        return [
+            { name: 'Ricardo Jaurez', phone: '5124504426', email: 'Ricardo@wortheyaquatics.com' },
+            { name: 'Anibal Lopez', phone: '2105636099', email: 'anibal@wortheyaquatics.com' },
+            { name: 'Richard Castille', phone: '2102501416', email: 'Richardc@wortheyaquatics.com' },
+            { name: 'Tyler Worthey', phone: '2105598725', email: 'tyler@wortheyaquatics.com' }
+        ];
+    }
+}
+
+// ========== MISSION CONTROL V2 API (public — MC pages handle their own auth) ==========
+
+// In-memory stores for MC data
+const mcAgents = [];
+const mcRevenueEvents = [];
+
+// Seed data
+const mcSeedOverview = {
+    totalMRR: 26910,
+    businesses: {
+        wortheyAquatics: {
+            name: 'Worthey Aquatics', color: '#00b4d8',
+            pipeline: 847000, activeDeals: 12, closeRate: 34, serviceMRR: 18400,
+            serviceAccounts: 147, routes: 5, revenuePerRoute: 3680,
+            salespeople: [
+                { name: 'Anibal Lopez', leads: 18, proposals: 9, signed: 4, closeRate: 44, revenue: 312000 },
+                { name: 'Ricardo Jaurez', leads: 15, proposals: 7, signed: 3, closeRate: 43, revenue: 267000 },
+                { name: 'Richard Castille', leads: 12, proposals: 5, signed: 2, closeRate: 40, revenue: 198000 },
+            ],
+            leadSources: { 'Google/SEO': 32, 'Referrals': 28, 'Home Shows': 18, 'Google Ads': 14, 'Social Media': 8 },
+        },
+        overAssessed: {
+            name: 'OverAssessed.ai', color: '#6c5ce7',
+            clients: 23, appealsFiled: 18, successRate: 72, mrr: 4200,
+            googleAds: { accountId: '351-343-8695', spend: 1850, clicks: 342, conversions: 28, costPerConv: 66.07, convRate: 8.2 },
+            deadlines: [
+                { county: 'Bexar County', type: 'Protest', date: '2026-05-15' },
+                { county: 'Comal County', type: 'Protest', date: '2026-05-31' },
+            ],
+        },
+        profitBlueprint: {
+            name: 'ProfitBlueprintCo', color: '#ff6b6b',
+            productsBuilt: 17, bundles: 4, premiumInProgress: 6, listed: 11, mrr: 620,
+            platforms: {
+                etsy: { status: 'frozen', products: 8, revenue: 0 },
+                gumroad: { status: 'live', products: 11, revenue: 380 },
+                payhip: { status: 'live', products: 11, revenue: 240 },
+                creativeMarket: { status: 'pending', products: 0, revenue: 0 },
+            },
+        },
+        milePilot: {
+            name: 'MilePilot', color: '#00b894',
+            downloads: 284, activeUsers: 67, mrr: 890,
+            subs: { free: 198, pro: 62, business: 5 },
+            features: { 'Auto-tracking': 'done', 'IRS Reports': 'done', 'Multi-vehicle': 'in-progress', 'Fleet Dashboard': 'planned' },
+        },
+        aiAnalyst: {
+            name: 'AI Analyst Service', color: '#ffd93d',
+            activeClients: 4, mrr: 2800, satisfaction: 96,
+            reportsThisMonth: 12, onTimeDelivery: 100, avgTurnaround: 2.3,
+        },
+    },
+};
+
+app.get('/api/mc/overview', (req, res) => res.json(mcSeedOverview));
+
+app.get('/api/mc/agents', (req, res) => {
+    const seedAgents = [
+        { id: 'aquabot', name: 'AquaBot', task: 'CRM lead monitoring & follow-up', business: 'Worthey Aquatics', status: 'running', runtime: '24/7', model: 'Claude Opus 4', startedAt: new Date().toISOString() },
+        { id: 'contentbot', name: 'ContentBot', task: 'Blog post generation', business: 'ProfitBlueprintCo', status: 'running', runtime: '2h 14m', model: 'Claude Sonnet 4', startedAt: new Date(Date.now() - 8040000).toISOString() },
+        { id: 'adoptimizer', name: 'AdOptimizer', task: 'Google Ads bid adjustment', business: 'OverAssessed.ai', status: 'completed', runtime: '45m', model: 'GPT-4o', startedAt: new Date(Date.now() - 2700000).toISOString() },
+    ];
+    res.json({ agents: [...seedAgents, ...mcAgents] });
+});
+
+app.post('/api/mc/agents', (req, res) => {
+    const { name, task, business, status, model } = req.body;
+    if (!name || !task) return res.status(400).json({ error: 'name and task required' });
+    const agent = { id: uuidv4(), name, task, business: business || 'General', status: status || 'running', model: model || 'unknown', startedAt: new Date().toISOString() };
+    mcAgents.push(agent);
+    if (mcAgents.length > 100) mcAgents.splice(0, mcAgents.length - 100);
+    res.json(agent);
+});
+
+app.get('/api/mc/revenue', (req, res) => {
+    const monthly = [
+        { month: 'Sep 2025', wa: 14200, oa: 2100, mp: 0, pb: 0, ai: 0 },
+        { month: 'Oct 2025', wa: 15800, oa: 2400, mp: 0, pb: 0, ai: 0 },
+        { month: 'Nov 2025', wa: 16100, oa: 2800, mp: 120, pb: 80, ai: 0 },
+        { month: 'Dec 2025', wa: 17200, oa: 3200, mp: 280, pb: 180, ai: 700 },
+        { month: 'Jan 2026', wa: 17800, oa: 3600, mp: 450, pb: 320, ai: 1400 },
+        { month: 'Feb 2026', wa: 18400, oa: 3900, mp: 680, pb: 480, ai: 2100 },
+        { month: 'Mar 2026', wa: 19200, oa: 4200, mp: 890, pb: 620, ai: 2800 },
+    ];
+    res.json({ totalMRR: 26910, monthly, events: mcRevenueEvents });
+});
+
+app.post('/api/mc/revenue', (req, res) => {
+    const { business, amount, type, description } = req.body;
+    if (!business || amount === undefined) return res.status(400).json({ error: 'business and amount required' });
+    const event = { id: uuidv4(), business, amount, type: type || 'revenue', description: description || '', timestamp: new Date().toISOString() };
+    mcRevenueEvents.push(event);
+    if (mcRevenueEvents.length > 500) mcRevenueEvents.splice(0, mcRevenueEvents.length - 500);
+    res.json(event);
+});
+
+// All other /api routes require auth
+app.use('/api', authMiddleware);
+
+// Change password
+app.post('/api/auth/change-password', (req, res) => {
+    const { currentPassword, newPassword } = req.body;
+    if (!newPassword || newPassword.length < 4) return res.status(400).json({ error: 'New password must be at least 4 characters' });
+    const users = loadUsers();
+    const user = users.find(u => u.id === req.user.userId);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    if (!bcrypt.compareSync(currentPassword, user.password)) return res.status(401).json({ error: 'Current password is incorrect' });
+    user.password = bcrypt.hashSync(newPassword, 10);
+    user.mustChangePassword = false;
+    saveUsers(users);
+    res.json({ success: true });
+});
+
+// User management (admin only)
+app.get('/api/users', adminOnly, (req, res) => {
+    const users = loadUsers().map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role, salesperson: u.salesperson, mustChangePassword: u.mustChangePassword }));
+    res.json(users);
+});
+
+app.post('/api/users', adminOnly, (req, res) => {
+    const { name, email, role, salesperson, password } = req.body;
+    if (!name || !email || !role || !password) return res.status(400).json({ error: 'Missing required fields' });
+    const users = loadUsers();
+    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) return res.status(409).json({ error: 'Email already exists' });
+    const newUser = { id: 'u' + Date.now(), name, email, role, salesperson: salesperson || name.split(' ')[0], password: bcrypt.hashSync(password, 10), mustChangePassword: true };
+    users.push(newUser);
+    saveUsers(users);
+    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, salesperson: newUser.salesperson } });
+});
+
+// ========== DEDUP CACHE ==========
+const DEDUP_FILE = path.join(__dirname, 'dedup-cache.json');
+const DEDUP_HOURS = 24;
+
+function loadDedup() {
+    try { return JSON.parse(fs.readFileSync(DEDUP_FILE, 'utf-8')); } catch (e) { return {}; }
+}
+
+function saveDedup(cache) {
+    fs.writeFileSync(DEDUP_FILE, JSON.stringify(cache));
+}
+
+function isDuplicate(ruleId, leadId) {
+    const cache = loadDedup();
+    const key = `${ruleId}::${leadId}`;
+    const lastSent = cache[key];
+    if (!lastSent) return false;
+    const hoursSince = (Date.now() - lastSent) / 3600000;
+    return hoursSince < DEDUP_HOURS;
+}
+
+function markSent(ruleId, leadId) {
+    const cache = loadDedup();
+    const key = `${ruleId}::${leadId}`;
+    cache[key] = Date.now();
+    // Clean old entries
+    const cutoff = Date.now() - (DEDUP_HOURS * 3600000);
+    for (const k in cache) { if (cache[k] < cutoff) delete cache[k]; }
+    saveDedup(cache);
+}
+
+// ========== ROUTES ==========
+
+// List automations
+app.get('/api/automations', (req, res) => {
+    res.json(loadAutomations());
+});
+
+// Create/update automation
+app.post('/api/automations', (req, res) => {
+    const rules = loadAutomations();
+    const rule = req.body;
+    if (!rule.id) rule.id = 'auto-' + uuidv4().slice(0, 8);
+    const idx = rules.findIndex(r => r.id === rule.id);
+    if (idx >= 0) {
+        rules[idx] = rule;
+    } else {
+        rules.push(rule);
+    }
+    saveAutomations(rules);
+    res.json({ success: true, rule });
+});
+
+// Delete automation
+app.delete('/api/automations/:id', (req, res) => {
+    let rules = loadAutomations();
+    const before = rules.length;
+    rules = rules.filter(r => r.id !== req.params.id);
+    saveAutomations(rules);
+    res.json({ success: true, deleted: before !== rules.length });
+});
+
+// Send notification directly
+app.post('/api/notify', async (req, res) => {
+    const { type, to, message, subject, body } = req.body;
+    let result;
+    if (type === 'sms') {
+        result = await sendSMS(to, message);
+    } else if (type === 'email') {
+        result = await sendEmail(to, subject, body);
+    } else {
+        return res.status(400).json({ error: 'Invalid type. Use "sms" or "email".' });
+    }
+    appendLog({ action: 'notify', type, to, result });
+    res.json(result);
+});
+
+// Trigger automation evaluation
+app.post('/api/automations/trigger', async (req, res) => {
+    const { event, lead, contactDirectory } = req.body;
+    if (!event || !lead) return res.status(400).json({ error: 'Missing event or lead data' });
+
+    const rules = loadAutomations();
+    const results = [];
+
+    for (const rule of rules) {
+        if (!rule.enabled) continue;
+        if (!matchesTrigger(rule, event)) continue;
+        if (!evaluateConditions(rule.conditions, lead)) continue;
+        if (rule.trigger?.type === 'stage_duration' && isDuplicate(rule.id, lead.id)) continue;
+
+        const actionResults = await executeActions(rule.actions, lead, contactDirectory);
+        markSent(rule.id, lead.id);
+        results.push({ rule: rule.name, ruleId: rule.id, actions: actionResults });
+        appendLog({ action: 'trigger', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, event, actionResults });
+    }
+
+    res.json({ triggered: results.length, results });
+});
+
+// Check duration-based triggers
+app.post('/api/automations/check-durations', async (req, res) => {
+    const { leads: leadsData, contactDirectory } = req.body;
+    if (!leadsData || !Array.isArray(leadsData)) return res.status(400).json({ error: 'Missing leads array' });
+
+    const rules = loadAutomations().filter(r => r.enabled && r.trigger?.type === 'stage_duration');
+    const terminalStages = ['Signed', 'Lost'];
+    const results = [];
+
+    for (const lead of leadsData) {
+        if (terminalStages.includes(lead.stage)) continue;
+        const minsInStage = lead.stageChangedAt ? Math.floor((Date.now() - lead.stageChangedAt) / 60000) : 0;
+
+        for (const rule of rules) {
+            if (!matchesTrigger(rule, { type: 'stage_duration', lead, minutesInStage: minsInStage })) continue;
+            if (!evaluateConditions(rule.conditions, lead)) continue;
+            if (isDuplicate(rule.id, lead.id)) continue;
+
+            const actionResults = await executeActions(rule.actions, lead, contactDirectory);
+            markSent(rule.id, lead.id);
+            results.push({ rule: rule.name, ruleId: rule.id, lead: lead.name, leadId: lead.id, minutesInStage: minsInStage, actions: actionResults });
+            appendLog({ action: 'duration_check', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, minutesInStage: minsInStage, actionResults });
+        }
+    }
+
+    res.json({ checked: leadsData.length, triggered: results.length, results });
+});
+
+// Get notification log
+app.get('/api/logs', (req, res) => {
+    res.json(loadLog());
+});
+
+// ========== START ==========
+
+// Serve the CRM frontend (after API routes)
+app.use(express.static(path.join(__dirname, '..')));
+
+// Serve MC pages directly, fallback to index.html for SPA routes
+const mcPages = ['mission-control.html', 'mc-agents.html', 'mc-revenue.html'];
+app.get('*', (req, res) => {
+    const requested = req.path.replace(/^\//, '');
+    if (mcPages.includes(requested)) {
+        return res.sendFile(path.join(__dirname, '..', requested));
+    }
+    res.sendFile(path.join(__dirname, '..', 'index.html'));
+});
+
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`WortheyFlow Automation Server running on port ${PORT}`);
+    console.log(`Twilio: ${process.env.TWILIO_ACCOUNT_SID ? 'configured' : 'DRY RUN mode'}`);
+    console.log(`SendGrid: ${process.env.SENDGRID_API_KEY ? 'configured' : 'DRY RUN mode'}`);
+});

@@ -1,0 +1,270 @@
+[
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23105,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T17:01:17.585Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Lead Untouched >10min",
+    "ruleId": "auto-002",
+    "leadId": "L1008",
+    "leadName": "Rachel Adams",
+    "minutesInStage": 95,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6f55d7cd7da537d41a1c92c442ac2118",
+        "to": "+12105598725",
+        "message": "⚠️ Lead untouched >10 min: Rachel Adams (New Pool) assigned to Anibal. Created 1 hr ago."
+      }
+    ],
+    "timestamp": "2026-02-19T17:01:18.056Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Lead Untouched >1hr",
+    "ruleId": "auto-003",
+    "leadId": "L1008",
+    "leadName": "Rachel Adams",
+    "minutesInStage": 95,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM0f054186c585d121ca9833ae108557de",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Lead untouched >1 hour! Rachel Adams (New Pool, $72,000) assigned to Anibal. Needs immediate attention!"
+      }
+    ],
+    "timestamp": "2026-02-19T17:01:18.336Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23110,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T17:06:22.508Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Lead Untouched >10min",
+    "ruleId": "auto-002",
+    "leadId": "L1008",
+    "leadName": "Rachel Adams",
+    "minutesInStage": 100,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb043a930051d44488daa786e92ea553f",
+        "to": "+12105598725",
+        "message": "⚠️ Lead untouched >10 min: Rachel Adams (New Pool) assigned to Anibal. Created 1 hr ago."
+      }
+    ],
+    "timestamp": "2026-02-19T17:06:22.920Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Lead Untouched >1hr",
+    "ruleId": "auto-003",
+    "leadId": "L1008",
+    "leadName": "Rachel Adams",
+    "minutesInStage": 100,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9e1e467a73b32207a440acba6424431b",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Lead untouched >1 hour! Rachel Adams (New Pool, $72,000) assigned to Anibal. Needs immediate attention!"
+      }
+    ],
+    "timestamp": "2026-02-19T17:06:23.268Z"
+  },
+  {
+    "action": "trigger",
+    "ruleName": "Stage Change Notification",
+    "ruleId": "auto-004",
+    "leadName": "Test Lead",
+    "event": {
+      "type": "stage_change",
+      "oldStage": "New",
+      "newStage": "Contacted"
+    },
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "Ricardo@wortheyaquatics.com",
+        "subject": "Lead Stage Updated: Test Lead → Contacted"
+      }
+    ],
+    "timestamp": "2026-02-19T17:11:30.797Z"
+  },
+  {
+    "action": "trigger",
+    "ruleName": "Stage Change Notification",
+    "ruleId": "auto-004",
+    "leadId": "L1008",
+    "leadName": "Rachel Adams",
+    "event": {
+      "type": "stage_change",
+      "oldStage": "New",
+      "newStage": "Contacted"
+    },
+    "actionResults": [
+      {
+        "type": "email",
+        "error": "Could not resolve recipient",
+        "to": "{{lead.salesperson_email}}"
+      }
+    ],
+    "timestamp": "2026-02-19T18:02:21.771Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23045,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T18:06:37.772Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23050,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T18:11:37.392Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23055,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T18:16:37.381Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23060,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T18:21:37.370Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Stalled Deal Alert (14 days)",
+    "ruleId": "auto-005",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "minutesInStage": 23065,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "tyler@wortheyaquatics.com",
+        "subject": "⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days"
+      }
+    ],
+    "timestamp": "2026-02-19T18:26:37.354Z"
+  },
+  {
+    "action": "trigger",
+    "ruleName": "Stage Change Notification",
+    "ruleId": "auto-004",
+    "leadId": "L1007",
+    "leadName": "Marcus Johnson",
+    "event": {
+      "type": "stage_change",
+      "oldStage": "Consultation Complete",
+      "newStage": "Proposal Sent"
+    },
+    "actionResults": [
+      {
+        "type": "email",
+        "error": "Could not resolve recipient",
+        "to": "{{lead.salesperson_email}}"
+      }
+    ],
+    "timestamp": "2026-02-19T18:27:08.839Z"
+  },
+  {
+    "action": "ghl_webhook_trigger",
+    "ruleName": "New Lead Assigned",
+    "ruleId": "auto-001",
+    "leadId": "ghl-test123",
+    "leadName": "Test Lead",
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMbd224ab8c0f67482bb738b78e22be9c2",
+        "to": "5124504426",
+        "message": "🔔 New lead assigned to you: Test Lead (Pool Construction). Value: $0. Source: GoHighLevel - new-build quiz. Next action: "
+      }
+    ],
+    "timestamp": "2026-02-19T22:10:55.105Z"
+  }
+]

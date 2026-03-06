@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Hub — Mission Control V2</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="mc-shared.css">
+    <style>
+        .agent-card { display: flex; gap: 16px; align-items: flex-start; }
+        .agent-avatar {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        .agent-info { flex: 1; }
+        .agent-name { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+        .agent-task { font-size: 13px; color: var(--gray-300); margin-bottom: 6px; }
+        .agent-meta { display: flex; gap: 16px; font-size: 11px; color: var(--gray-500); }
+        .skill-tag {
+            display: inline-block;
+            padding: 2px 8px;
+            background: rgba(255,255,255,.06);
+            border-radius: 6px;
+            font-size: 11px;
+            color: var(--gray-300);
+            margin: 2px 4px 2px 0;
+        }
+        .task-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255,255,255,.04);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .task-item:last-child { border-bottom: none; }
+        .task-priority {
+            width: 4px; height: 32px; border-radius: 2px; flex-shrink: 0;
+        }
+        .task-priority.high { background: var(--red); }
+        .task-priority.medium { background: var(--yellow); }
+        .task-priority.low { background: var(--green); }
+        .cost-bar {
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 8px;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <nav class="mc-sidebar" id="sidebar">
+        <div class="mc-sidebar-header">
+            <img src="logo.png" alt="Worthey Aquatics">
+            <span class="mc-badge">MC V2</span>
+        </div>
+        <ul class="mc-nav">
+            <li class="mc-nav-section">Mission Control</li>
+            <li><a href="mission-control.html"><span class="nav-icon">🏠</span> Command Center</a></li>
+            <li><a href="mc-agents.html" class="active"><span class="nav-icon">🤖</span> Agent Hub</a></li>
+            <li><a href="mc-revenue.html"><span class="nav-icon">💰</span> Revenue</a></li>
+            <li class="mc-nav-section">WortheyFlow CRM</li>
+            <li><a href="index.html"><span class="nav-icon">📊</span> Dashboard</a></li>
+            <li><a href="index.html#pipeline"><span class="nav-icon">🔄</span> Pipeline</a></li>
+            <li><a href="index.html#serviceroutes"><span class="nav-icon">🚐</span> Service Routes</a></li>
+        </ul>
+    </nav>
+
+    <div class="mc-main">
+        <header class="mc-topbar">
+            <div style="display:flex;align-items:center;gap:12px">
+                <button class="mc-hamburger" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+                <h1>🤖 Agent Command Center</h1>
+            </div>
+            <div class="mc-topbar-right">
+                <div class="mc-live-dot"></div>
+                <span class="mc-timestamp" id="clock"></span>
+            </div>
+        </header>
+
+        <div class="mc-content">
+            <!-- Agent Overview KPIs -->
+            <div class="mc-grid mc-grid-4" style="margin-bottom:24px">
+                <div class="mc-card">
+                    <div class="mc-card-body" style="text-align:center;padding:20px">
+                        <div style="font-size:32px;font-weight:800;color:var(--green)">3</div>
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;margin-top:4px">Active Agents</div>
+                    </div>
+                </div>
+                <div class="mc-card">
+                    <div class="mc-card-body" style="text-align:center;padding:20px">
+                        <div style="font-size:32px;font-weight:800;color:var(--yellow)">7</div>
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;margin-top:4px">Queued Tasks</div>
+                    </div>
+                </div>
+                <div class="mc-card">
+                    <div class="mc-card-body" style="text-align:center;padding:20px">
+                        <div style="font-size:32px;font-weight:800;color:var(--blue-light)">24</div>
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;margin-top:4px">Completed Today</div>
+                    </div>
+                </div>
+                <div class="mc-card">
+                    <div class="mc-card-body" style="text-align:center;padding:20px">
+                        <div style="font-size:32px;font-weight:800;color:var(--pb)">$4.82</div>
+                        <div style="font-size:11px;color:var(--gray-400);text-transform:uppercase;margin-top:4px">API Cost Today</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Agents -->
+            <div class="mc-section-title">⚡ Active Agents</div>
+            <div class="mc-grid mc-grid-1" id="active-agents"></div>
+
+            <!-- Task Queue -->
+            <div class="mc-section-title">📋 Task Queue</div>
+            <div class="mc-card" style="margin-bottom:24px">
+                <div class="mc-card-body" style="padding:0" id="task-queue"></div>
+            </div>
+
+            <!-- Completed Today -->
+            <div class="mc-section-title">✅ Completed Today</div>
+            <div class="mc-card" style="margin-bottom:24px">
+                <div class="mc-card-body" style="padding:0">
+                    <table class="mc-table" id="completed-table">
+                        <thead><tr><th>Agent</th><th>Task</th><th>Business</th><th>Duration</th><th>Completed</th></tr></thead>
+                        <tbody id="completed-body"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Agent Skills -->
+            <div class="mc-section-title">🧰 Agent Skills Registry</div>
+            <div class="mc-grid mc-grid-3" id="skills-grid" style="margin-bottom:24px"></div>
+
+            <!-- Cost Tracker -->
+            <div class="mc-section-title">💳 API Cost Tracker</div>
+            <div class="mc-grid mc-grid-2">
+                <div class="mc-card">
+                    <div class="mc-card-header"><h3>Daily Cost by Business</h3></div>
+                    <div class="mc-card-body">
+                        <div class="mc-chart-container sm">
+                            <canvas id="costChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="mc-card">
+                    <div class="mc-card-header"><h3>Cost Breakdown</h3></div>
+                    <div class="mc-card-body" id="cost-breakdown"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+    // Clock
+    function updateClock() {
+        document.getElementById('clock').textContent = new Date().toLocaleString('en-US', {
+            weekday:'short', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'
+        });
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Seed data
+    const activeAgents = [
+        {
+            name: 'AquaBot', emoji: '🏊', color: 'var(--wa)',
+            task: 'Monitoring CRM pipeline, processing lead follow-ups, checking email',
+            business: 'Worthey Aquatics', status: 'running', runtime: '24/7 (always on)',
+            model: 'Claude Opus 4', tasksToday: 14, costToday: '$1.82'
+        },
+        {
+            name: 'ContentBot', emoji: '✍️', color: 'var(--pb)',
+            task: 'Generating product descriptions for Gumroad premium bundle',
+            business: 'ProfitBlueprintCo', status: 'running', runtime: '2h 14m',
+            model: 'Claude Sonnet 4', tasksToday: 6, costToday: '$0.94'
+        },
+        {
+            name: 'AdOptimizer', emoji: '📊', color: 'var(--oa)',
+            task: 'Analyzing Google Ads conversion data for bid recommendations',
+            business: 'OverAssessed.ai', status: 'running', runtime: '45m',
+            model: 'GPT-4o', tasksToday: 4, costToday: '$2.06'
+        },
+    ];
+
+    const agentsGrid = document.getElementById('active-agents');
+    activeAgents.forEach(a => {
+        agentsGrid.innerHTML += `
+        <div class="mc-card" style="border-left:3px solid ${a.color};margin-bottom:4px">
+            <div class="mc-card-body">
+                <div class="agent-card">
+                    <div class="agent-avatar" style="background:${a.color}22">${a.emoji}</div>
+                    <div class="agent-info">
+                        <div class="agent-name">${a.name} <span class="mc-status ${a.status}">${a.status}</span></div>
+                        <div class="agent-task">${a.task}</div>
+                        <div class="agent-meta">
+                            <span>🏢 ${a.business}</span>
+                            <span>⏱ ${a.runtime}</span>
+                            <span>🧠 ${a.model}</span>
+                            <span>📋 ${a.tasksToday} tasks</span>
+                            <span>💰 ${a.costToday}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    });
+
+    // Task Queue
+    const tasks = [
+        { task: 'Generate weekly sales report', biz: 'Worthey Aquatics', priority: 'high', agent: 'AquaBot', eta: '~15 min' },
+        { task: 'Create Pinterest pins for 3 products', biz: 'ProfitBlueprintCo', priority: 'medium', agent: 'ContentBot', eta: '~30 min' },
+        { task: 'Draft protest letters for 5 new clients', biz: 'OverAssessed.ai', priority: 'high', agent: 'AdOptimizer', eta: '~1 hr' },
+        { task: 'Update MilePilot landing page copy', biz: 'MilePilot', priority: 'low', agent: 'ContentBot', eta: '~20 min' },
+        { task: 'Compile client satisfaction survey results', biz: 'AI Analyst', priority: 'medium', agent: 'AquaBot', eta: '~10 min' },
+        { task: 'Optimize service route schedule', biz: 'Worthey Aquatics', priority: 'medium', agent: 'AquaBot', eta: '~25 min' },
+        { task: 'A/B test ad copy variants', biz: 'OverAssessed.ai', priority: 'low', agent: 'AdOptimizer', eta: '~45 min' },
+    ];
+
+    const taskQueue = document.getElementById('task-queue');
+    tasks.forEach(t => {
+        taskQueue.innerHTML += `
+        <div class="task-item">
+            <div class="task-priority ${t.priority}"></div>
+            <div style="flex:1">
+                <div style="font-weight:600;font-size:13px">${t.task}</div>
+                <div style="font-size:11px;color:var(--gray-500)">→ ${t.agent} • ${t.biz} • ETA: ${t.eta}</div>
+            </div>
+            <span class="mc-status pending">queued</span>
+        </div>`;
+    });
+
+    // Completed Today
+    const completed = [
+        { agent: 'AquaBot', task: 'Sent follow-up emails to 8 stale leads', biz: 'WA', duration: '12m', time: '2:45 PM' },
+        { agent: 'AquaBot', task: 'Updated CRM pipeline stages', biz: 'WA', duration: '3m', time: '2:30 PM' },
+        { agent: 'ContentBot', task: 'Published 2 blog posts to Gumroad', biz: 'PBC', duration: '34m', time: '1:15 PM' },
+        { agent: 'AdOptimizer', task: 'Paused underperforming ad groups', biz: 'OA', duration: '8m', time: '12:50 PM' },
+        { agent: 'AquaBot', task: 'Generated daily P&L summary', biz: 'ALL', duration: '5m', time: '12:00 PM' },
+        { agent: 'ContentBot', task: 'Created 5 social media posts', biz: 'PBC', duration: '22m', time: '11:30 AM' },
+        { agent: 'AquaBot', task: 'Processed 3 new service route signups', biz: 'WA', duration: '7m', time: '10:45 AM' },
+        { agent: 'AdOptimizer', task: 'Compiled conversion report', biz: 'OA', duration: '15m', time: '10:00 AM' },
+    ];
+
+    const cBody = document.getElementById('completed-body');
+    completed.forEach(c => {
+        cBody.innerHTML += `<tr>
+            <td style="font-weight:600">${c.agent}</td>
+            <td>${c.task}</td>
+            <td>${c.biz}</td>
+            <td style="color:var(--gray-400)">${c.duration}</td>
+            <td style="color:var(--gray-400)">${c.time}</td>
+        </tr>`;
+    });
+
+    // Agent Skills
+    const skillSets = [
+        { name: 'AquaBot', emoji: '🏊', color: 'var(--wa)', skills: ['CRM Management', 'Email Drafting', 'Lead Scoring', 'Pipeline Analysis', 'Service Route Optimization', 'Report Generation', 'Calendar Management', 'Competitor Monitoring'] },
+        { name: 'ContentBot', emoji: '✍️', color: 'var(--pb)', skills: ['Blog Writing', 'Product Descriptions', 'Social Media Posts', 'SEO Optimization', 'Pinterest Pins', 'Landing Page Copy', 'Email Newsletters', 'Listing Optimization'] },
+        { name: 'AdOptimizer', emoji: '📊', color: 'var(--oa)', skills: ['Google Ads Management', 'Bid Optimization', 'A/B Testing', 'Conversion Tracking', 'Budget Allocation', 'Keyword Research', 'Ad Copy Testing', 'ROI Analysis'] },
+    ];
+
+    const skillsGrid = document.getElementById('skills-grid');
+    skillSets.forEach(s => {
+        const tags = s.skills.map(sk => `<span class="skill-tag">${sk}</span>`).join('');
+        skillsGrid.innerHTML += `
+        <div class="mc-card" style="border-top:3px solid ${s.color}">
+            <div class="mc-card-header"><h3>${s.emoji} ${s.name}</h3><span style="font-size:11px;color:var(--gray-400)">${s.skills.length} skills</span></div>
+            <div class="mc-card-body">${tags}</div>
+        </div>`;
+    });
+
+    // Cost Chart
+    const costCtx = document.getElementById('costChart').getContext('2d');
+    new Chart(costCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+            datasets: [
+                { label: 'WA', data: [2.10,1.80,2.40,1.95,1.82,0.50,0.30], backgroundColor: '#00b4d8' },
+                { label: 'OA', data: [1.50,1.20,2.10,1.80,2.06,0.40,0.20], backgroundColor: '#6c5ce7' },
+                { label: 'PBC', data: [0.80,1.10,0.60,0.90,0.94,0.30,0.10], backgroundColor: '#ff6b6b' },
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { labels: { color: '#9ca3af', font: { size: 11 } } } },
+            scales: {
+                y: { stacked: true, ticks: { color: '#6b7280', callback: v => '$' + v.toFixed(2) }, grid: { color: 'rgba(255,255,255,.05)' } },
+                x: { stacked: true, ticks: { color: '#6b7280' }, grid: { color: 'rgba(255,255,255,.05)' } }
+            }
+        }
+    });
+
+    // Cost Breakdown
+    const costs = [
+        { biz: 'Worthey Aquatics', color: '#00b4d8', daily: '$1.82', monthly: '$47.40', pct: '38%' },
+        { biz: 'OverAssessed.ai', color: '#6c5ce7', daily: '$2.06', monthly: '$53.60', pct: '43%' },
+        { biz: 'ProfitBlueprintCo', color: '#ff6b6b', daily: '$0.94', monthly: '$24.40', pct: '19%' },
+    ];
+
+    const costDiv = document.getElementById('cost-breakdown');
+    costs.forEach(c => {
+        costDiv.innerHTML += `
+        <div style="margin-bottom:16px">
+            <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span style="font-size:13px;font-weight:600">${c.biz}</span>
+                <span style="font-size:13px;color:var(--gray-400)">${c.daily}/day • ${c.monthly}/mo</span>
+            </div>
+            <div class="mc-progress">
+                <div class="mc-progress-bar" style="width:${c.pct};background:${c.color}"></div>
+            </div>
+        </div>`;
+    });
+    </script>
+</body>
+</html>

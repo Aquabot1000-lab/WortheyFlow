@@ -1,0 +1,48 @@
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+[EMAIL SENT] tyler@wortheyaquatics.com ⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days
+[SMS SENT] +12105598725 SMb043a930051d44488daa786e92ea553f
+[SMS SENT] +12105598725 SM9e1e467a73b32207a440acba6424431b
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+[EMAIL SENT] Ricardo@wortheyaquatics.com Lead Stage Updated: Test Lead → Contacted
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+[EMAIL SENT] tyler@wortheyaquatics.com ⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days
+[EMAIL SENT] tyler@wortheyaquatics.com ⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days
+[EMAIL SENT] tyler@wortheyaquatics.com ⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days
+[EMAIL SENT] tyler@wortheyaquatics.com ⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days
+[EMAIL SENT] tyler@wortheyaquatics.com ⚠️ Stalled Deal: Marcus Johnson — Consultation Complete for 14+ days
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+[GHL WEBHOOK] Received: {"first_name":"Test","last_name":"Lead","phone":"(210) 555-0199","email":"test@example.com","tags":"new-build quiz","source":"Facebook Quiz Funnel","city":"San Antonio","state":"TX","contact_id":"test123"}
+[SMS SENT] 5124504426 SMbd224ab8c0f67482bb738b78e22be9c2
+[GHL WEBHOOK] Lead created: ghl-test123 Test Lead → Ricardo Jaurez
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured

@@ -1,0 +1,14 @@
+{
+  "name": "WortheyFlow CRM",
+  "short_name": "WortheyFlow",
+  "description": "Pool Service CRM for Worthey Aquatics",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2E86C1",
+  "orientation": "any",
+  "icons": [
+    { "src": "logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "logo.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
