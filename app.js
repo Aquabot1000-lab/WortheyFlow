@@ -138,9 +138,10 @@
     function getContactDirectory() {
         const s = JSON.parse(localStorage.getItem('wf_notif_settings') || '{}');
         return s.contactDirectory || [
-            { name: 'Ricardo', email: '', phone: '' },
-            { name: 'Anibal', email: '', phone: '' },
-            { name: 'Richard', email: '', phone: '' }
+            { name: 'Anibal', fullName: 'Anibal Lopez', email: 'anibal@wortheyaquatics.com', phone: '+12105636099', role: 'Pool Construction' },
+            { name: 'Ricardo', fullName: 'Ricardo Jaurez', email: 'Ricardo@wortheyaquatics.com', phone: '+15124504426', role: 'Pool Construction' },
+            { name: 'Richard', fullName: 'Richard Castille', email: 'Richardc@wortheyaquatics.com', phone: '+12102501416', role: 'Service/Equipment' },
+            { name: 'Tyler', fullName: 'Tyler Worthey', email: 'tyler@wortheyaquatics.com', phone: '+12105598725', role: 'Owner' }
         ];
     }
     function fireAutomationTrigger(event, lead) {
@@ -1772,9 +1773,10 @@
 
     // ========== SETTINGS ==========
     const defaultContacts = [
-        { name: 'Ricardo', email: '', phone: '' },
-        { name: 'Anibal', email: '', phone: '' },
-        { name: 'Richard', email: '', phone: '' }
+        { name: 'Anibal', fullName: 'Anibal Lopez', email: 'anibal@wortheyaquatics.com', phone: '+12105636099', role: 'Pool Construction' },
+        { name: 'Ricardo', fullName: 'Ricardo Jaurez', email: 'Ricardo@wortheyaquatics.com', phone: '+15124504426', role: 'Pool Construction' },
+        { name: 'Richard', fullName: 'Richard Castille', email: 'Richardc@wortheyaquatics.com', phone: '+12102501416', role: 'Service/Equipment' },
+        { name: 'Tyler', fullName: 'Tyler Worthey', email: 'tyler@wortheyaquatics.com', phone: '+12105598725', role: 'Owner' }
     ];
 
     function renderSettings() {

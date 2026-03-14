@@ -52,11 +52,11 @@ function renderTemplate(template, lead, contactDir) {
     if (!template) return '';
     return template.replace(/\{\{lead\.(\w+)\}\}/g, (match, key) => {
         if (key === 'salesperson_phone') {
-            const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+            const entry = findContact(contactDir, lead.salesperson);
             return entry ? entry.phone : '(no phone on file)';
         }
         if (key === 'salesperson_email') {
-            const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+            const entry = findContact(contactDir, lead.salesperson);
             return entry ? entry.email : '(no email on file)';
         }
         if (key === 'quoteAmount') {
@@ -76,11 +76,11 @@ function renderTemplate(template, lead, contactDir) {
 
 function resolveRecipient(toField, lead, contactDir) {
     if (toField === '{{lead.salesperson_phone}}') {
-        const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+        const entry = findContact(contactDir, lead.salesperson);
         return entry ? entry.phone : null;
     }
     if (toField === '{{lead.salesperson_email}}') {
-        const entry = (contactDir || []).find(c => c.name === lead.salesperson);
+        const entry = findContact(contactDir, lead.salesperson);
         return entry ? entry.email : null;
     }
     return renderTemplate(toField, lead, contactDir);
@@ -291,16 +291,16 @@ app.post('/api/webhook/ghl', async (req, res) => {
         ghlRaw: data // Store full payload for reference
     };
 
-    // Auto-assign salesperson based on job type
+    // Auto-assign salesperson based on job type (use short names to match CRM frontend)
     if (['Pool Construction', 'Pool Remodel', 'Commercial'].includes(lead.jobType)) {
         // Rotate between Ricardo and Anibal
         const assignFile = path.join(__dirname, 'assign-counter.json');
         let counter = 0;
         try { counter = JSON.parse(fs.readFileSync(assignFile, 'utf-8')).counter || 0; } catch(e) {}
-        lead.salesperson = counter % 2 === 0 ? 'Ricardo Jaurez' : 'Anibal Lopez';
+        lead.salesperson = counter % 2 === 0 ? 'Ricardo' : 'Anibal';
         fs.writeFileSync(assignFile, JSON.stringify({ counter: counter + 1 }));
     } else {
-        lead.salesperson = 'Richard Castille';
+        lead.salesperson = 'Richard';
     }
 
     // Save lead to leads.json
@@ -370,12 +370,24 @@ function loadContactDirectory() {
         return JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
     } catch(e) {
         return [
-            { name: 'Ricardo Jaurez', phone: '5124504426', email: 'Ricardo@wortheyaquatics.com' },
-            { name: 'Anibal Lopez', phone: '2105636099', email: 'anibal@wortheyaquatics.com' },
-            { name: 'Richard Castille', phone: '2102501416', email: 'Richardc@wortheyaquatics.com' },
-            { name: 'Tyler Worthey', phone: '2105598725', email: 'tyler@wortheyaquatics.com' }
+            { name: 'Anibal', fullName: 'Anibal Lopez', phone: '+12105636099', email: 'anibal@wortheyaquatics.com', role: 'Pool Construction' },
+            { name: 'Ricardo', fullName: 'Ricardo Jaurez', phone: '+15124504426', email: 'Ricardo@wortheyaquatics.com', role: 'Pool Construction' },
+            { name: 'Richard', fullName: 'Richard Castille', phone: '+12102501416', email: 'Richardc@wortheyaquatics.com', role: 'Service/Equipment' },
+            { name: 'Tyler', fullName: 'Tyler Worthey', phone: '+12105598725', email: 'tyler@wortheyaquatics.com', role: 'Owner' }
         ];
     }
+}
+
+// Find contact by name (matches short name, full name, or fullName field)
+function findContact(contactDir, name) {
+    if (!name || !contactDir) return null;
+    const lower = name.toLowerCase().trim();
+    return contactDir.find(c =>
+        (c.name && c.name.toLowerCase() === lower) ||
+        (c.fullName && c.fullName.toLowerCase() === lower) ||
+        (c.name && lower.startsWith(c.name.toLowerCase())) ||
+        (c.fullName && lower.startsWith(c.fullName.toLowerCase()))
+    );
 }
 
 // ========== MISSION CONTROL V2 API (public — MC pages handle their own auth) ==========
@@ -634,6 +646,19 @@ app.post('/api/automations/check-durations', async (req, res) => {
     }
 
     res.json({ checked: leadsData.length, triggered: results.length, results });
+});
+
+// Contact directory CRUD
+app.get('/api/contacts', (req, res) => {
+    res.json(loadContactDirectory());
+});
+
+app.put('/api/contacts', (req, res) => {
+    const contacts = req.body;
+    if (!Array.isArray(contacts)) return res.status(400).json({ error: 'Expected array of contacts' });
+    const settingsFile = path.join(__dirname, 'contact-directory.json');
+    fs.writeFileSync(settingsFile, JSON.stringify(contacts, null, 2));
+    res.json({ success: true, contacts });
 });
 
 // Get notification log
