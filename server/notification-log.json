@@ -266,5 +266,55 @@
       }
     ],
     "timestamp": "2026-02-19T22:10:55.105Z"
+  },
+  {
+    "action": "trigger",
+    "ruleName": "Stage Change Notification",
+    "ruleId": "auto-004",
+    "leadId": "test-verify",
+    "leadName": "Verify Lead",
+    "event": {
+      "type": "stage_change",
+      "oldStage": "New",
+      "newStage": "Contacted"
+    },
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "Ricardo@wortheyaquatics.com",
+        "subject": "Lead Stage Updated: Verify Lead → Contacted"
+      }
+    ],
+    "timestamp": "2026-03-14T02:44:08.563Z"
+  },
+  {
+    "action": "notify",
+    "type": "email",
+    "to": "tyler@wortheyaquatics.com",
+    "result": {
+      "success": true,
+      "to": "tyler@wortheyaquatics.com",
+      "subject": "WortheyFlow Test"
+    },
+    "timestamp": "2026-03-14T02:44:19.593Z"
+  },
+  {
+    "action": "duration_check",
+    "ruleName": "Lead Untouched >10min",
+    "ruleId": "auto-002",
+    "leadId": "dur-test",
+    "leadName": "Duration Test",
+    "minutesInStage": 15,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM79f763fd8e42fbc4cb7fb95f1684d4ae",
+        "to": "+12105598725",
+        "message": "⚠️ Lead untouched >10 min: Duration Test (Pool Construction) assigned to Anibal. Created unknown ago."
+      }
+    ],
+    "timestamp": "2026-03-14T02:44:20.309Z"
   }
 ]

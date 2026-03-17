@@ -169,6 +169,7 @@
 
     // ========== STATE ==========
     let leads = [];
+    let deletedLeads = [];
     let probabilities = {};
     let monthlyTarget = 200000;
     let serviceRouteData = {};
@@ -199,6 +200,7 @@
     // ========== LOCAL STORAGE ==========
     function loadData() {
         leads = JSON.parse(localStorage.getItem('wf_leads') || 'null') || getDefaultLeads();
+        deletedLeads = JSON.parse(localStorage.getItem('wf_deleted_leads') || '[]');
         probabilities = JSON.parse(localStorage.getItem('wf_probs') || 'null') || JSON.parse(JSON.stringify(DEFAULT_PROBS));
         monthlyTarget = JSON.parse(localStorage.getItem('wf_target') || '200000');
         serviceRouteData = JSON.parse(localStorage.getItem('wf_routes') || 'null') || getDefaultRoutes();
@@ -210,6 +212,7 @@
     function saveTarget() { localStorage.setItem('wf_target', JSON.stringify(monthlyTarget)); }
     function saveRoutes() { localStorage.setItem('wf_routes', JSON.stringify(serviceRouteData)); }
     function saveNotifs() { localStorage.setItem('wf_notifs', JSON.stringify(notifications)); }
+    function saveDeletedLeads() { localStorage.setItem('wf_deleted_leads', JSON.stringify(deletedLeads)); }
 
     // ========== SAMPLE DATA ==========
     function getDefaultLeads() {
@@ -335,7 +338,7 @@
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
         const el = document.getElementById('page-' + page);
         if (el) { el.classList.add('active'); }
-        const titles = { dashboard: 'Dashboard', inbox: 'Lead Inbox', pipeline: 'Pipeline', addlead: 'Add Lead', heatmap: 'Heat Map', serviceroutes: 'Service Routes', weeklyreview: 'Weekly Review', automations: 'Automations', settings: 'Settings', leaddetail: 'Lead Detail', salesman: 'Salesman Scorecard' };
+        const titles = { dashboard: 'Dashboard', inbox: 'Lead Inbox', pipeline: 'Pipeline', addlead: 'Add Lead', heatmap: 'Heat Map', serviceroutes: 'Service Routes', weeklyreview: 'Weekly Review', automations: 'Automations', archived: 'Archived Leads', settings: 'Settings', leaddetail: 'Lead Detail', salesman: 'Salesman Scorecard' };
         document.getElementById('page-title').textContent = titles[page] || 'WortheyFlow';
         if (data) currentLeadId = data;
         renderPage(page);
@@ -366,6 +369,7 @@
             case 'serviceroutes': renderServiceRoutes(); break;
             case 'weeklyreview': renderWeeklyReview(); break;
             case 'automations': renderAutomations(); break;
+            case 'archived': renderArchived(); break;
             case 'settings': renderSettings(); break;
             case 'leaddetail': renderLeadDetail(currentLeadId); break;
             case 'salesman': renderSalesmanScorecard(); break;
@@ -588,7 +592,23 @@
         const needsAttention = visibleLeads.filter(l => l.stage === 'New' && !l.firstContactAt).sort((a, b) => a.createdAt - b.createdAt);
         const showFinancials = isAdmin();
 
+        // Follow-up reminders due today or overdue
+        const todayStr = today();
+        const followUpsDue = visibleLeads.filter(l => l.follow_up_date && l.follow_up_date <= todayStr && l.stage !== 'Signed' && l.stage !== 'Lost');
+        const followUpBanner = followUpsDue.length > 0 ? `
+            <div class="followup-banner">
+                <div class="followup-banner-header">🔔 Follow-ups Due (${followUpsDue.length})</div>
+                ${followUpsDue.map(l => `
+                    <div class="followup-banner-item" onclick="WF.viewLead('${l.id}')" style="cursor:pointer">
+                        <strong>${esc(l.name)}</strong> — ${esc(l.follow_up_note || 'No note')}
+                        <span class="followup-date ${l.follow_up_date < todayStr ? 'overdue' : ''}">${l.follow_up_date < todayStr ? 'OVERDUE' : 'Today'}</span>
+                    </div>
+                `).join('')}
+            </div>
+        ` : '';
+
         el.innerHTML = `
+            ${followUpBanner}
             <div class="kpi-grid">
                 ${showFinancials ? `<div class="kpi-card blue"><div class="kpi-label">Total Pipeline</div><div class="kpi-value">${fmt(totalPipeline)}</div><div class="kpi-sub">${active.length} active deals</div></div>` : `<div class="kpi-card blue"><div class="kpi-label">Active Deals</div><div class="kpi-value">${active.length}</div><div class="kpi-sub">in pipeline</div></div>`}
                 ${showFinancials ? `<div class="kpi-card green"><div class="kpi-label">Weighted Forecast</div><div class="kpi-value">${fmt(totalForecast)}</div>
@@ -1169,6 +1189,34 @@
                 </form>
             </div>
 
+            <!-- Follow-up Reminder -->
+            <div class="card">
+                <h3 style="margin-bottom:12px">📅 Follow-up Reminder</h3>
+                <div class="form-row">
+                    <div class="form-group"><label>Follow-up Date</label><input class="form-control" id="ld-followup-date" type="date" value="${esc(lead.follow_up_date || '')}"></div>
+                    <div class="form-group"><label>Follow-up Note</label><input class="form-control" id="ld-followup-note" value="${esc(lead.follow_up_note || '')}" placeholder="e.g. Check on financing approval"></div>
+                </div>
+                <button class="btn btn-primary" onclick="WF.saveFollowUp('${lead.id}')">Save Follow-up</button>
+                ${lead.follow_up_date ? `<button class="btn btn-secondary" style="margin-left:8px" onclick="WF.clearFollowUp('${lead.id}')">Clear</button>` : ''}
+            </div>
+
+            <!-- Activity Log / Notes -->
+            <div class="card">
+                <h3 style="margin-bottom:12px">📝 Activity Log</h3>
+                <div style="display:flex;gap:8px;margin-bottom:16px">
+                    <input class="form-control" id="ld-new-note" placeholder="Add a note…" style="flex:1" onkeydown="if(event.key==='Enter'){WF.addActivityNote('${lead.id}');event.preventDefault()}">
+                    <button class="btn btn-primary" onclick="WF.addActivityNote('${lead.id}')">Add Note</button>
+                </div>
+                <div id="activity-log">
+                    ${(lead.activityNotes || []).slice().reverse().map(n => `
+                        <div class="activity-note-item">
+                            <div class="activity-note-meta"><strong>${esc(n.author)}</strong> · ${new Date(n.timestamp).toLocaleString()}</div>
+                            <div class="activity-note-text">${esc(n.text)}</div>
+                        </div>
+                    `).join('') || '<p style="color:var(--gray-400);font-size:13px">No activity notes yet.</p>'}
+                </div>
+            </div>
+
             <!-- Mobile Fast Edit Bar -->
             <div class="fast-edit-bar" id="fast-edit">
                 <div class="fast-edit-actions">
@@ -1262,11 +1310,99 @@
         alert('Note added.');
     }
 
+    function addActivityNote(id) {
+        const input = document.getElementById('ld-new-note');
+        const text = input.value.trim();
+        if (!text) return;
+        const lead = leads.find(l => l.id === id);
+        if (!lead) return;
+        if (!lead.activityNotes) lead.activityNotes = [];
+        lead.activityNotes.push({
+            text: text,
+            timestamp: Date.now(),
+            author: currentUser ? currentUser.name : 'Tyler'
+        });
+        saveLeads();
+        input.value = '';
+        renderLeadDetail(id);
+    }
+
+    function saveFollowUp(id) {
+        const lead = leads.find(l => l.id === id);
+        if (!lead) return;
+        lead.follow_up_date = document.getElementById('ld-followup-date').value;
+        lead.follow_up_note = document.getElementById('ld-followup-note').value.trim();
+        saveLeads();
+        alert('Follow-up reminder saved.');
+        renderLeadDetail(id);
+    }
+
+    function clearFollowUp(id) {
+        const lead = leads.find(l => l.id === id);
+        if (!lead) return;
+        lead.follow_up_date = '';
+        lead.follow_up_note = '';
+        saveLeads();
+        renderLeadDetail(id);
+    }
+
     function deleteLead(id) {
-        if (!confirm('Delete this lead?')) return;
+        if (!confirm('Archive this lead? You can restore it from the Archived section.')) return;
+        const lead = leads.find(l => l.id === id);
+        if (!lead) return;
+        lead.deletedAt = Date.now();
+        deletedLeads.push(lead);
         leads = leads.filter(l => l.id !== id);
         saveLeads();
+        saveDeletedLeads();
         navigateTo('inbox');
+    }
+
+    function restoreLead(id) {
+        const lead = deletedLeads.find(l => l.id === id);
+        if (!lead) return;
+        delete lead.deletedAt;
+        leads.push(lead);
+        deletedLeads = deletedLeads.filter(l => l.id !== id);
+        saveLeads();
+        saveDeletedLeads();
+        renderArchived();
+    }
+
+    function permanentlyDeleteLead(id) {
+        if (!confirm('Permanently delete this lead? This cannot be undone.')) return;
+        deletedLeads = deletedLeads.filter(l => l.id !== id);
+        saveDeletedLeads();
+        renderArchived();
+    }
+
+    function renderArchived() {
+        const el = document.getElementById('page-archived');
+        if (deletedLeads.length === 0) {
+            el.innerHTML = '<div class="card"><p style="color:var(--gray-400);text-align:center;padding:40px">No archived leads 🎉</p></div>';
+            return;
+        }
+        el.innerHTML = `
+            <div class="card">
+                <div class="card-header"><h3>🗃️ Archived Leads</h3><span style="color:var(--gray-400);font-size:13px">${deletedLeads.length} lead${deletedLeads.length !== 1 ? 's' : ''}</span></div>
+                <div class="table-wrap"><table>
+                    <thead><tr><th>Name</th><th>Job Type</th><th>Stage</th><th>Value</th><th>Archived On</th><th>Actions</th></tr></thead>
+                    <tbody>${deletedLeads.map(l => `
+                        <tr>
+                            <td><strong>${esc(l.name)}</strong><br><small style="color:var(--gray-400)">${esc(l.company || '')}</small></td>
+                            <td>${esc(l.jobType)}</td>
+                            <td><span class="badge ${stageClass(l.stage)}">${l.stage}</span></td>
+                            <td>${fmt(l.quoteAmount)}</td>
+                            <td>${new Date(l.deletedAt).toLocaleDateString()}</td>
+                            <td style="white-space:nowrap">
+                                <button class="btn btn-sm btn-success" onclick="WF.restoreLead('${l.id}')">Restore</button>
+                                <button class="btn btn-sm btn-danger" onclick="WF.permanentlyDeleteLead('${l.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `).join('')}</tbody>
+                </table></div>
+            </div>
+        `;
     }
 
     // ========== HEATMAP ==========
@@ -1867,11 +2003,13 @@
             <div class="card" style="max-width:700px;margin-top:16px">
                 <h3 style="margin-bottom:16px">Data Management</h3>
                 <div style="display:flex;gap:8px;flex-wrap:wrap">
-                    <button class="btn btn-danger" onclick="if(confirm('Reset ALL data to defaults?')){localStorage.clear();location.reload()}">Reset All Data</button>
-                    <button class="btn btn-secondary" onclick="WF.exportData()">Export JSON</button>
+                    <button class="btn btn-primary" onclick="WF.exportAllData()">📦 Export All Data</button>
+                    <button class="btn btn-secondary" onclick="WF.exportData()">Export Leads JSON</button>
                     <button class="btn btn-secondary" onclick="document.getElementById('import-file').click()">Import JSON</button>
+                    <button class="btn btn-danger" onclick="if(confirm('Reset ALL data to defaults?')){localStorage.clear();location.reload()}">Reset All Data</button>
                     <input type="file" id="import-file" accept=".json" style="display:none" onchange="WF.importData(this)">
                 </div>
+                <p style="color:var(--gray-400);font-size:12px;margin-top:8px">"Export All Data" downloads everything in localStorage as a full backup.</p>
             </div>
         `;
         el.innerHTML = html;
@@ -1950,6 +2088,20 @@
         a.click();
     }
 
+    function exportAllData() {
+        const allData = {};
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            try { allData[key] = JSON.parse(localStorage.getItem(key)); }
+            catch (e) { allData[key] = localStorage.getItem(key); }
+        }
+        const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'wortheyflow-full-backup-' + today() + '.json';
+        a.click();
+    }
+
     function importData(input) {
         const file = input.files[0];
         if (!file) return;
@@ -2008,11 +2160,12 @@
     // ========== PUBLIC API ==========
     window.WF = {
         navigateTo, viewLead, setFilter, submitLead, updateLead, quickNote, deleteLead,
-        updateProb, resetProbs, updateTarget, exportData, importData,
+        updateProb, resetProbs, updateTarget, exportData, exportAllData, importData,
         setReviewRange, reassign, saveNotifSettings, addContactRow,
         addAutomation, editAutomation, cancelAutoEdit, saveAutomation, deleteAutomation,
         toggleAutoEnabled, testAutomation, addConditionRow, addActionRow, toggleActionFields,
-        toggleDuration, logout, changePassword
+        toggleDuration, logout, changePassword,
+        restoreLead, permanentlyDeleteLead, addActivityNote, saveFollowUp, clearFollowUp
     };
 
     // ========== BOOT ==========

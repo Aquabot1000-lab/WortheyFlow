@@ -715,3 +715,64 @@ textarea.form-control { resize: vertical; min-height: 60px; }
 /* Change password section */
 .change-pw-card { max-width: 400px; }
 .change-pw-card .form-group { margin-bottom: 12px; }
+
+/* Follow-up Banner */
+.followup-banner {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+}
+.followup-banner-header {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.followup-banner-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    transition: background .2s;
+}
+.followup-banner-item:last-child { margin-bottom: 0; }
+.followup-banner-item:hover { background: rgba(255,255,255,0.25); }
+.followup-date {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+    margin-left: 12px;
+}
+.followup-date.overdue {
+    background: #dc2626;
+    animation: pulse 1.5s infinite;
+}
+
+/* Activity Log */
+.activity-note-item {
+    padding: 10px 12px;
+    border-left: 3px solid var(--blue);
+    background: var(--gray-50);
+    border-radius: 0 6px 6px 0;
+    margin-bottom: 8px;
+}
+.activity-note-item:last-child { margin-bottom: 0; }
+.activity-note-meta {
+    font-size: 11px;
+    color: var(--gray-500);
+    margin-bottom: 4px;
+}
+.activity-note-text {
+    font-size: 13px;
+    color: var(--gray-800);
+    line-height: 1.4;
+}
