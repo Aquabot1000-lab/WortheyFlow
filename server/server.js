@@ -680,11 +680,21 @@ app.post('/api/automations/check-durations', async (req, res) => {
     const { leads: leadsData, contactDirectory } = req.body;
     if (!leadsData || !Array.isArray(leadsData)) return res.status(400).json({ error: 'Missing leads array' });
 
+    // Validate leads against server's leads.json — reject stale/cached leads from browser localStorage
+    const LEADS_FILE = path.join(__dirname, 'leads.json');
+    let serverLeads = [];
+    try { serverLeads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
+    const serverIds = new Set(serverLeads.map(l => l.id));
+    const validLeads = leadsData.filter(l => serverIds.has(l.id));
+    if (validLeads.length < leadsData.length) {
+        console.log(`[Duration Check] Filtered ${leadsData.length - validLeads.length} stale leads from browser cache`);
+    }
+
     const rules = loadAutomations().filter(r => r.enabled && r.trigger?.type === 'stage_duration');
     const results = [];
     const skipped = [];
 
-    for (const lead of leadsData) {
+    for (const lead of validLeads) {
         // Smart drip check — skip if recent activity, stage change, or terminal
         const dripCheck = shouldSkipDrip(lead);
         if (dripCheck.skip) {
@@ -728,13 +738,92 @@ app.get('/api/logs', (req, res) => {
     res.json(loadLog());
 });
 
+// ========== BOOTH LEAD INTAKE (public, no auth) ==========
+app.post('/api/booth-lead', async (req, res) => {
+    try {
+        const { firstName, lastName, phone, email, jobType, city, notes, source } = req.body;
+
+        if (!firstName || !lastName || !phone || !jobType) {
+            return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        const lead = {
+            id: 'booth-' + Date.now(),
+            name: firstName + ' ' + lastName,
+            phone: phone.replace(/\D/g, ''),
+            email: email || '',
+            emailHers: '',
+            source: source || 'Trade Show',
+            stage: 'New',
+            salesperson: '',
+            jobType: jobType,
+            quoteAmount: 0,
+            notes: (city ? 'City: ' + city + '\n' : '') + (notes || ''),
+            address: '',
+            city: city || '',
+            state: 'TX',
+            zip: '',
+            createdAt: Date.now(),
+            stageChangedAt: Date.now()
+        };
+
+        // Auto-assign salesperson
+        if (['Pool Construction', 'Pool Remodel', 'Commercial'].includes(jobType)) {
+            const assignFile = path.join(__dirname, 'assign-counter.json');
+            let counter = 0;
+            try { counter = JSON.parse(fs.readFileSync(assignFile, 'utf-8')).counter || 0; } catch(e) {}
+            lead.salesperson = counter % 2 === 0 ? 'Ricardo' : 'Anibal';
+            fs.writeFileSync(assignFile, JSON.stringify({ counter: counter + 1 }));
+        } else {
+            lead.salesperson = 'Richard';
+        }
+
+        // Save to leads.json
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
+
+        // Duplicate check by phone
+        const digits = lead.phone.replace(/\D/g, '');
+        const existing = leads.find(l => l.phone && l.phone.replace(/\D/g, '') === digits);
+        if (existing) {
+            existing.notes = (existing.notes || '') + '\n\n--- Booth Update ' + new Date().toLocaleString() + ' ---\n' + lead.notes;
+            if (lead.email && !existing.email) existing.email = lead.email;
+            fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+            console.log('[BOOTH] Duplicate updated:', existing.id, existing.name);
+            return res.json({ success: true, action: 'updated', leadId: existing.id });
+        }
+
+        leads.push(lead);
+        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+
+        // Fire automations
+        const rules = loadAutomations();
+        const contactDir = loadContactDirectory();
+        const event = { type: 'lead_created' };
+        for (const rule of rules) {
+            if (!rule.enabled) continue;
+            if (!matchesTrigger(rule, event)) continue;
+            if (!evaluateConditions(rule.conditions, lead)) continue;
+            const actionResults = await executeActions(rule.actions, lead, contactDir);
+            appendLog({ action: 'booth_lead_trigger', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, actionResults });
+        }
+
+        console.log('[BOOTH] Lead created:', lead.id, lead.name, '→', lead.salesperson);
+        res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
+    } catch (err) {
+        console.error('[BOOTH] Error:', err);
+        res.status(500).json({ error: 'Internal error' });
+    }
+});
+
 // ========== START ==========
 
 // Serve the CRM frontend (after API routes)
 app.use(express.static(path.join(__dirname, '..')));
 
 // Serve MC pages directly, fallback to index.html for SPA routes
-const mcPages = ['mission-control.html', 'mc-agents.html', 'mc-revenue.html'];
+const mcPages = ['mission-control.html', 'mc-agents.html', 'mc-revenue.html', 'booth.html'];
 app.get('*', (req, res) => {
     const requested = req.path.replace(/^\//, '');
     if (mcPages.includes(requested)) {
