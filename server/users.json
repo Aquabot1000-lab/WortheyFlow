@@ -14,7 +14,7 @@
     "email": "Ricardo@wortheyaquatics.com",
     "role": "sales",
     "salesperson": "Ricardo",
-    "password": "$2a$10$bjwimrIPz5Wvh7/0ETBBoevHoT4.ybRJQRz.fjJSEnvrnhnjwpMtS",
+    "password": "$2a$10$J3jtc/LITDwwp3MSkAtwiOMt4xLA41j8awNs84ENibaeSOuSQsdI2",
     "mustChangePassword": true
   },
   {
@@ -23,7 +23,7 @@
     "email": "anibal@wortheyaquatics.com",
     "role": "sales",
     "salesperson": "Anibal",
-    "password": "$2a$10$uwvQyXIULbHSXVskpWOSF.WK7ZzZL4dSQWDvdWO/Jgavhj34Is6Cm",
+    "password": "$2a$10$MrbMuAXqCrRgJPlH0st9kOIFxlOeM9vl9UmTanXQAV.xamaVTLZNK",
     "mustChangePassword": true
   },
   {
@@ -32,7 +32,7 @@
     "email": "Richardc@wortheyaquatics.com",
     "role": "service",
     "salesperson": "Richard",
-    "password": "$2a$10$4Cw39kAcDH6OdiiNxB0zX.6JvqUY9EoUAfZm6IltLcYHgikaiwRlG",
+    "password": "$2a$10$esVcValXKxF1OQJd5EfCguuW7U7WSfMcAkbBVZCql4v6mmT/q0IJu",
     "mustChangePassword": true
   }
 ]

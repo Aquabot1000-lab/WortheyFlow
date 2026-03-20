@@ -776,3 +776,262 @@ textarea.form-control { resize: vertical; min-height: 60px; }
     color: var(--gray-800);
     line-height: 1.4;
 }
+
+/* ========== Activity Type Buttons ========== */
+.activity-type-btn.active {
+    background: var(--blue) !important;
+    color: #fff !important;
+    border-color: var(--blue) !important;
+}
+.activity-type-btn { transition: all 0.15s; }
+
+/* ========== Heat Indicator Dots ========== */
+.heat-dot { font-size: 14px; line-height: 1; }
+.heat-hot { color: #22c55e; }
+.heat-warm { color: #eab308; }
+.heat-cold { color: #ef4444; }
+.heat-gray { color: #9ca3af; }
+
+/* ========== Stage Guide Banner ========== */
+.stage-guide-banner {
+    background: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.stage-guide-toggle {
+    padding: 10px 16px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: #0369a1;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.stage-guide-toggle:hover { background: #e0f2fe; }
+.sg-arrow { font-size: 10px; transition: transform 0.2s; }
+.sg-steps { display: flex; flex-direction: column; gap: 6px; }
+.sg-step {
+    font-size: 13px;
+    color: #334155;
+    padding: 4px 0;
+    line-height: 1.4;
+}
+.sg-step small { color: #64748b; font-style: italic; }
+.sg-from { font-weight: 600; color: #0369a1; }
+.sg-to { font-weight: 600; color: #059669; }
+.sg-key-msg {
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: #fef3c7;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #92400e;
+}
+
+/* ========== Quick Action Buttons (Inbox) ========== */
+.quick-actions {
+    white-space: nowrap;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+}
+tr:hover .quick-actions { opacity: 1; }
+.qa-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: var(--gray-100);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    text-decoration: none;
+    transition: background 0.2s;
+    margin-right: 2px;
+}
+.qa-btn:hover { background: var(--gray-200); }
+.qa-call:hover { background: #d1fae5; }
+.qa-sms:hover { background: #dbeafe; }
+.qa-advance:hover { background: #fef3c7; }
+.qa-header { width: 110px; text-align: center; }
+
+/* ========== Phone Actions (Lead Detail) ========== */
+.phone-actions { display: flex; align-items: center; gap: 8px; }
+.phone-link {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--blue);
+    text-decoration: none;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+}
+.phone-link:hover { text-decoration: underline; }
+.sms-link {
+    font-size: 18px;
+    text-decoration: none;
+    min-height: 44px;
+    min-width: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gray-100);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.sms-link:hover { background: #dbeafe; }
+
+/* ========== Needs Attention Filter ========== */
+.filter-btn-attention {
+    background: #fef2f2;
+    border-color: #fca5a5;
+    color: #dc2626;
+    font-weight: 700;
+}
+.filter-btn-attention:hover { background: #fee2e2; border-color: #f87171; }
+.filter-btn-attention.active { background: #dc2626; color: white; border-color: #dc2626; }
+
+/* ========== Source Breakdown (Dashboard) ========== */
+.source-breakdown { padding: 4px 0; }
+.source-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px 0;
+}
+.source-name {
+    width: 100px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--gray-700);
+    flex-shrink: 0;
+}
+.source-bar-wrap {
+    flex: 1;
+    height: 20px;
+    background: var(--gray-100);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.source-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--blue-light));
+    border-radius: 4px;
+    min-width: 2px;
+    transition: width 0.3s ease;
+}
+.source-count {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--gray-800);
+    min-width: 70px;
+    text-align: right;
+}
+.source-count small {
+    font-weight: 400;
+    color: var(--gray-500);
+}
+
+/* ========== Add to Home Screen Banner ========== */
+.homescreen-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(135deg, #0077B6, #00a8e8);
+    color: white;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-weight: 500;
+}
+.homescreen-banner button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px 8px;
+    opacity: 0.8;
+}
+.homescreen-banner button:hover { opacity: 1; }
+
+/* ========== Enhanced Mobile Styles ========== */
+@media (max-width: 768px) {
+    /* Quick actions always visible on mobile */
+    .quick-actions { opacity: 1; }
+    .qa-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+
+    /* Phone numbers large enough to tap */
+    .phone-link { font-size: 18px; min-height: 44px; }
+    .sms-link { font-size: 20px; min-width: 44px; min-height: 44px; }
+
+    /* Lead cards full-width, larger tap targets */
+    .kanban-card { padding: 16px; }
+    .kanban-card .kc-name { font-size: 16px; }
+
+    /* Pipeline horizontal scroll on mobile */
+    .kanban-board { flex-direction: row !important; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .kanban-column { min-width: 280px; max-width: 300px; }
+
+    /* Activity log buttons larger */
+    .activity-type-btn {
+        padding: 10px 14px !important;
+        font-size: 14px !important;
+        min-height: 44px;
+    }
+    #log-activity-btn {
+        min-height: 44px;
+        min-width: 64px;
+        font-size: 14px;
+    }
+    #ld-activity-note {
+        min-height: 44px;
+        font-size: 16px;
+    }
+
+    /* Filter bar scroll */
+    .filter-bar {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+    }
+    .filter-btn {
+        flex-shrink: 0;
+        min-height: 40px;
+        font-size: 13px;
+    }
+
+    /* Table rows taller for easier tapping */
+    td { padding: 12px; }
+
+    /* Sidebar overlay backdrop */
+    #sidebar.open {
+        box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+    }
+
+    /* Fast edit bar spacing */
+    .fast-edit-bar {
+        padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    }
+    .fast-edit-actions a, .fast-edit-actions button {
+        min-width: 44px;
+        min-height: 44px;
+        font-size: 12px;
+    }
+
+    /* Source breakdown responsive */
+    .source-name { width: 80px; font-size: 12px; }
+
+    /* Hide actions column header text on mobile */
+    .qa-header { width: auto; }
+}

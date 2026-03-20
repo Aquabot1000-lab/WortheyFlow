@@ -1,24 +1,105 @@
 [
   {
-    "id": "auto-001",
-    "name": "New Lead Assigned",
+    "id": "rule-01",
+    "name": "New Construction Lead — Auto-Text to Lead",
     "enabled": true,
-    "trigger": {
-      "type": "lead_created",
-      "stage": "any"
-    },
-    "conditions": [],
+    "trigger": { "type": "lead_created" },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
     "actions": [
       {
         "type": "sms",
-        "to": "{{lead.salesperson_phone}}",
-        "message": "🔔 New lead assigned to you: {{lead.name}} ({{lead.jobType}}). Value: {{lead.quoteAmount}}. Source: {{lead.source}}. Next action: {{lead.nextAction}}"
+        "to": "{{lead.phone}}",
+        "message": "Hi {{lead.name}}! Thanks for your interest in a new pool. This is Worthey Aquatics — {{lead.salesperson}} will be calling you shortly to discuss your project. In the meantime, feel free to check out some of our work at wortheyaquatics.com. Talk soon!"
       }
     ]
   },
   {
-    "id": "auto-002",
-    "name": "Lead Untouched >10min",
+    "id": "rule-02",
+    "name": "New Construction Lead — Auto-Email to Lead",
+    "enabled": true,
+    "trigger": { "type": "lead_created" },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
+    "actions": [
+      {
+        "type": "email",
+        "to": "{{lead.email}}",
+        "subject": "Welcome to Worthey Aquatics — We'll Be in Touch Shortly",
+        "body": "Hi {{lead.name}},\n\nThank you for reaching out to Worthey Aquatics! We're excited about the possibility of bringing your dream pool to life.\n\nYour dedicated Pool Consultant, {{lead.salesperson_fullName}}, will be giving you a call shortly to introduce themselves and learn more about your project.\n\nHere's what to expect:\n1. A quick introductory call to discuss your vision\n2. An on-site consultation to review your space and options\n3. A detailed proposal tailored to your project\n\nIn the meantime, feel free to check out some of our recent work at wortheyaquatics.com.\n\nWe look forward to working with you!\n\nBest regards,\n{{lead.salesperson_fullName}}\nPool Consultant\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
+      }
+    ]
+  },
+  {
+    "id": "rule-03",
+    "name": "New Construction Lead — Alert SMS to Salesperson",
+    "enabled": true,
+    "trigger": { "type": "lead_created" },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.salesperson_phone}}",
+        "message": "🚨 NEW LEAD: {{lead.name}} | {{lead.phone}} | {{lead.jobType}} | Source: {{lead.source}}. Call within 5 min! Details in WortheyFlow."
+      }
+    ]
+  },
+  {
+    "id": "rule-04",
+    "name": "New Service Lead — Auto-Text to Lead",
+    "enabled": true,
+    "trigger": { "type": "lead_created" },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Service,Equipment Repair,Maintenance" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hi {{lead.name}}! Thanks for reaching out to Worthey Aquatics. Richard will be calling you shortly to discuss your pool service needs. We handle everything from weekly maintenance to equipment repairs. Talk soon!"
+      }
+    ]
+  },
+  {
+    "id": "rule-05",
+    "name": "New Service Lead — Auto-Email to Lead",
+    "enabled": true,
+    "trigger": { "type": "lead_created" },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Service,Equipment Repair,Maintenance" }
+    ],
+    "actions": [
+      {
+        "type": "email",
+        "to": "{{lead.email}}",
+        "subject": "Worthey Aquatics — We'll Be in Touch About Your Pool Service",
+        "body": "Hi {{lead.name}},\n\nThank you for contacting Worthey Aquatics! We appreciate you trusting us with your pool service needs.\n\nOur Service Manager, Richard Castille, will be giving you a call shortly to discuss your specific needs and get you taken care of.\n\nWhether it's weekly maintenance, equipment repair, or a one-time service call, we've got you covered. We service the entire San Antonio area and pride ourselves on reliable, quality work.\n\nIf you need to reach us in the meantime, don't hesitate to call or text.\n\nBest regards,\nRichard Castille\nService Manager\nWorthey Aquatics\n(210) 250-1416"
+      }
+    ]
+  },
+  {
+    "id": "rule-06",
+    "name": "New Service Lead — Alert SMS to Richard",
+    "enabled": true,
+    "trigger": { "type": "lead_created" },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Service,Equipment Repair,Maintenance" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "+12102501416",
+        "message": "🚨 NEW SERVICE LEAD: {{lead.name}} | {{lead.phone}} | {{lead.jobType}} | Source: {{lead.source}}. Call within 5 min!"
+      }
+    ]
+  },
+  {
+    "id": "rule-07",
+    "name": "Untouched Lead Alert — 10 min (Tyler)",
     "enabled": true,
     "trigger": {
       "type": "stage_duration",
@@ -30,13 +111,13 @@
       {
         "type": "sms",
         "to": "+12105598725",
-        "message": "⚠️ Lead untouched >10 min: {{lead.name}} ({{lead.jobType}}) assigned to {{lead.salesperson}}. Created {{lead.createdAgo}} ago."
+        "message": "⚠️ ALERT: {{lead.name}} has not been contacted yet (10 min). Assigned to {{lead.salesperson}}. Phone: {{lead.phone}}"
       }
     ]
   },
   {
-    "id": "auto-003",
-    "name": "Lead Untouched >1hr",
+    "id": "rule-08",
+    "name": "Untouched Lead Escalation — 1 hour (Tyler)",
     "enabled": true,
     "trigger": {
       "type": "stage_duration",
@@ -48,7 +129,148 @@
       {
         "type": "sms",
         "to": "+12105598725",
-        "message": "🚨 ESCALATION: Lead untouched >1 hour! {{lead.name}} ({{lead.jobType}}, {{lead.quoteAmount}}) assigned to {{lead.salesperson}}. Needs immediate attention!"
+        "message": "🚨 ESCALATION: {{lead.name}} still untouched after 1 HOUR. Assigned to {{lead.salesperson}}. Phone: {{lead.phone}}. This lead is going cold."
+      }
+    ]
+  },
+  {
+    "id": "rule-09",
+    "name": "No Answer Day 1 Drip — Construction Lead",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 1440
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hi {{lead.name}}, this is {{lead.salesperson}} from Worthey Aquatics. I tried reaching you about your new pool project — would love to connect when you have a moment. Feel free to call or text me back at this number!"
+      }
+    ]
+  },
+  {
+    "id": "rule-10",
+    "name": "No Answer Day 3 Drip — Construction Lead",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 4320
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hey {{lead.name}}, just following up on your pool inquiry. We have availability for consultations this week and would love to get you on the schedule. Any time work for a quick call?"
+      }
+    ]
+  },
+  {
+    "id": "rule-11",
+    "name": "No Answer Day 7 Drip — Construction Lead (SMS)",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 10080
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hi {{lead.name}}, wanted to reach out one more time about your pool project. We're heading into the busy season and spots for spring/summer builds are filling up. If you're still interested, I'm here to help — just reply or call anytime. — {{lead.salesperson}}, Worthey Aquatics"
+      }
+    ]
+  },
+  {
+    "id": "rule-12",
+    "name": "No Answer Day 7 Drip — Construction Lead (Email)",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 10080
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Construction,Pool Remodel,Commercial" }
+    ],
+    "actions": [
+      {
+        "type": "email",
+        "to": "{{lead.email}}",
+        "subject": "Still thinking about that pool? Let's talk.",
+        "body": "Hi {{lead.name}},\n\nI wanted to follow up one more time regarding your pool project inquiry. I know life gets busy, and I want to make sure you have everything you need to make a decision.\n\nWhether you're still in the early planning stages or ready to move forward, I'm happy to answer any questions, walk through design ideas, or set up a no-pressure consultation at your convenience.\n\nWe're heading into the busy season, and availability for spring/summer builds is starting to fill up. If timing is a factor, now is a great time to get on the schedule.\n\nFeel free to reply to this email, call, or text me anytime.\n\nLooking forward to hearing from you!\n\nBest regards,\n{{lead.salesperson_fullName}}\n{{lead.salesperson_title}}\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
+      }
+    ]
+  },
+  {
+    "id": "rule-13",
+    "name": "No Answer Day 1 Drip — Service Lead",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 1440
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Service,Equipment Repair,Maintenance" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hi {{lead.name}}, this is Richard from Worthey Aquatics. I tried reaching you about your pool service needs — would love to connect when you have a moment. Feel free to call or text me back at this number!"
+      }
+    ]
+  },
+  {
+    "id": "rule-14",
+    "name": "No Answer Day 3 Drip — Service Lead",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 4320
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Service,Equipment Repair,Maintenance" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hey {{lead.name}}, just following up on your pool service inquiry. We have availability this week and would love to get your pool taken care of. Any time work for a quick call?"
+      }
+    ]
+  },
+  {
+    "id": "rule-15",
+    "name": "No Answer Day 7 Drip — Service Lead",
+    "enabled": true,
+    "trigger": {
+      "type": "stage_duration",
+      "stage": "Contacted",
+      "durationMinutes": 10080
+    },
+    "conditions": [
+      { "field": "jobType", "operator": "in", "value": "Pool Service,Equipment Repair,Maintenance" }
+    ],
+    "actions": [
+      {
+        "type": "sms",
+        "to": "{{lead.phone}}",
+        "message": "Hi {{lead.name}}, wanted to reach out one more time about your pool service needs. Whether it's maintenance, repairs, or equipment — we're here to help whenever you're ready. Just reply or call anytime. — Richard Castille, Worthey Aquatics"
       }
     ]
   },

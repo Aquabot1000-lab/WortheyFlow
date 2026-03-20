@@ -1,0 +1,282 @@
+[
+  {
+    "name": "Tianna Jones",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Danny Holden",
+    "stage": "DQ Area",
+    "value": "$80000",
+    "owner": "RJ",
+    "tags": "dq area"
+  },
+  {
+    "name": "Dwayne Pinkston",
+    "stage": "DQ Service",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new lead"
+  },
+  {
+    "name": "Rafael Gomez",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Dinorah Diaz",
+    "stage": "DQ Service",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Denise segura",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Steven Reyes",
+    "stage": "Nurture",
+    "value": "$80000",
+    "owner": "",
+    "tags": "nurture"
+  },
+  {
+    "name": "Rejeania Henderson",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Michael Salyards",
+    "stage": "Booked Appointment",
+    "value": "$80000",
+    "owner": "AL",
+    "tags": "new lead"
+  },
+  {
+    "name": "test Lead",
+    "stage": "Bad/Wrong Numbers",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new lead"
+  },
+  {
+    "name": "Rosario Amillano",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Daniel Ybarra",
+    "stage": "Engaged",
+    "value": "$80000",
+    "owner": "RJ",
+    "tags": "nurture"
+  },
+  {
+    "name": "Carlos A Diaz Laboy",
+    "stage": "Bad/Wrong Numbers",
+    "value": "$80000",
+    "owner": "",
+    "tags": "dq area"
+  },
+  {
+    "name": "Jose Lopez",
+    "stage": "Booked Appointment",
+    "value": "$80000",
+    "owner": "AL",
+    "tags": "new pool"
+  },
+  {
+    "name": "Wallace Sheridan",
+    "stage": "Booked Appointment Reschedule",
+    "value": "$80000",
+    "owner": "RJ",
+    "tags": "new pool"
+  },
+  {
+    "name": "Bonnie Horn Reyes",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Cari Tabares",
+    "stage": "DQ Service",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new lead"
+  },
+  {
+    "name": "Noe Zepeda Jr",
+    "stage": "DQ Service",
+    "value": "$80000",
+    "owner": "RJ",
+    "tags": "new pool"
+  },
+  {
+    "name": "Libby Martin",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Priscilla Boudreaux",
+    "stage": "DQ Budget",
+    "value": "$80000",
+    "owner": "",
+    "tags": "new pool"
+  },
+  {
+    "name": "Enrique Garza",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "RJ",
+    "tags": "new pool"
+  },
+  {
+    "name": "Chica Morena",
+    "stage": "Booked Appointment",
+    "value": "$80000",
+    "owner": "AL",
+    "tags": "new pool"
+  },
+  {
+    "name": "Diana Montemayor",
+    "stage": "DQ Service",
+    "value": "$80000",
+    "owner": "",
+    "tags": "nurture"
+  },
+  {
+    "name": "Fabian Flores",
+    "stage": "DQ Service",
+    "value": "$80000",
+    "owner": "",
+    "tags": "dq area"
+  },
+  {
+    "name": "Jaime Garza",
+    "stage": "No Answer",
+    "value": "$80000",
+    "owner": "",
+    "tags": "nurture"
+  },
+  {
+    "name": "Jean Garcia",
+    "stage": "DQ Service",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Bart Pierce",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Nicole Walters dupriest",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Shantelle Mayfield",
+    "stage": "DQ Service",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Patrick Wliay",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Anthony Jenkins",
+    "stage": "DQ Service",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Catherine O'connor shaver",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Antoine Williams",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Michael",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Ingrid Anderson",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Bob White",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Elizabeth Keough",
+    "stage": "DQ Service",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Elizabeth Hanna mathis",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Jimmy Gonzales",
+    "stage": "DQ Service",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  },
+  {
+    "name": "Bryan Soto",
+    "stage": "Imported",
+    "value": "$0",
+    "owner": "",
+    "tags": "imported"
+  }
+]

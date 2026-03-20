@@ -59,6 +59,21 @@ function renderTemplate(template, lead, contactDir) {
             const entry = findContact(contactDir, lead.salesperson);
             return entry ? entry.email : '(no email on file)';
         }
+        if (key === 'salesperson_title') {
+            const entry = findContact(contactDir, lead.salesperson);
+            return entry ? entry.title : 'Consultant';
+        }
+        if (key === 'salesperson_fullName') {
+            const entry = findContact(contactDir, lead.salesperson);
+            return entry ? entry.fullName : lead.salesperson || '';
+        }
+        if (key === 'salesperson_phone_display') {
+            const entry = findContact(contactDir, lead.salesperson);
+            if (!entry) return '(no phone on file)';
+            // Format +12105636099 → (210) 563-6099
+            const digits = entry.phone.replace(/\D/g, '').slice(-10);
+            return '(' + digits.slice(0,3) + ') ' + digits.slice(3,6) + '-' + digits.slice(6);
+        }
         if (key === 'quoteAmount') {
             const v = lead.quoteAmount || 0;
             return '$' + v.toLocaleString('en-US');
@@ -116,7 +131,7 @@ async function sendSMS(to, message) {
     try {
         const result = await client.messages.create({
             body: message,
-            from: process.env.TWILIO_PHONE_NUMBER,
+            from: process.env.TWILIO_SMS_NUMBER || process.env.TWILIO_PHONE_NUMBER,
             to
         });
         console.log('[SMS SENT]', to, result.sid);
@@ -161,6 +176,8 @@ function evaluateConditions(conditions, lead) {
             case 'greaterThan': return Number(val) > Number(target);
             case 'lessThan': return Number(val) < Number(target);
             case 'contains': return String(val || '').toLowerCase().includes(String(target).toLowerCase());
+            case 'in': return String(target).split(',').map(s => s.trim().toLowerCase()).includes(String(val || '').toLowerCase());
+            case 'notIn': return !String(target).split(',').map(s => s.trim().toLowerCase()).includes(String(val || '').toLowerCase());
             default: return true;
         }
     });
@@ -276,7 +293,7 @@ app.post('/api/webhook/ghl', async (req, res) => {
         email: data.email || data.Email || '',
         emailHers: '',
         source: 'GoHighLevel - ' + (data.tags || data.source || 'Quiz Funnel'),
-        stage: 'New Lead',
+        stage: 'New',
         salesperson: '', // Will be auto-assigned by CRM
         jobType: detectJobType(data),
         quoteAmount: 0,
@@ -620,17 +637,62 @@ app.post('/api/automations/trigger', async (req, res) => {
     res.json({ triggered: results.length, results });
 });
 
+// ========== SMART DRIP CHECK HELPERS ==========
+const TERMINAL_STAGES = ['Signed', 'Lost', 'DNS', 'DQ Service', 'DQ Budget', 'Imported'];
+const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+function shouldSkipDrip(lead) {
+    // 1. Terminal stage — skip permanently
+    if (TERMINAL_STAGES.includes(lead.stage)) {
+        return { skip: true, reason: `terminal stage (${lead.stage})` };
+    }
+
+    const now = Date.now();
+
+    // 2. Recent activity in last 24 hours
+    let latestActivity = 0;
+    if (lead.lastContact) latestActivity = Math.max(latestActivity, lead.lastContact);
+    if (Array.isArray(lead.activities)) {
+        lead.activities.forEach(a => {
+            const t = new Date(a.date).getTime();
+            if (t > latestActivity) latestActivity = t;
+        });
+    }
+    if (Array.isArray(lead.activityNotes)) {
+        lead.activityNotes.forEach(n => {
+            if (n.timestamp > latestActivity) latestActivity = n.timestamp;
+        });
+    }
+    if (latestActivity && (now - latestActivity) < TWENTY_FOUR_HOURS) {
+        return { skip: true, reason: `recent activity on ${new Date(latestActivity).toISOString()}` };
+    }
+
+    // 3. Stage changed in last 24 hours
+    if (lead.stageChangedAt && (now - lead.stageChangedAt) < TWENTY_FOUR_HOURS) {
+        return { skip: true, reason: `stage changed ${Math.round((now - lead.stageChangedAt) / 3600000)}h ago` };
+    }
+
+    return { skip: false };
+}
+
 // Check duration-based triggers
 app.post('/api/automations/check-durations', async (req, res) => {
     const { leads: leadsData, contactDirectory } = req.body;
     if (!leadsData || !Array.isArray(leadsData)) return res.status(400).json({ error: 'Missing leads array' });
 
     const rules = loadAutomations().filter(r => r.enabled && r.trigger?.type === 'stage_duration');
-    const terminalStages = ['Signed', 'Lost'];
     const results = [];
+    const skipped = [];
 
     for (const lead of leadsData) {
-        if (terminalStages.includes(lead.stage)) continue;
+        // Smart drip check — skip if recent activity, stage change, or terminal
+        const dripCheck = shouldSkipDrip(lead);
+        if (dripCheck.skip) {
+            console.log(`[DRIP SKIP] Skipped drip for ${lead.name || lead.id} — ${dripCheck.reason}`);
+            skipped.push({ lead: lead.name, leadId: lead.id, reason: dripCheck.reason });
+            continue;
+        }
+
         const minsInStage = lead.stageChangedAt ? Math.floor((Date.now() - lead.stageChangedAt) / 60000) : 0;
 
         for (const rule of rules) {
@@ -645,7 +707,7 @@ app.post('/api/automations/check-durations', async (req, res) => {
         }
     }
 
-    res.json({ checked: leadsData.length, triggered: results.length, results });
+    res.json({ checked: leadsData.length, triggered: results.length, skipped: skipped.length, skippedDetails: skipped, results });
 });
 
 // Contact directory CRUD
@@ -685,4 +747,74 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`WortheyFlow Automation Server running on port ${PORT}`);
     console.log(`Twilio: ${process.env.TWILIO_ACCOUNT_SID ? 'configured' : 'DRY RUN mode'}`);
     console.log(`SendGrid: ${process.env.SENDGRID_API_KEY ? 'configured' : 'DRY RUN mode'}`);
+});
+
+// ─── Inbound SMS Handler (Twilio Webhook) ──────────────────────────
+// When a lead replies to a CRM text, forward to assigned salesperson + Tyler
+app.post('/api/sms/inbound', async (req, res) => {
+  try {
+    const { From, Body, To } = req.body;
+    console.log(`📨 Inbound SMS from ${From}: ${Body}`);
+    
+    // Find the lead by phone number
+    const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf8') || '[]');
+    const normalizePhone = (p) => (p || '').replace(/\D/g, '').slice(-10);
+    const fromNorm = normalizePhone(From);
+    
+    const lead = leads.find(l => normalizePhone(l.phone) === fromNorm);
+    
+    const contactDir = JSON.parse(fs.readFileSync(path.join(__dirname, 'contact-directory.json'), 'utf8') || '[]');
+    const tyler = contactDir.find(c => c.name === 'Tyler Worthey') || { phone: '+12105598725' };
+    
+    // Format the forward message
+    const leadName = lead ? lead.name : 'Unknown';
+    const salesperson = lead ? lead.salesperson : 'Unassigned';
+    const fwdMsg = `💬 LEAD REPLY from ${leadName} (${From}):\n"${Body}"\n\nAssigned to: ${salesperson}`;
+    
+    // Find salesperson phone
+    let salespersonPhone = null;
+    if (lead && lead.salesperson) {
+      const sp = contactDir.find(c => c.name.toLowerCase().includes(lead.salesperson.toLowerCase()));
+      if (sp) salespersonPhone = sp.phone;
+    }
+    
+    // Forward to Tyler always
+    const twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+    const fromNum = process.env.TWILIO_PHONE || '+18302716166';
+    
+    await twilio.messages.create({
+      body: fwdMsg,
+      from: fromNum,
+      to: tyler.phone || '+12105598725'
+    });
+    console.log(`  ✅ Forwarded to Tyler`);
+    
+    // Forward to assigned salesperson (if different from Tyler)
+    if (salespersonPhone && salespersonPhone !== tyler.phone) {
+      await twilio.messages.create({
+        body: fwdMsg,
+        from: fromNum,
+        to: salespersonPhone
+      });
+      console.log(`  ✅ Forwarded to ${salesperson} at ${salespersonPhone}`);
+    }
+    
+    // Log it
+    appendLog({ 
+      action: 'sms_inbound_forwarded', 
+      from: From, 
+      body: Body, 
+      leadName, 
+      salesperson, 
+      forwardedTo: [tyler.phone, salespersonPhone].filter(Boolean)
+    });
+    
+    // Respond with TwiML (empty response - don't auto-reply)
+    res.type('text/xml');
+    res.send('<Response></Response>');
+  } catch (err) {
+    console.error('❌ Inbound SMS error:', err.message);
+    res.type('text/xml');
+    res.send('<Response></Response>');
+  }
 });

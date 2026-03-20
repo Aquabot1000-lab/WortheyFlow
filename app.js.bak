@@ -96,19 +96,10 @@
             const page = a.dataset.page;
             a.parentElement.style.display = '';
             if (!isAdmin()) {
-                // Hide admin-only pages from sales/service users
-                if (['weeklyreview', 'salesman', 'archived', 'automations'].includes(page)) {
-                    a.parentElement.style.display = 'none';
-                }
+                if (page === 'weeklyreview' || page === 'salesman') a.parentElement.style.display = 'none';
                 if (page === 'serviceroutes' && !isService()) a.parentElement.style.display = 'none';
             }
         });
-        // Hide Mission Control section for non-admins
-        if (!isAdmin()) {
-            document.querySelectorAll('a[href="mission-control.html"], a[href="mc-agents.html"], a[href="mc-revenue.html"]').forEach(a => {
-                a.parentElement.style.display = 'none';
-            });
-        }
     }
 
     function bootApp() {
@@ -119,23 +110,10 @@
         renderCurrentPage();
         startNotificationEngine();
         startDurationChecks();
-        showHomeScreenBanner();
-    }
-
-    function showHomeScreenBanner() {
-        // Only show on mobile, only once
-        if (localStorage.getItem('wf_homescreen_dismissed')) return;
-        const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-        if (!isMobile || isStandalone) return;
-        const banner = document.createElement('div');
-        banner.className = 'homescreen-banner';
-        banner.innerHTML = `<span>📱 Add WortheyFlow to your home screen for quick access</span><button onclick="this.parentElement.remove();localStorage.setItem('wf_homescreen_dismissed','1')">✕</button>`;
-        document.getElementById('main-content').prepend(banner);
     }
 
     // ========== CONSTANTS ==========
-    const STAGES = ['New', 'Contacted', 'Nurture', 'Consultation Scheduled', 'Proposal Sent', 'Negotiating', 'Signed', 'Lost', 'DND', 'DQ Service', 'DQ Budget', 'Imported'];
+    const STAGES = ['New', 'Contacted', 'Consultation Scheduled', 'Consultation Complete', 'Proposal Sent', 'Negotiating', 'Signed', 'Lost'];
     const JOB_TYPES = ['New Pool', 'Remodel', 'Equipment Repair', 'Service Route', 'Commercial'];
     const SOURCES = ['Google Ads', 'Facebook', 'Referral', 'Website', 'Yelp', 'Home Advisor', 'Nextdoor', 'Walk-in', 'Repeat Customer'];
     const LOSS_REASONS = ['Price', 'Went with Competitor', 'Timing', 'No Financing', 'Scope Mismatch', 'No Response', 'Other'];
@@ -146,8 +124,8 @@
     const SERVICE_TYPES = ['Equipment Repair', 'Service Route'];
 
     const DEFAULT_PROBS = {
-        construction: { 'New': 10, 'Contacted': 15, 'Nurture': 20, 'Consultation Scheduled': 35, 'Proposal Sent': 65, 'Negotiating': 80, 'Signed': 100, 'Lost': 0, 'DND': 10, 'DQ Service': 0, 'DQ Budget': 5, 'Imported': 5 },
-        service: { 'New': 25, 'Contacted': 40, 'Nurture': 45, 'Consultation Scheduled': 65, 'Proposal Sent': 75, 'Negotiating': 85, 'Signed': 100, 'Lost': 0, 'DND': 15, 'DQ Service': 0, 'DQ Budget': 10, 'Imported': 5 }
+        construction: { 'New': 10, 'Contacted': 20, 'Consultation Scheduled': 35, 'Consultation Complete': 50, 'Proposal Sent': 65, 'Negotiating': 80, 'Signed': 100, 'Lost': 0 },
+        service: { 'New': 25, 'Contacted': 50, 'Consultation Scheduled': 65, 'Consultation Complete': 0, 'Proposal Sent': 75, 'Negotiating': 85, 'Signed': 100, 'Lost': 0 }
     };
 
     const SA_CENTER = [29.4241, -98.4936];
@@ -221,19 +199,6 @@
 
     // ========== LOCAL STORAGE ==========
     function loadData() {
-        // Force reset via URL param or missing flag
-        const urlReset = new URLSearchParams(window.location.search).get('reset') === 'force';
-        if (urlReset || !localStorage.getItem('wf_ghl_v6')) {
-            // Nuke ALL wf_ keys
-            Object.keys(localStorage).forEach(k => { if (k.startsWith('wf_')) localStorage.removeItem(k); });
-            // Load GHL leads directly
-            if (typeof GHL_LEADS !== 'undefined' && GHL_LEADS.length > 0) {
-                localStorage.setItem('wf_leads', JSON.stringify(GHL_LEADS));
-            }
-            localStorage.setItem('wf_ghl_v6', '1');
-            // Clean URL
-            if (urlReset) window.history.replaceState({}, '', window.location.pathname);
-        }
         leads = JSON.parse(localStorage.getItem('wf_leads') || 'null') || getDefaultLeads();
         deletedLeads = JSON.parse(localStorage.getItem('wf_deleted_leads') || '[]');
         probabilities = JSON.parse(localStorage.getItem('wf_probs') || 'null') || JSON.parse(JSON.stringify(DEFAULT_PROBS));
@@ -251,11 +216,109 @@
 
     // ========== SAMPLE DATA ==========
     function getDefaultLeads() {
-        if (typeof GHL_LEADS !== 'undefined' && GHL_LEADS.length > 0) return GHL_LEADS;
-        return [];
+        const now = Date.now();
+        const day = 86400000;
+        const hr = 3600000;
+        return [
+            {
+                id: 'L1001', name: 'Carlos Martinez', email: 'carlos@email.com', phone: '210-555-0101',
+                company: 'Martinez Residence', address: '1234 Alamo Heights Blvd', city: 'San Antonio', zip: '78209',
+                lat: 29.4841, lng: -98.4636, jobType: 'New Pool', source: 'Google Ads',
+                stage: 'Negotiating', salesperson: 'Ricardo', quoteAmount: 85000,
+                notes: 'Wants infinity edge pool with spa', nextAction: 'Send revised proposal',
+                nextActionDate: new Date(now + day).toISOString().slice(0, 10),
+                createdAt: now - 12 * day, stageChangedAt: now - 5 * day, firstContactAt: now - 12 * day + 180000,
+                lossReason: null, equipmentAge: null
+            },
+            {
+                id: 'L1002', name: 'Jennifer Nguyen', email: 'jnguyen@outlook.com', phone: '210-555-0202',
+                company: 'Nguyen Family', address: '5678 Stone Oak Pkwy', city: 'San Antonio', zip: '78258',
+                lat: 29.6241, lng: -98.4836, jobType: 'Remodel', source: 'Facebook',
+                stage: 'Proposal Sent', salesperson: 'Anibal', quoteAmount: 42000,
+                notes: 'Complete pool resurface + new tile', nextAction: 'Follow up on proposal',
+                nextActionDate: new Date(now + 2 * day).toISOString().slice(0, 10),
+                createdAt: now - 8 * day, stageChangedAt: now - 3 * day, firstContactAt: now - 8 * day + 240000,
+                lossReason: null, equipmentAge: null
+            },
+            {
+                id: 'L1003', name: 'Robert Thompson', email: 'rthompson@gmail.com', phone: '210-555-0303',
+                company: 'Thompson Estate', address: '9012 Dominion Dr', city: 'San Antonio', zip: '78257',
+                lat: 29.6041, lng: -98.5636, jobType: 'Commercial', source: 'Referral',
+                stage: 'Consultation Scheduled', salesperson: 'Ricardo', quoteAmount: 120000,
+                notes: 'HOA community pool renovation', nextAction: 'Site visit Thursday',
+                nextActionDate: new Date(now + 3 * day).toISOString().slice(0, 10),
+                createdAt: now - 5 * day, stageChangedAt: now - 2 * day, firstContactAt: now - 5 * day + 120000,
+                lossReason: null, equipmentAge: null
+            },
+            {
+                id: 'L1004', name: 'Amanda Garcia', email: 'agarcia@yahoo.com', phone: '210-555-0404',
+                company: 'Garcia Home', address: '3456 Medical Dr', city: 'San Antonio', zip: '78229',
+                lat: 29.5041, lng: -98.5536, jobType: 'Equipment Repair', source: 'Yelp',
+                stage: 'Signed', salesperson: 'Richard', quoteAmount: 3200,
+                notes: 'Pool pump replacement + filter install', nextAction: '',
+                nextActionDate: '',
+                createdAt: now - 20 * day, stageChangedAt: now - 1 * day, firstContactAt: now - 20 * day + 300000,
+                lossReason: null, equipmentAge: 8
+            },
+            {
+                id: 'L1005', name: 'David Kim', email: 'dkim@email.com', phone: '210-555-0505',
+                company: 'Kim Residence', address: '7890 Huebner Rd', city: 'San Antonio', zip: '78240',
+                lat: 29.5241, lng: -98.5936, jobType: 'New Pool', source: 'Home Advisor',
+                stage: 'Contacted', salesperson: 'Ricardo', quoteAmount: 65000,
+                notes: 'Interested in freeform pool, has 3 kids', nextAction: 'Schedule consultation',
+                nextActionDate: new Date(now + day).toISOString().slice(0, 10),
+                createdAt: now - 3 * day, stageChangedAt: now - 2 * day, firstContactAt: now - 3 * day + 600000,
+                lossReason: null, equipmentAge: null
+            },
+            {
+                id: 'L1006', name: 'Lisa Patel', email: 'lpatel@gmail.com', phone: '210-555-0606',
+                company: 'Patel Family', address: '2345 Wurzbach Rd', city: 'San Antonio', zip: '78238',
+                lat: 29.4941, lng: -98.5736, jobType: 'Remodel', source: 'Website',
+                stage: 'Lost', salesperson: 'Anibal', quoteAmount: 28000,
+                notes: 'Wanted deck resurfacing, went with competitor', nextAction: '',
+                nextActionDate: '',
+                createdAt: now - 30 * day, stageChangedAt: now - 15 * day, firstContactAt: now - 30 * day + 900000,
+                lossReason: 'Went with Competitor', equipmentAge: null
+            },
+            {
+                id: 'L1007', name: 'Marcus Johnson', email: 'mjohnson@email.com', phone: '210-555-0707',
+                company: 'Johnson Pools LLC', address: '6789 Bandera Rd', city: 'San Antonio', zip: '78238',
+                lat: 29.4741, lng: -98.6136, jobType: 'Service Route', source: 'Nextdoor',
+                stage: 'Consultation Complete', salesperson: 'Richard', quoteAmount: 4800,
+                notes: 'Weekly service for commercial property', nextAction: 'Send service agreement',
+                nextActionDate: new Date(now).toISOString().slice(0, 10),
+                createdAt: now - 10 * day, stageChangedAt: now - 16 * day, firstContactAt: now - 10 * day + 480000,
+                lossReason: null, equipmentAge: 5
+            },
+            {
+                id: 'L1008', name: 'Rachel Adams', email: 'radams@email.com', phone: '210-555-0808',
+                company: 'Adams Residence', address: '4567 Blanco Rd', city: 'San Antonio', zip: '78212',
+                lat: 29.4941, lng: -98.5036, jobType: 'New Pool', source: 'Google Ads',
+                stage: 'New', salesperson: 'Anibal', quoteAmount: 72000,
+                notes: 'Lap pool, modern design, budget ~$75K', nextAction: 'Initial call',
+                nextActionDate: new Date(now).toISOString().slice(0, 10),
+                createdAt: now - 0.5 * hr, stageChangedAt: now - 0.5 * hr, firstContactAt: null,
+                lossReason: null, equipmentAge: null
+            }
+        ];
     }
 
-    function getDefaultRoutes() { return { techs: [], accounts: [], highMarginOpps: [] }; }
+    function getDefaultRoutes() {
+        return {
+            techs: [
+                { name: 'Aaron', role: 'Maintenance Tech', accounts: 0, revenuePerStop: 0, laborHoursPerWeek: 0, repairsRevenue: 0, churnPerMonth: 0 },
+                { name: 'Isaiah', role: 'Maintenance Tech', accounts: 0, revenuePerStop: 0, laborHoursPerWeek: 0, repairsRevenue: 0, churnPerMonth: 0 },
+                { name: 'Jim', role: 'Service/Repairs Tech', accounts: 0, revenuePerStop: 0, laborHoursPerWeek: 0, repairsRevenue: 0, churnPerMonth: 0 }
+            ],
+            totalAccounts: 0,
+            highMarginOpps: [
+                { account: 'Ridgewood HOA', reason: 'Equipment 12+ years old', equipmentAge: 14, repairCount: 6 },
+                { account: 'Sunset Villas', reason: 'Repeat filter/pump repairs', equipmentAge: 9, repairCount: 8 },
+                { account: 'Oak Hills CC', reason: 'Commercial heater failing', equipmentAge: 11, repairCount: 4 },
+                { account: 'The Dominion #47', reason: 'Salt system end of life', equipmentAge: 10, repairCount: 3 }
+            ]
+        };
+    }
 
     // ========== NAVIGATION ==========
     function setupNav() {
@@ -507,7 +570,7 @@
         const targetPctDisplay = monthlyTarget > 0 ? (totalForecast / monthlyTarget * 100).toFixed(0) : 0;
 
         // Consultation complete avg value
-        const ccLeads = visibleLeads.filter(l => STAGES.indexOf(l.stage) >= STAGES.indexOf('Proposal Sent') && l.quoteAmount > 0);
+        const ccLeads = visibleLeads.filter(l => STAGES.indexOf(l.stage) >= STAGES.indexOf('Consultation Complete') && l.quoteAmount > 0);
         const revPerCC = ccLeads.length > 0 ? ccLeads.reduce((s, l) => s + l.quoteAmount, 0) / ccLeads.length : 0;
 
         // Avg ticket by job type
@@ -557,7 +620,7 @@
                 ${showFinancials ? `<div class="kpi-card yellow"><div class="kpi-label">Hot Deals</div><div class="kpi-value">${fmt(hotDeals)}</div><div class="kpi-sub">Proposal Sent + Negotiating</div></div>` : `<div class="kpi-card yellow"><div class="kpi-label">Hot Deals</div><div class="kpi-value">${visibleLeads.filter(l => l.stage === 'Negotiating' || l.stage === 'Proposal Sent').length}</div><div class="kpi-sub">Proposal Sent + Negotiating</div></div>`}
                 ${showFinancials ? `<div class="kpi-card green"><div class="kpi-label">Revenue Won</div><div class="kpi-value">${fmt(signedRevenue)}</div><div class="kpi-sub">${closedWon} deals signed</div></div>` : `<div class="kpi-card green"><div class="kpi-label">Deals Signed</div><div class="kpi-value">${closedWon}</div><div class="kpi-sub">closed won</div></div>`}
                 <div class="kpi-card blue"><div class="kpi-label">Close Rate</div><div class="kpi-value">${pct(closeRate)}</div><div class="kpi-sub">${closedWon}W / ${closedLost}L</div></div>
-                ${showFinancials ? `<div class="kpi-card blue"><div class="kpi-label">Rev / Consultation</div><div class="kpi-value">${fmt(revPerCC)}</div><div class="kpi-sub">Avg at Proposal Sent+</div></div>` : ''}
+                ${showFinancials ? `<div class="kpi-card blue"><div class="kpi-label">Rev / Consultation</div><div class="kpi-value">${fmt(revPerCC)}</div><div class="kpi-sub">Avg at Consultation Complete+</div></div>` : ''}
             </div>
 
             ${showFinancials ? `<div class="grid-2">
@@ -611,31 +674,6 @@
                                 <span class="badge ${urgency}">${ageStr} ago</span>
                             </div>`;
                 }).join('')}
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-header"><h3>📊 Leads by Source</h3></div>
-                <div class="source-breakdown">
-                    ${(() => {
-                        const sourceCats = { 'Facebook': 0, 'Google Ads': 0, 'Referral': 0, 'Website': 0, 'Other': 0 };
-                        visibleLeads.forEach(l => {
-                            if (l.source === 'Facebook') sourceCats['Facebook']++;
-                            else if (l.source === 'Google Ads') sourceCats['Google Ads']++;
-                            else if (l.source === 'Referral') sourceCats['Referral']++;
-                            else if (l.source === 'Website') sourceCats['Website']++;
-                            else sourceCats['Other']++;
-                        });
-                        const total = visibleLeads.length || 1;
-                        return Object.entries(sourceCats).map(([src, count]) => {
-                            const pctVal = ((count / total) * 100).toFixed(0);
-                            return `<div class="source-row">
-                                <span class="source-name">${src}</span>
-                                <div class="source-bar-wrap"><div class="source-bar-fill" style="width:${pctVal}%"></div></div>
-                                <span class="source-count">${count} <small>(${pctVal}%)</small></span>
-                            </div>`;
-                        }).join('');
-                    })()}
                 </div>
             </div>
 
@@ -706,7 +744,7 @@
     // ========== LEAD INBOX ==========
     function renderInbox() {
         const el = document.getElementById('page-inbox');
-        el.innerHTML = getStageGuideBanner() + `
+        el.innerHTML = `
             <div class="filter-bar">
                 <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="WF.setFilter('all')">All Leads</button>
                 <button class="filter-btn ${currentFilter === 'today' ? 'active' : ''}" onclick="WF.setFilter('today')">Today's Follow-ups</button>
@@ -715,13 +753,12 @@
                 <button class="filter-btn ${currentFilter === 'proposal_nr' ? 'active' : ''}" onclick="WF.setFilter('proposal_nr')">Proposal – No Response</button>
                 <button class="filter-btn ${currentFilter === 'high_value' ? 'active' : ''}" onclick="WF.setFilter('high_value')">High Value (>$50K)</button>
                 <button class="filter-btn ${currentFilter === 'stalled' ? 'active' : ''}" onclick="WF.setFilter('stalled')">Stalled</button>
-                <button class="filter-btn filter-btn-attention ${currentFilter === 'needs_attention' ? 'active' : ''}" onclick="WF.setFilter('needs_attention')">🔥 Needs Attention</button>
             </div>
             <div class="card">
                 <div class="table-wrap">
                     <table id="inbox-table">
                         <thead><tr>
-                            <th></th><th>Name</th><th>Job Type</th><th>Stage</th><th>Value</th><th>Salesperson</th><th>Last Contact</th><th>Days in Stage</th><th>Next Action</th><th>Source</th><th class="qa-header">Actions</th>
+                            <th>Name</th><th>Job Type</th><th>Stage</th><th>Value</th><th>Salesperson</th><th>Days in Stage</th><th>Next Action</th><th>Source</th>
                         </tr></thead>
                         <tbody id="inbox-body"></tbody>
                     </table>
@@ -742,23 +779,6 @@
             case 'proposal_nr': return base.filter(l => l.stage === 'Proposal Sent' && daysInStage(l) > 7);
             case 'high_value': return base.filter(l => (l.quoteAmount || 0) > 50000);
             case 'stalled': return base.filter(l => l.stage !== 'Signed' && l.stage !== 'Lost' && daysInStage(l) > 14);
-            case 'needs_attention': return base.filter(l => {
-                if (l.stage === 'Signed' || l.stage === 'Lost') return false;
-                // New leads never contacted
-                if (l.stage === 'New' && !l.firstContactAt) return true;
-                // No activity in 3+ days in Contacted/Nurture
-                if ((l.stage === 'Contacted' || l.stage === 'Nurture')) {
-                    const lastAct = l.lastContact || getLastActivityTimestamp(l);
-                    if (!lastAct || (Date.now() - lastAct) > 3 * 86400000) return true;
-                }
-                // Consultation scheduled in next 48 hours
-                if (l.stage === 'Consultation Scheduled' && l.nextActionDate) {
-                    const scheduledTime = new Date(l.nextActionDate).getTime();
-                    const now = Date.now();
-                    if (scheduledTime >= now && scheduledTime <= now + 48 * 3600000) return true;
-                }
-                return false;
-            });
             default: return [...base];
         }
     }
@@ -770,23 +790,15 @@
         tbody.innerHTML = filtered.map(l => {
             const dis = daysInStage(l);
             const dc = daysColor(dis);
-            const phoneClean = l.phone ? l.phone.replace(/[^+\d]/g, '') : '';
-            const phoneTel = phoneClean.startsWith('+') ? phoneClean : (phoneClean ? '+1' + phoneClean : '');
             return `<tr class="clickable" onclick="WF.viewLead('${l.id}')">
-                <td style="text-align:center;width:28px">${getHeatIndicator(l)}</td>
                 <td><strong>${esc(l.name)}</strong><br><small style="color:var(--gray-400)">${esc(l.company || '')}</small></td>
                 <td>${esc(l.jobType)}</td>
                 <td><span class="badge ${stageClass(l.stage)}">${l.stage}</span></td>
                 <td>${fmt(l.quoteAmount)}</td>
                 <td>${esc(l.salesperson)}</td>
-                <td style="font-size:12px">${getLastContactDisplay(l)}</td>
                 <td class="${dc}" style="font-weight:600">${dis}d</td>
                 <td>${esc(l.nextAction || '—')}<br><small>${l.nextActionDate || ''}</small></td>
                 <td>${esc(l.source)}</td>
-                <td class="quick-actions" onclick="event.stopPropagation()">
-                    ${l.phone ? `<a href="tel:${phoneTel}" class="qa-btn qa-call" title="Call">📞</a><a href="sms:${phoneTel}" class="qa-btn qa-sms" title="Text">💬</a>` : ''}
-                    <button class="qa-btn qa-advance" title="Advance stage" onclick="WF.quickAdvance('${l.id}')">➡️</button>
-                </td>
             </tr>`;
         }).join('');
     }
@@ -794,7 +806,7 @@
     // ========== PIPELINE (Kanban) ==========
     function renderPipeline() {
         const el = document.getElementById('page-pipeline');
-        el.innerHTML = getStageGuideBanner() + `<div class="kanban-board" id="kanban-board"></div>`;
+        el.innerHTML = `<div class="kanban-board" id="kanban-board"></div>`;
         const board = document.getElementById('kanban-board');
         const pipelineLeads = isAdmin() ? leads : myLeads();
         STAGES.forEach(stage => {
@@ -813,14 +825,13 @@
                 const dis = daysInStage(l);
                 const dc = daysColor(dis);
                 return `<div class="kanban-card" data-id="${l.id}" onclick="WF.viewLead('${l.id}')">
-                            <div class="kc-name">${getHeatIndicator(l)} ${esc(l.name)}</div>
+                            <div class="kc-name">${esc(l.name)}</div>
                             <div class="kc-company">${esc(l.company || '')}</div>
                             <div class="kc-value">${fmt(l.quoteAmount)}</div>
                             <div class="kc-meta">
                                 <span class="kc-jobtype badge badge-gray">${l.jobType}</span>
                                 <span class="kc-days ${dc}">${dis}d in stage</span>
                             </div>
-                            <div class="kc-last-contact" style="font-size:11px;color:var(--gray-400);margin-top:2px">Last: ${getLastContactDisplay(l)}</div>
                         </div>`;
             }).join('')}
                 </div>
@@ -849,12 +860,12 @@
         const oldStage = lead.stage;
         if (oldStage === newStage) return;
 
-        // Validation: need deal value past Proposal Sent
+        // Validation: need deal value past Consultation Complete
         if (!skipChecks) {
             const newIdx = STAGES.indexOf(newStage);
-            const ccIdx = STAGES.indexOf('Proposal Sent');
+            const ccIdx = STAGES.indexOf('Consultation Complete');
             if (newIdx > ccIdx && newStage !== 'Lost' && (!lead.quoteAmount || lead.quoteAmount <= 0)) {
-                alert('⚠️ Cannot advance past "Proposal Sent" without a deal value. Please add a quote amount first.');
+                alert('⚠️ Cannot advance past "Consultation Complete" without a deal value. Please add a quote amount first.');
                 renderPipeline();
                 return;
             }
@@ -1134,7 +1145,7 @@
                 <div class="card">
                     <h3 style="margin-bottom:12px">Contact Info</h3>
                     <div class="lead-detail-grid">
-                        <div class="lead-field"><label>Phone</label><div class="field-value phone-actions">${lead.phone ? (() => { const pc = lead.phone.replace(/[^+\\d]/g, ''); const pt = pc.startsWith('+') ? pc : '+1' + pc; return `<a href="tel:${pt}" class="phone-link">${esc(lead.phone)}</a> <a href="sms:${pt}" class="sms-link" title="Send text">💬</a>`; })() : '—'}</div></div>
+                        <div class="lead-field"><label>Phone</label><div class="field-value">${lead.phone ? `<a href="tel:${lead.phone}">${esc(lead.phone)}</a>` : '—'}</div></div>
                         <div class="lead-field"><label>Email (His)</label><div class="field-value">${lead.email ? `<a href="mailto:${lead.email}">${esc(lead.email)}</a>` : '—'}</div></div>
                         <div class="lead-field"><label>Email (Hers)</label><div class="field-value">${lead.email2 ? `<a href="mailto:${lead.email2}">${esc(lead.email2)}</a>` : '—'}</div></div>
                         <div class="lead-field"><label>Address</label><div class="field-value">${esc(lead.address || '—')}</div></div>
@@ -1189,22 +1200,20 @@
                 ${lead.follow_up_date ? `<button class="btn btn-secondary" style="margin-left:8px" onclick="WF.clearFollowUp('${lead.id}')">Clear</button>` : ''}
             </div>
 
-            <!-- Quick Activity Log -->
+            <!-- Activity Log / Notes -->
             <div class="card">
-                <h3 style="margin-bottom:12px">📝 Log Activity</h3>
-                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px" id="activity-type-btns">
-                    <button class="btn btn-sm btn-secondary activity-type-btn" data-type="call" onclick="WF.selectActivityType(this)">📞 Call</button>
-                    <button class="btn btn-sm btn-secondary activity-type-btn" data-type="text" onclick="WF.selectActivityType(this)">💬 Text</button>
-                    <button class="btn btn-sm btn-secondary activity-type-btn" data-type="email" onclick="WF.selectActivityType(this)">📧 Email</button>
-                    <button class="btn btn-sm btn-secondary activity-type-btn" data-type="meeting" onclick="WF.selectActivityType(this)">🤝 Meeting</button>
-                    <button class="btn btn-sm btn-secondary activity-type-btn" data-type="note" onclick="WF.selectActivityType(this)">📝 Note</button>
+                <h3 style="margin-bottom:12px">📝 Activity Log</h3>
+                <div style="display:flex;gap:8px;margin-bottom:16px">
+                    <input class="form-control" id="ld-new-note" placeholder="Add a note…" style="flex:1" onkeydown="if(event.key==='Enter'){WF.addActivityNote('${lead.id}');event.preventDefault()}">
+                    <button class="btn btn-primary" onclick="WF.addActivityNote('${lead.id}')">Add Note</button>
                 </div>
-                <div style="display:flex;gap:8px">
-                    <input class="form-control" id="ld-activity-note" placeholder="Quick note…" style="flex:1" onkeydown="if(event.key==='Enter'){WF.logActivity('${lead.id}');event.preventDefault()}">
-                    <button class="btn btn-primary" id="log-activity-btn" onclick="WF.logActivity('${lead.id}')" disabled>Log</button>
-                </div>
-                <div id="activity-log" style="margin-top:16px">
-                    ${renderActivityList(lead)}
+                <div id="activity-log">
+                    ${(lead.activityNotes || []).slice().reverse().map(n => `
+                        <div class="activity-note-item">
+                            <div class="activity-note-meta"><strong>${esc(n.author)}</strong> · ${new Date(n.timestamp).toLocaleString()}</div>
+                            <div class="activity-note-text">${esc(n.text)}</div>
+                        </div>
+                    `).join('') || '<p style="color:var(--gray-400);font-size:13px">No activity notes yet.</p>'}
                 </div>
             </div>
 
@@ -1239,9 +1248,9 @@
 
         // Validate: can't advance past CC without deal value
         const newIdx = STAGES.indexOf(newStage);
-        const ccIdx = STAGES.indexOf('Proposal Sent');
+        const ccIdx = STAGES.indexOf('Consultation Complete');
         if (newIdx > ccIdx && newStage !== 'Lost' && newQuote <= 0) {
-            errDiv.innerHTML = '<div class="form-error">⚠️ Cannot advance past "Proposal Sent" without a deal value.</div>';
+            errDiv.innerHTML = '<div class="form-error">⚠️ Cannot advance past "Consultation Complete" without a deal value.</div>';
             return false;
         }
 
@@ -1338,7 +1347,6 @@
     }
 
     function deleteLead(id) {
-        if (!isAdmin()) { alert('Only administrators can delete leads.'); return; }
         if (!confirm('Archive this lead? You can restore it from the Archived section.')) return;
         const lead = leads.find(l => l.id === id);
         if (!lead) return;
@@ -1362,7 +1370,6 @@
     }
 
     function permanentlyDeleteLead(id) {
-        if (!isAdmin()) { alert('Only administrators can delete leads.'); return; }
         if (!confirm('Permanently delete this lead? This cannot be undone.')) return;
         deletedLeads = deletedLeads.filter(l => l.id !== id);
         saveDeletedLeads();
@@ -2128,17 +2135,6 @@
         renderInbox();
     }
 
-    function quickAdvance(id) {
-        const lead = leads.find(l => l.id === id);
-        if (!lead) return;
-        const activeStages = STAGES.filter(s => s !== 'Lost' && s !== 'DND' && s !== 'DQ Service' && s !== 'DQ Budget' && s !== 'Imported');
-        const idx = activeStages.indexOf(lead.stage);
-        if (idx === -1 || idx >= activeStages.length - 1) { alert('Already at final stage.'); return; }
-        const nextStage = activeStages[idx + 1];
-        changeStage(lead.id, nextStage);
-        renderInbox();
-    }
-
     // ========== VIEW LEAD ==========
     function viewLead(id) {
         currentLeadId = id;
@@ -2161,117 +2157,6 @@
         }
     }
 
-    // ========== QUICK ACTIVITY LOG ==========
-    let selectedActivityType = null;
-
-    function selectActivityType(btn) {
-        document.querySelectorAll('.activity-type-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedActivityType = btn.dataset.type;
-        document.getElementById('log-activity-btn').disabled = false;
-        document.getElementById('ld-activity-note').focus();
-    }
-
-    function logActivity(id) {
-        if (!selectedActivityType) { alert('Pick an activity type first.'); return; }
-        const noteInput = document.getElementById('ld-activity-note');
-        const note = noteInput.value.trim();
-        const lead = leads.find(l => l.id === id);
-        if (!lead) return;
-        if (!lead.activities) lead.activities = [];
-        lead.activities.push({
-            type: selectedActivityType,
-            note: note,
-            date: new Date().toISOString(),
-            by: currentUser ? currentUser.name : 'Tyler'
-        });
-        // Update lastContact timestamp
-        lead.lastContact = Date.now();
-        // Also add to activityNotes for backward compat
-        if (!lead.activityNotes) lead.activityNotes = [];
-        const typeEmojis = { call: '📞', text: '💬', email: '📧', meeting: '🤝', note: '📝' };
-        lead.activityNotes.push({
-            text: (typeEmojis[selectedActivityType] || '') + ' ' + selectedActivityType.charAt(0).toUpperCase() + selectedActivityType.slice(1) + (note ? ': ' + note : ''),
-            timestamp: Date.now(),
-            author: currentUser ? currentUser.name : 'Tyler'
-        });
-        saveLeads();
-        selectedActivityType = null;
-        renderLeadDetail(id);
-    }
-
-    function renderActivityList(lead) {
-        const all = [];
-        // Merge activities + legacy activityNotes
-        (lead.activities || []).forEach(a => {
-            all.push({ type: a.type, text: a.note, date: a.date, by: a.by, ts: new Date(a.date).getTime() });
-        });
-        // Add legacy notes that don't have a matching activity
-        (lead.activityNotes || []).forEach(n => {
-            const alreadyHas = all.some(a => Math.abs(a.ts - n.timestamp) < 2000);
-            if (!alreadyHas) all.push({ type: 'note', text: n.text, date: new Date(n.timestamp).toISOString(), by: n.author, ts: n.timestamp });
-        });
-        all.sort((a, b) => b.ts - a.ts);
-        if (all.length === 0) return '<p style="color:var(--gray-400);font-size:13px">No activity yet. Log your first call or note above.</p>';
-        const typeEmojis = { call: '📞', text: '💬', email: '📧', meeting: '🤝', note: '📝' };
-        return all.map(a => `
-            <div class="activity-note-item">
-                <div class="activity-note-meta">${typeEmojis[a.type] || '📝'} <strong>${esc(a.type ? a.type.charAt(0).toUpperCase() + a.type.slice(1) : 'Note')}</strong> by ${esc(a.by || 'Unknown')} · ${new Date(a.date).toLocaleString()}</div>
-                <div class="activity-note-text">${esc(a.text || '(no note)')}</div>
-            </div>
-        `).join('');
-    }
-
-    // ========== HEAT INDICATOR (Hot/Warm/Cold) ==========
-    function getHeatIndicator(lead) {
-        const lastAct = lead.lastContact || getLastActivityTimestamp(lead);
-        if (!lastAct) return '<span class="heat-dot heat-gray" title="No activity">●</span>';
-        const daysAgo = (Date.now() - lastAct) / 86400000;
-        if (daysAgo <= 3) return '<span class="heat-dot heat-hot" title="Hot — activity in last 3 days">●</span>';
-        if (daysAgo <= 7) return '<span class="heat-dot heat-warm" title="Warm — activity 3-7 days ago">●</span>';
-        return '<span class="heat-dot heat-cold" title="Cold — no activity in 7+ days">●</span>';
-    }
-
-    function getLastActivityTimestamp(lead) {
-        let latest = 0;
-        (lead.activities || []).forEach(a => { const t = new Date(a.date).getTime(); if (t > latest) latest = t; });
-        (lead.activityNotes || []).forEach(n => { if (n.timestamp > latest) latest = n.timestamp; });
-        return latest || 0;
-    }
-
-    function getLastContactDisplay(lead) {
-        const ts = lead.lastContact || getLastActivityTimestamp(lead);
-        if (!ts) return '—';
-        const daysAgo = Math.floor((Date.now() - ts) / 86400000);
-        if (daysAgo === 0) return 'Today';
-        if (daysAgo === 1) return 'Yesterday';
-        return daysAgo + 'd ago';
-    }
-
-    // ========== STAGE GUIDE BANNER ==========
-    function getStageGuideBanner() {
-        return `
-        <div class="stage-guide-banner" id="stage-guide">
-            <div class="stage-guide-toggle" onclick="document.getElementById('stage-guide-body').classList.toggle('hidden');this.querySelector('.sg-arrow').textContent=document.getElementById('stage-guide-body').classList.contains('hidden')?'▶':'▼'">
-                <span class="sg-arrow">▶</span> 📋 Stage Guide
-            </div>
-            <div id="stage-guide-body" class="hidden" style="padding:12px 16px 16px">
-                <div class="sg-steps">
-                    <div class="sg-step"><span class="sg-from">New</span> → Called them → <span class="sg-to">Contacted</span></div>
-                    <div class="sg-step"><span class="sg-from">Contacted</span> → They answered, interested → <span class="sg-to">Nurture</span></div>
-                    <div class="sg-step"><span class="sg-from">Contacted</span> → No answer 7+ days → <span class="sg-to">Leave</span> <small>(drip handles it)</small></div>
-                    <div class="sg-step"><span class="sg-from">Nurture</span> → Consultation booked → <span class="sg-to">Consultation Scheduled</span></div>
-                    <div class="sg-step"><span class="sg-from">Consultation Scheduled</span> → No-show → <span class="sg-to">DNS</span></div>
-                    <div class="sg-step"><span class="sg-from">Consultation Scheduled</span> → Met, sending proposal → <span class="sg-to">Proposal Sent</span></div>
-                    <div class="sg-step"><span class="sg-from">Proposal Sent</span> → Negotiating → <span class="sg-to">Negotiating</span></div>
-                    <div class="sg-step"><span class="sg-from">Negotiating</span> → Signed! → <span class="sg-to">Signed 🎉</span></div>
-                    <div class="sg-step"><span class="sg-from">Any</span> → Said no / competitor → <span class="sg-to">Lost</span> <small>(add reason)</small></div>
-                </div>
-                <div class="sg-key-msg">💡 Move the lead when you make contact or book an appointment. This stops automated follow-ups.</div>
-            </div>
-        </div>`;
-    }
-
     // ========== PUBLIC API ==========
     window.WF = {
         navigateTo, viewLead, setFilter, submitLead, updateLead, quickNote, deleteLead,
@@ -2280,8 +2165,7 @@
         addAutomation, editAutomation, cancelAutoEdit, saveAutomation, deleteAutomation,
         toggleAutoEnabled, testAutomation, addConditionRow, addActionRow, toggleActionFields,
         toggleDuration, logout, changePassword,
-        restoreLead, permanentlyDeleteLead, addActivityNote, saveFollowUp, clearFollowUp,
-        selectActivityType, logActivity, quickAdvance
+        restoreLead, permanentlyDeleteLead, addActivityNote, saveFollowUp, clearFollowUp
     };
 
     // ========== BOOT ==========
