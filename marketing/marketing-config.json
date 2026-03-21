@@ -1,0 +1,48 @@
+{
+  "companies": {
+    "worthey-aquatics": {
+      "name": "Worthey Aquatics",
+      "google_ads_id": "1322494799",
+      "meta_ads_id": null,
+      "cpl_targets": {
+        "construction": 100,
+        "service": 30,
+        "equipment": 50
+      },
+      "daily_budget": 50.00,
+      "currency": "USD"
+    },
+    "overassessed": {
+      "name": "OverAssessed",
+      "google_ads_id": "3513438695",
+      "meta_ads_id": null,
+      "cpl_targets": {
+        "default": 25
+      },
+      "daily_budget": 50.00,
+      "currency": "USD"
+    },
+    "profitblueprintco": {
+      "name": "ProfitBlueprintCo",
+      "google_ads_id": null,
+      "meta_ads_id": null,
+      "cpl_targets": {
+        "default": 5
+      },
+      "daily_budget": 10.00,
+      "currency": "USD"
+    }
+  },
+  "rules": {
+    "high_cpl_threshold_multiplier": 1.5,
+    "low_ctr_threshold": 0.01,
+    "budget_scale_up_factor": 1.2,
+    "budget_scale_down_factor": 0.8,
+    "min_impressions_for_rules": 100,
+    "min_clicks_for_cpl": 5
+  },
+  "reporting": {
+    "default_days": 30,
+    "output_dir": "reports"
+  }
+}

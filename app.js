@@ -137,7 +137,7 @@
     // ========== CONSTANTS ==========
     const STAGES = ['New', 'Contacted', 'Nurture', 'Consultation Scheduled', 'Proposal Sent', 'Negotiating', 'Signed', 'Lost', 'DND', 'DQ Service', 'DQ Budget', 'Imported'];
     const JOB_TYPES = ['New Pool', 'Remodel', 'Equipment Repair', 'Service Route', 'Commercial'];
-    const SOURCES = ['Google Ads', 'Facebook', 'Referral', 'Website', 'Yelp', 'Home Advisor', 'Nextdoor', 'Walk-in', 'Repeat Customer'];
+    const SOURCES = ['Google Ads', 'Facebook Ads', 'Pool Monopoly', 'Lead Rocket', 'Teckfactor', 'Marketing Show', 'Referral', 'Website', 'Phone Call (Inbound)', 'Nextdoor', 'Yard Sign', 'Repeat Customer', 'Other'];
     const LOSS_REASONS = ['Price', 'Went with Competitor', 'Timing', 'No Financing', 'Scope Mismatch', 'No Response', 'Other'];
     const SALESPEOPLE = ['Ricardo', 'Anibal', 'Richard'];
     const POOL_SALESPEOPLE = ['Ricardo', 'Anibal'];
@@ -261,6 +261,10 @@
     function setupNav() {
         document.querySelectorAll('.nav-links a').forEach(a => {
             a.addEventListener('click', e => {
+                // Let Mission Control links navigate normally (they're separate HTML pages)
+                if (a.href && (a.href.includes('mission-control') || a.href.includes('mc-agents') || a.href.includes('mc-revenue'))) {
+                    return; // Don't prevent default — let browser navigate
+                }
                 e.preventDefault();
                 const page = a.dataset.page;
                 navigateTo(page);
@@ -618,13 +622,12 @@
                 <div class="card-header"><h3>📊 Leads by Source</h3></div>
                 <div class="source-breakdown">
                     ${(() => {
-                        const sourceCats = { 'Facebook': 0, 'Google Ads': 0, 'Referral': 0, 'Website': 0, 'Other': 0 };
+                        const sourceCats = {};
+                        SOURCES.forEach(s => sourceCats[s] = 0);
                         visibleLeads.forEach(l => {
-                            if (l.source === 'Facebook') sourceCats['Facebook']++;
-                            else if (l.source === 'Google Ads') sourceCats['Google Ads']++;
-                            else if (l.source === 'Referral') sourceCats['Referral']++;
-                            else if (l.source === 'Website') sourceCats['Website']++;
-                            else sourceCats['Other']++;
+                            const matched = SOURCES.find(s => l.source === s || (s === 'Facebook Ads' && l.source === 'Facebook'));
+                            if (matched) sourceCats[matched]++;
+                            else sourceCats['Other'] = (sourceCats['Other'] || 0) + 1;
                         });
                         const total = visibleLeads.length || 1;
                         return Object.entries(sourceCats).map(([src, count]) => {
@@ -812,8 +815,13 @@
                     ${stageLeads.map(l => {
                 const dis = daysInStage(l);
                 const dc = daysColor(dis);
-                return `<div class="kanban-card" data-id="${l.id}" onclick="WF.viewLead('${l.id}')">
-                            <div class="kc-name">${getHeatIndicator(l)} ${esc(l.name)}</div>
+                const spInitials = l.salesperson ? l.salesperson.split(' ').map(w => w[0]).join('').toUpperCase() : '?';
+                const spColors = { 'A': '#3b82f6', 'R': '#10b981', 'RI': '#f59e0b' };
+                const spKey = l.salesperson === 'Richard' ? 'RI' : spInitials.charAt(0);
+                const spColor = spColors[spKey] || '#6b7280';
+                return `<div class="kanban-card" data-id="${l.id}" onclick="WF.viewLead('${l.id}')" style="position:relative">
+                            <div style="position:absolute;top:6px;right:8px;background:${spColor};color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;letter-spacing:-0.5px" title="${esc(l.salesperson || 'Unassigned')}">${spInitials}</div>
+                            <div class="kc-name" style="padding-right:28px">${getHeatIndicator(l)} ${esc(l.name)}</div>
                             <div class="kc-company">${esc(l.company || '')}</div>
                             <div class="kc-value">${fmt(l.quoteAmount)}</div>
                             <div class="kc-meta">

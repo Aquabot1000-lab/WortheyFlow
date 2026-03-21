@@ -738,6 +738,21 @@ app.get('/api/logs', (req, res) => {
     res.json(loadLog());
 });
 
+// ========== MARKETING DASHBOARD API ==========
+app.get('/api/marketing/dashboard', authMiddleware, (req, res) => {
+    try {
+        const stateFile = path.join(__dirname, '..', 'marketing', 'dashboard-state.json');
+        if (fs.existsSync(stateFile)) {
+            const data = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+            return res.json(data);
+        }
+        res.json({ kpis: {}, companies: {}, channels: [], dailyTrends: {}, recentLeads: [], alerts: [] });
+    } catch (err) {
+        console.error('[Marketing Dashboard] Error:', err);
+        res.status(500).json({ error: 'Failed to load dashboard data' });
+    }
+});
+
 // ========== BOOTH LEAD INTAKE (public, no auth) ==========
 app.post('/api/booth-lead', async (req, res) => {
     try {
@@ -823,7 +838,7 @@ app.post('/api/booth-lead', async (req, res) => {
 app.use(express.static(path.join(__dirname, '..')));
 
 // Serve MC pages directly, fallback to index.html for SPA routes
-const mcPages = ['mission-control.html', 'mc-agents.html', 'mc-revenue.html', 'booth.html'];
+const mcPages = ['mission-control.html', 'mc-agents.html', 'mc-revenue.html', 'mc-marketing.html', 'booth.html'];
 app.get('*', (req, res) => {
     const requested = req.path.replace(/^\//, '');
     if (mcPages.includes(requested)) {
