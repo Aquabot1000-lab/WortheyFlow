@@ -24,7 +24,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "V9S8CZgBTItAZtYbv3oS",
-    "ghlTags": "new pool, no answer, power dialer"
+    "ghlTags": "new pool, no answer, power dialer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103752078,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0003",
@@ -78,7 +86,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "eMvKzB6CIbLblGtCJWsS",
-    "ghlTags": "new pool, no answer, power dialer"
+    "ghlTags": "new pool, no answer, power dialer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103752916,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0005",
@@ -132,7 +148,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "fLaRRvtf9sj2txMjgSBi",
-    "ghlTags": "new pool, no answer, power dialer, outdoordesignai"
+    "ghlTags": "new pool, no answer, power dialer, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103753652,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0007",
@@ -159,7 +183,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "IwQQ9Mfh2ANX5ccsjPTC",
-    "ghlTags": "nurture, new pool"
+    "ghlTags": "nurture, new pool",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103815502,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0008",
@@ -186,7 +218,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "KkHtSClCfBQWzqiCCRZ1",
-    "ghlTags": "new pool, no answer, dq service, power dialer, outdoordesignai"
+    "ghlTags": "new pool, no answer, dq service, power dialer, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103754493,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0009",
@@ -213,7 +253,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Sxgh944lnveXXVathe2V",
-    "ghlTags": "new lead, new pool, booked appointment"
+    "ghlTags": "new lead, new pool, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103802201,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0010",
@@ -240,7 +288,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "QRG5x7GfJCC8LHnZt3yJ",
-    "ghlTags": "new pool, no answer, power dialer"
+    "ghlTags": "new pool, no answer, power dialer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103755336,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0011",
@@ -267,7 +323,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "O9p8wfu8OKqxyDsdvCya",
-    "ghlTags": "nurture, new pool"
+    "ghlTags": "nurture, new pool",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103803030,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0012",
@@ -294,7 +358,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Yp1U9Omiz7oONmuRotTJ",
-    "ghlTags": "new pool, no answer, 2 week reminder, booked appointment"
+    "ghlTags": "new pool, no answer, 2 week reminder, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103803856,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0014",
@@ -321,7 +393,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "SfU4h4gKCwESYZCyNs6s",
-    "ghlTags": "new pool, phone appointment"
+    "ghlTags": "new pool, phone appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103804686,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0015",
@@ -348,7 +428,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "hsuqaQMGLbzHSvRdaeny",
-    "ghlTags": "new pool, no answer, power dialer, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103756170,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0016",
@@ -429,7 +517,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "PF6rxKQDmCzyuqq0JdBq",
-    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, outdoordesignai, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, outdoordesignai, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103757016,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0019",
@@ -483,7 +579,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "4Jj1mGaHcfeSKQIXLse4",
-    "ghlTags": "new pool, no answer, power dialer, outdoordesignai, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, outdoordesignai, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103757862,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0022",
@@ -510,7 +614,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "bE3LZIsFBTjia7jzWElV",
-    "ghlTags": "new pool, 2 week reminder, booked appointment"
+    "ghlTags": "new pool, 2 week reminder, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103805523,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0023",
@@ -591,7 +703,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "JD4pc74H3Og1MLF3wGr4",
-    "ghlTags": "nurture, new pool, no answer, out of area, power dialer, outdoordesignai, 2 week reminder"
+    "ghlTags": "nurture, new pool, no answer, out of area, power dialer, outdoordesignai, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103758705,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0026",
@@ -633,19 +753,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103824630,
+    "firstContactAt": 1774103824630,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "D8WotxxzQS1xkYIzJr7W",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103824630,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0028",
@@ -835,19 +963,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103825512,
+    "firstContactAt": 1774103825512,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "guH9iZJa0jUOCs7ggwVr",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103825512,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0034",
@@ -1084,7 +1220,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "ENOcUUGY1Xc2TY1izhU8",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103759486,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0041",
@@ -1223,19 +1367,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103826341,
+    "firstContactAt": 1774103826341,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "mFzw0M1J57J4QUJfH2Ws",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103826341,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0046",
@@ -1297,7 +1449,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "mK9ubSODTdI5W346ZMfs",
-    "ghlTags": "imported, wavv-no-answer, wavv-not-interested"
+    "ghlTags": "imported, wavv-no-answer, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103760328,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0048",
@@ -1324,7 +1484,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "NoJC2yrBqqSJmRnIxhyF",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103761156,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0049",
@@ -1386,7 +1554,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "6zdw9MAb0Ct7k90I2Dzg",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103762001,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0051",
@@ -1413,7 +1589,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "YhJWRCjZBzBCWAHwkV0L",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103762852,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0052",
@@ -1510,7 +1694,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "OBfkLc7feZA2CF5w3Emg",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103763699,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0055",
@@ -1537,7 +1729,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "S3kOuAp6Gwyju0Pc8Bz8",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103764550,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0056",
@@ -1626,7 +1826,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "fDIqQ0yyZLfBIPq2btyF",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103765405,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0059",
@@ -1746,19 +1954,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103827140,
+    "firstContactAt": 1774103827140,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "FnvVJLlnxXFCbE9UkB9G",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103827140,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0063",
@@ -1843,19 +2059,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103827961,
+    "firstContactAt": 1774103827961,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "s7MLtZkYbBmYSIY8y5RL",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103827961,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0066",
@@ -1944,7 +2168,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Hj4VJ5jHCxVEnJ3FVDQF",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103766231,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0069",
@@ -1994,19 +2226,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103828805,
+    "firstContactAt": 1774103828805,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "gQ556IlMn6yTNW1e8PnF",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103828805,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0071",
@@ -2173,7 +2413,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "NYDamcQ6EEQOOLCosjtY",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103767080,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0076",
@@ -2363,19 +2611,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103829646,
+    "firstContactAt": 1774103829646,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "HebGC0ikJKrPtw4R4X57",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103829646,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0082",
@@ -2402,7 +2658,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "IDBTTIPKp2S9rrbjcgnx",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103767911,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0083",
@@ -2464,7 +2728,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "9JTOmeTHHZoGHcwafU02",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103768734,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0085",
@@ -2479,19 +2751,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103830511,
+    "firstContactAt": 1774103830511,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "uoTppalhYsN2z9GuDTfM",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103830511,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0086",
@@ -2518,7 +2798,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "W6QstG4XmYiDBuAsiWXf",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103769585,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0087",
@@ -2545,7 +2833,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "xZSQh76K9UidnUeUPENr",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103770446,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0088",
@@ -2607,7 +2903,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "aiLmvnLZ4u0SHzE1AYve",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103771292,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0090",
@@ -2634,7 +2938,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "MLZEnYvtx48TS0l5UAsv",
-    "ghlTags": "nurture, imported, wavv-imported, phone appointment, wavv-phone-appointment"
+    "ghlTags": "nurture, imported, wavv-imported, phone appointment, wavv-phone-appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103816336,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0091",
@@ -2649,19 +2961,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103831341,
+    "firstContactAt": 1774103831341,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "19vN6GZfaiLQQGtOfQLi",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103831341,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0092",
@@ -2688,7 +3008,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "EXyRyPPkkfhDU5ObX3P8",
-    "ghlTags": "imported, new pool, wavv-nurture, wavv-imported, booked appointment"
+    "ghlTags": "imported, new pool, wavv-nurture, wavv-imported, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103806321,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0093",
@@ -2703,19 +3031,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103832190,
+    "firstContactAt": 1774103832190,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "XCcsAf3naEK36tiE33Vp",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103832190,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0094",
@@ -2742,7 +3078,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "IFDYMsD3t7GylagFe4i5",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103772147,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0095",
@@ -2839,7 +3183,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "k19c1O8yFmjvCOTuiWaC",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103772972,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0098",
@@ -2901,7 +3253,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "9eevH6kIwvRABickxvME",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103773794,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0100",
@@ -3025,7 +3385,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "3TP7Dtq2PR2Vrvh5Iqbz",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103774635,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0104",
@@ -3246,7 +3614,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "rmJ0PZy8Gls3UuYYTDS3",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103775507,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0111",
@@ -3261,19 +3637,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103833031,
+    "firstContactAt": 1774103833031,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "qhDOAKfa82kRBbm96Uup",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103833031,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0112",
@@ -3300,7 +3684,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "g9LYQ4tSkbjXegK68CBu",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103776362,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0113",
@@ -3315,19 +3707,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103833867,
+    "firstContactAt": 1774103833867,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "plQNUsBDwR9oyDtiSvlM",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103833867,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0114",
@@ -3486,7 +3886,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Kmj5aTW1p1cmjbr2y9e2",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103777191,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0119",
@@ -3501,19 +3909,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103834696,
+    "firstContactAt": 1774103834696,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "VLNEsRfNryI8uBVtCIM0",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103834696,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0120",
@@ -3637,7 +4053,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "YmcVeOMZTEzlwtMFpCay",
-    "ghlTags": "nurture, imported, wavv-nurture"
+    "ghlTags": "nurture, imported, wavv-nurture",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103817172,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0124",
@@ -3722,19 +4146,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103835536,
+    "firstContactAt": 1774103835536,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "oTAbVqM7Bkqi1gXjMYu3",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103835536,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0127",
@@ -3928,7 +4360,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Z7T5Wu2ozlk8GmBmfcgr",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103778044,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0133",
@@ -3943,19 +4383,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103836386,
+    "firstContactAt": 1774103836386,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "1erjwhQOGjsJRU58I9V2",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103836386,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0134",
@@ -4040,19 +4488,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103837211,
+    "firstContactAt": 1774103837211,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "VvfYMsp8Sqg8IHUBv03O",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103837211,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0137",
@@ -4067,19 +4523,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103838051,
+    "firstContactAt": 1774103838051,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "56wFTFZgFbI7GFVlGRv2",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103838051,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0138",
@@ -4141,7 +4605,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "PDi1vLBeDxIWqoajruzR",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103778876,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0140",
@@ -4156,19 +4628,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103838890,
+    "firstContactAt": 1774103838890,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "aWLSRJ8TdmwPzLsGVPKR",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103838890,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0141",
@@ -4218,19 +4698,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103839721,
+    "firstContactAt": 1774103839721,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "udO26VT1q7aOM3ZyiLJE",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103839721,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0143",
@@ -4245,19 +4733,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103840554,
+    "firstContactAt": 1774103840554,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "pn9106QhyawVc5GfeWhE",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103840554,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0144",
@@ -4319,7 +4815,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "XV39Aq5hlI5G9CpVGyN1",
-    "ghlTags": "nurture, imported, wavv-nurture, design stage, wavv-imported"
+    "ghlTags": "nurture, imported, wavv-nurture, design stage, wavv-imported",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Proposal Follow-Up\"",
+        "timestamp": 1774103810456,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0146",
@@ -4626,7 +5130,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "A4zKlTcRk0wEwuBFH3nR",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103779703,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0155",
@@ -4676,19 +5188,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103841382,
+    "firstContactAt": 1774103841382,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "vNBRTJLt4pZA1haSlhpJ",
-    "ghlTags": "imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103841382,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0157",
@@ -4785,7 +5305,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Prm121DXQ8JSTSrCJrSb",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103780555,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0161",
@@ -5197,7 +5725,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "tD0k9DQUeQJ5k4Jj78pe",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103781385,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0174",
@@ -5224,7 +5760,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "PcHTcEfBmqe6jYpFmLkL",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103782231,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0175",
@@ -5426,7 +5970,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "TzxLB3MLXHGJcAxeN20W",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103783081,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0183",
@@ -5441,19 +5993,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103842207,
+    "firstContactAt": 1774103842207,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "uYTIbU87105VUYwantKM",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103842207,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0184",
@@ -5515,7 +6075,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "zQHHa3pcmdfQBhltNV8x",
-    "ghlTags": "imported, wavv-no-answer"
+    "ghlTags": "imported, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103783903,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0187",
@@ -5530,19 +6098,27 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Imported",
+    "stage": "Contacted",
     "salesperson": "",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported, wavv-not-interested",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774018800000,
-    "firstContactAt": 0,
+    "stageChangedAt": 1774103843059,
+    "firstContactAt": 1774103843059,
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "EJBCobbZslsJFfpuf2Gr",
-    "ghlTags": "imported, wavv-imported, wavv-not-interested"
+    "ghlTags": "imported, wavv-imported, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103843059,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0188",
@@ -5693,7 +6269,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "cYnUy4xkDiA34D0BwxIQ",
-    "ghlTags": "new pool, no answer, out of area, wavv-nurture, 2 week reminder"
+    "ghlTags": "new pool, no answer, out of area, wavv-nurture, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103817995,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0195",
@@ -5747,7 +6331,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "w0POaduqLOs1PnrHFKjA",
-    "ghlTags": "new pool, no answer, power dialer, outdoordesignai"
+    "ghlTags": "new pool, no answer, power dialer, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103784740,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0197",
@@ -5774,7 +6366,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Lm1a9wGyss0VAYx1YA69",
-    "ghlTags": "new pool, no answer, power dialer, outdoordesignai"
+    "ghlTags": "new pool, no answer, power dialer, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103785598,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0198",
@@ -5801,7 +6401,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "amlt5ILG28ewT5LFYgiW",
-    "ghlTags": "new pool, no answer, power dialer, outdoordesignai"
+    "ghlTags": "new pool, no answer, power dialer, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103786435,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0199",
@@ -5828,7 +6436,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "UiTxxKpmZEfl9oM9Bsjn",
-    "ghlTags": "dq area, new pool, no answer, power dialer"
+    "ghlTags": "dq area, new pool, no answer, power dialer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103787269,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0200",
@@ -5855,7 +6471,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "dvBwSVGVx70y2UrHSWUT",
-    "ghlTags": "new pool, booked appointment"
+    "ghlTags": "new pool, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103807147,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0201",
@@ -5882,7 +6506,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "7iAoQTVWy9CCtQDseSGz",
-    "ghlTags": "new pool, no answer, dq service, outdoordesignai"
+    "ghlTags": "new pool, no answer, dq service, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103788110,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0202",
@@ -5909,7 +6541,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "dYrZCo1UI9qWq5sJlK7K",
-    "ghlTags": "new pool, no answer, power dialer, outdoordesignai, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, outdoordesignai, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103788943,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0203",
@@ -5936,7 +6576,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "tOncjdqv26Ai9gD0voCI",
-    "ghlTags": "new pool, no answer, dq service, outdoordesignai"
+    "ghlTags": "new pool, no answer, dq service, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103789783,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0204",
@@ -6017,7 +6665,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Wucfz4tw0fiLsgNrNqdn",
-    "ghlTags": "nurture, new pool, outdoordesignai"
+    "ghlTags": "nurture, new pool, outdoordesignai",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103818811,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0207",
@@ -6044,7 +6700,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "jGwaD1DspqO5HY4wXt0m",
-    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, outdoordesignai, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, outdoordesignai, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103790630,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0208",
@@ -6168,7 +6832,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "HIzw6qJDYlxCt9F0LD2O",
-    "ghlTags": "new pool, no answer, power dialer, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103791456,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0212",
@@ -6195,7 +6867,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "DVytZ5Ms2ulTvjR1qpym",
-    "ghlTags": "new pool, design stage"
+    "ghlTags": "new pool, design stage",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Proposal Follow-Up\"",
+        "timestamp": 1774103811300,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0214",
@@ -6222,7 +6902,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "diNTp3k7JMuydnp9aoMY",
-    "ghlTags": "new pool, no answer"
+    "ghlTags": "new pool, no answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103792314,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0215",
@@ -6284,7 +6972,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "0qwOXcS6Eb5Q65O1hPQQ",
-    "ghlTags": "new pool, no answer, power dialer, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103793146,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0217",
@@ -6338,7 +7034,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "b0yCcyzXbMeX8gRk7XcI",
-    "ghlTags": "nurture, new pool, no answer, power dialer, wavv-no-answer, 2 week reminder"
+    "ghlTags": "nurture, new pool, no answer, power dialer, wavv-no-answer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103793988,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0219",
@@ -6400,7 +7104,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "ktHb2lq54kb40ckru5ql",
-    "ghlTags": "new pool, 2 week reminder, booked appointment"
+    "ghlTags": "new pool, 2 week reminder, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103807975,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0221",
@@ -6427,7 +7139,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "hoUIc0sqnCw2NavxMPwm",
-    "ghlTags": "new pool, dq service, booked appointment"
+    "ghlTags": "new pool, dq service, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103808808,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0222",
@@ -6454,7 +7174,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "8qsNNLHhOcQgNiiBlG5i",
-    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103794808,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0225",
@@ -6516,7 +7244,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "BNyxg8u619IpUR3kIdmo",
-    "ghlTags": "new pool, no answer, dq service"
+    "ghlTags": "new pool, no answer, dq service",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103795531,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0229",
@@ -6543,7 +7279,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "bfkxMGI2Lay0hHfx3zHF",
-    "ghlTags": "new pool, no answer, dq service"
+    "ghlTags": "new pool, no answer, dq service",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103796363,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0230",
@@ -6570,7 +7314,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "ILaN6F2dtAjk2T7SuKG3",
-    "ghlTags": "new pool, no answer, power dialer, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103797179,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0231",
@@ -6597,7 +7349,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "Rt6P7aE5YoN42XPUjQ4z",
-    "ghlTags": "nurture, new pool, power dialer, wavv-no-answer, 2 week reminder"
+    "ghlTags": "nurture, new pool, power dialer, wavv-no-answer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103797996,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0232",
@@ -6659,7 +7419,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "7qSZm6mccLXYSdYDMalZ",
-    "ghlTags": "new pool, no answer, power dialer, 2 week reminder, wavv-post-45-days"
+    "ghlTags": "new pool, no answer, power dialer, 2 week reminder, wavv-post-45-days",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103798841,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0234",
@@ -6686,7 +7454,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "ylJInCT9H4RZ8u54iHvQ",
-    "ghlTags": "nurture, new pool, no answer, wavv-no-answer, 2 week reminder, wavv-bad-number, bad/wrong number"
+    "ghlTags": "nurture, new pool, no answer, wavv-no-answer, 2 week reminder, wavv-bad-number, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103819646,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0235",
@@ -6713,7 +7489,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "6vbXOSpusgulTML1Ro0x",
-    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, 2 week reminder"
+    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, 2 week reminder",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103799681,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0236",
@@ -6775,7 +7559,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "4HaJ4NGUkQVYTPZRP3eq",
-    "ghlTags": "new pool, design stage"
+    "ghlTags": "new pool, design stage",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Proposal Follow-Up\"",
+        "timestamp": 1774103812145,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0241",
@@ -6802,7 +7594,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "cMD4lw6N8EPQR2Qleh8T",
-    "ghlTags": "new pool, design stage"
+    "ghlTags": "new pool, design stage",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Proposal Follow-Up\"",
+        "timestamp": 1774103812977,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0242",
@@ -6829,7 +7629,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "xj9PzzaZegE1DtpQAKQJ",
-    "ghlTags": "new pool, no answer, dq service"
+    "ghlTags": "new pool, no answer, dq service",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103800506,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0249",
@@ -6856,7 +7664,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "acpMkUUgYj5LuC9w69xI",
-    "ghlTags": "nurture, new pool, power dialer"
+    "ghlTags": "nurture, new pool, power dialer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774103801350,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0252",
@@ -6883,7 +7699,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "tiKZTna2CiKnNHK5sPuI",
-    "ghlTags": "new pool, design stage"
+    "ghlTags": "new pool, design stage",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Proposal Follow-Up\"",
+        "timestamp": 1774103813800,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0253",
@@ -6910,7 +7734,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "rytyLSS2qEl5igXGKiu1",
-    "ghlTags": "nurture, new pool, no answer, wavv-nurture, wavv-no-answer"
+    "ghlTags": "nurture, new pool, no answer, wavv-nurture, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103820482,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0254",
@@ -6937,7 +7769,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "6fGkrLncK3j9N7sW3zFG",
-    "ghlTags": "nurture, new pool, 2 week reminder, bad/wrong number"
+    "ghlTags": "nurture, new pool, 2 week reminder, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103821316,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0257",
@@ -6991,7 +7831,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "b7WfXqnjc7N1ntdv0T1Q",
-    "ghlTags": "nurture, new pool"
+    "ghlTags": "nurture, new pool",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103822147,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0261",
@@ -7018,7 +7866,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "YTRwXpxdMw4elQK98KtG",
-    "ghlTags": "new pool, dq service, booked appointment"
+    "ghlTags": "new pool, dq service, booked appointment",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Consultation Confirmation\"",
+        "timestamp": 1774103809638,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0263",
@@ -7045,7 +7901,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "WTgfRSdjDEBFdbcvqeDe",
-    "ghlTags": "nurture, new pool, design stage"
+    "ghlTags": "nurture, new pool, design stage",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Proposal Follow-Up\"",
+        "timestamp": 1774103814648,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0264",
@@ -7072,7 +7936,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "ZMew0DvPUVavE09uSSyT",
-    "ghlTags": "nurture, new pool, no answer, wavv-nurture, wavv-no-answer"
+    "ghlTags": "nurture, new pool, no answer, wavv-nurture, wavv-no-answer",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103822962,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0267",
@@ -7099,6 +7971,14 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "RxQrPVJkK50d4XsPfgHV",
-    "ghlTags": "nurture, new pool, dq service, wavv-no-answer, wavv-not-interested"
+    "ghlTags": "nurture, new pool, dq service, wavv-no-answer, wavv-not-interested",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Spring Nurture Touchpoint\"",
+        "timestamp": 1774103823797,
+        "automated": true
+      }
+    ]
   }
 ]
