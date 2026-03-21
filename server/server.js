@@ -142,20 +142,31 @@ async function sendSMS(to, message) {
     }
 }
 
-async function sendEmail(to, subject, body) {
+async function sendEmail(to, subject, body, options = {}) {
     const sg = getSendGrid();
     if (!sg) {
         console.log('[DRY RUN] Email to', to, ':', subject);
         return { success: true, dry: true, to, subject };
     }
     try {
-        await sg.send({
+        const msg = {
             to,
             from: process.env.SENDGRID_FROM_EMAIL || 'notifications@wortheyaquatics.com',
             subject,
-            text: body
-        });
-        console.log('[EMAIL SENT]', to, subject);
+            html: body,
+            text: body.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+        };
+        // Reply-To: route replies to the assigned salesperson
+        if (options.replyTo) {
+            msg.replyTo = options.replyTo;
+        }
+        // BCC: notifications + AquaBot for reply tracking
+        msg.bcc = [
+            { email: 'notifications@wortheyaquatics.com' },
+            { email: 'aquabot1000@icloud.com' }
+        ];
+        await sg.send(msg);
+        console.log('[EMAIL SENT]', to, subject, options.replyTo ? `(reply-to: ${options.replyTo})` : '');
         return { success: true, to, subject };
     } catch (err) {
         console.error('[EMAIL ERROR]', err.message);
@@ -229,8 +240,11 @@ async function executeActions(actions, lead, contactDir) {
             }
         } else if (action.type === 'email') {
             const subject = renderTemplate(action.subject, lead, contactDir);
-            const body = renderTemplate(action.body, lead, contactDir);
-            const r = await sendEmail(to, subject, body);
+            const body = renderTemplate(action.body || action.message, lead, contactDir);
+            // Set Reply-To to the assigned salesperson's email
+            const spEmail = lead.salesperson_email || (contactDir || []).find(c => c.name === lead.salesperson || c.name === lead.salesperson_fullName)?.email;
+            const emailOpts = spEmail ? { replyTo: spEmail } : {};
+            const r = await sendEmail(to, subject, body, emailOpts);
             results.push({ type: 'email', ...r });
             // Record delivery on lead's activity log
             if (!r.error) {
