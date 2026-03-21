@@ -3,798 +3,1434 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketing Dashboard - WortheyFlow CRM</title>
-    <!-- Link to the shared CSS -->
-    <link rel="stylesheet" href="mc-shared.css">
+    <title>Marketing Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="favicon-192.png">
     <style>
-        /* Local styles for the marketing dashboard */
+        /* Design - Premium Dark Theme */
+        :root {
+            --background-start: #0a0f1a;
+            --background-end: #111827;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-blue: #3b82f6;
+            --accent-wa: #00b4d8;
+            --accent-oa: #7c3aed;
+            --accent-pbc: #f43f5e;
+            --text-color: #e0e0e0;
+            --subtle-grid-color: #ffffff10;
+            --danger-red: #f43f5e;
+            --warning-yellow: #f59e0b;
+            --success-green: #10b981;
+            --info-blue: #3b82f6;
+        }
+
         body {
-            background-color: #1a2332; /* Navy background */
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        .main-content {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            color: var(--text-color);
+            margin: 0;
             padding: 20px;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
-        /* Top Bar - Key KPIs */
-        .kpi-bar {
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+
+        /* Glassmorphism Card */
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Accents */
+        .accent-blue { color: var(--accent-blue); }
+        .accent-wa { color: var(--accent-wa); }
+        .accent-oa { color: var(--accent-oa); }
+        .accent-pbc { color: var(--accent-pbc); }
+
+        /* Header */
+        .header {
             display: flex;
-            justify-content: space-around;
-            background-color: #1f2a3e; /* Slightly lighter than body background */
-            padding: 15px 20px;
-            border-radius: 8px;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 30px;
-            flex-wrap: wrap; /* For responsiveness */
-            gap: 15px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
         }
-        .kpi-item {
-            text-align: center;
-            flex: 1;
-            min-width: 150px; /* Minimum width for each KPI item */
+
+        .header h1 {
+            background: linear-gradient(90deg, var(--accent-wa), var(--accent-oa));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 2.5em;
+            margin: 0;
+            font-weight: 700;
         }
-        .kpi-item .label {
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .live-status {
+            display: flex;
+            align-items: center;
+            margin-right: 30px;
+        }
+
+        .pulse {
+            width: 12px;
+            height: 12px;
+            background-color: var(--success-green);
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        .last-updated {
             font-size: 0.9em;
-            color: #adb5bd; /* Lighter grey for labels */
-            margin-bottom: 5px;
+            opacity: 0.8;
         }
-        .kpi-item .value {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #3b82f6; /* Blue accent */
+
+        .filters, .date-ranges {
+            display: flex;
+            gap: 10px;
         }
-        .kpi-item .sub-value {
-            font-size: 0.8em;
-            color: #adb5bd;
+
+        .filter-pill, .date-range-pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.2s ease;
         }
-        /* Company Cards */
-        .company-cards-container {
+
+        .filter-pill:hover, .date-range-pill:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .filter-pill.active, .date-range-pill.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        /* KPI Cards */
+        .kpi-cards {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
             margin-bottom: 30px;
         }
-        .company-card {
-            background-color: #1f2a3e;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            position: relative;
-            overflow: hidden; /* To contain trend arrows */
+
+        .kpi-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
-        .company-card.wa { border-left: 5px solid #00b4d8; } /* WA=#00b4d8 */
-        .company-card.oa { border-left: 5px solid #6c5ce7; } /* OA=#6c5ce7 */
-        .company-card.pbc { border-left: 5px solid #ff6b6b; } /* PBC=#ff6b6b */
+
+        .kpi-card .value {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .kpi-card .label {
+            font-size: 0.9em;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        .kpi-card .change {
+            font-size: 0.85em;
+        }
+
+        .kpi-card .change.positive {
+            color: var(--success-green);
+        }
+
+        .kpi-card .change.negative {
+            color: var(--danger-red);
+        }
+
+        /* Sparklines */
+        .sparkline {
+            width: 100%;
+            height: 50px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Company Cards */
+        .company-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .company-card {
+            position: relative;
+            overflow: hidden; /* Ensure glow stays within bounds */
+        }
+
+        .company-card-glow {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.7;
+            filter: blur(30px);
+            z-index: 1;
+        }
+
+        .company-card-content {
+            position: relative;
+            z-index: 2;
+            padding: 15px; /* Slightly less padding to make space for glow */
+        }
 
         .company-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
+            font-weight: 600;
         }
-        .company-card-title {
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #3b82f6; /* Blue accent */
-        }
-        .company-card-status {
-            font-size: 0.9em;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-        .company-card-status.good { background-color: #2ecc71; color: #1a2332; } /* Green */
-        .company-card-status.watch { background-color: #f1c40f; color: #1a2332; } /* Yellow */
-        .company-card-status.alert { background-color: #e74c3c; color: #1a2332; } /* Red */
 
-        .company-data-grid {
+        .company-card-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
         }
-        .company-data-item .label {
-            font-size: 0.85em;
-            color: #adb5bd;
-            margin-bottom: 3px;
-        }
-        .company-data-item .value {
-            font-size: 1.2em;
-            font-weight: bold;
-        }
-        .company-data-item.spend .value { color: #3b82f6; }
-        .company-data-item.leads .value { color: #00b4d8; } /* WA color */
-        .company-data-item.cpl .value { color: #ff6b6b; } /* PBC color */
 
-        .trend-arrow {
+        .metric-item .value {
+            font-weight: 600;
             font-size: 1.2em;
-            margin-left: 5px;
         }
-        .trend-arrow.up { color: #2ecc71; } /* Green */
-        .trend-arrow.down { color: #e74c3c; } /* Red */
-        .trend-arrow.neutral { color: #adb5bd; }
 
-        /* Channel Performance Table */
-        .channel-table-container {
-            background-color: #1f2a3e;
-            padding: 20px;
+        .metric-item .label {
+            opacity: 0.7;
+            font-size: 0.8em;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
             border-radius: 8px;
+            font-size: 0.8em;
+            font-weight: 500;
+        }
+        .status-badge.on-track { background-color: var(--success-green); color: var(--background-start); }
+        .status-badge.watch { background-color: var(--warning-yellow); color: var(--background-start); }
+        .status-badge.alert { background-color: var(--danger-red); color: var(--text-color); }
+
+        .trend {
+            font-size: 0.8em;
+        }
+        .trend.positive { color: var(--success-green); }
+        .trend.negative { color: var(--danger-red); }
+
+        /* Channel Table */
+        .channel-table-container {
             margin-bottom: 30px;
-            overflow-x: auto; /* For mobile responsiveness */
+            overflow-x: auto; /* For small screens */
         }
-        .channel-table-container h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #3b82f6; /* Blue accent */
-        }
+
         .channel-table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0 15px; /* Spacing between rows */
         }
+
         .channel-table th, .channel-table td {
-            padding: 12px 15px;
+            padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid #2a3447; /* Darker border */
         }
-        .channel-table th {
-            background-color: #2a3447;
-            font-weight: bold;
-            color: #adb5bd;
+
+        .channel-table thead th {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
             position: sticky;
             top: 0;
-            z-index: 1;
+            z-index: 10;
         }
-        .channel-table td {
-            vertical-align: middle;
-        }
-        .channel-table .company-col {
-            font-weight: bold;
-        }
-        .channel-table .status-good { color: #2ecc71; }
-        .channel-table .status-watch { color: #f1c40f; }
-        .channel-table .status-alert { color: #e74c3c; }
 
-        /* Charts Section */
-        .charts-container {
+        .channel-table tbody tr {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            transition: background 0.2s ease;
+        }
+
+        .channel-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .channel-table th {
+            font-weight: 600;
+            opacity: 0.8;
+            cursor: pointer; /* For sorting */
+        }
+
+        .channel-table td {
+            font-size: 0.9em;
+        }
+
+        .cpl-cell.low { color: var(--success-green); }
+        .cpl-cell.medium { color: var(--warning-yellow); }
+        .cpl-cell.high { color: var(--danger-red); }
+
+        /* Charts Grid */
+        .charts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
             margin-bottom: 30px;
         }
-        .chart-wrapper {
-            background-color: #1f2a3e;
+
+        .chart-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px; /* Ensure charts have some height */
         }
-        .chart-wrapper h3 {
+
+        .chart-container h3 {
             margin-top: 0;
             margin-bottom: 15px;
-            color: #3b82f6; /* Blue accent */
+            font-size: 1.2em;
+            text-align: center;
         }
-        .chart-canvas {
+
+        .chart-container canvas {
             width: 100% !important; /* Chart.js might override */
-            height: 300px !important; /* Default height */
+            height: auto !important;
+        }
+
+        /* Doughnut chart center text */
+        .chart-container .doughnut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-size: 1.1em;
+            font-weight: 600;
+            opacity: 0.8;
         }
 
         /* Recent Leads Feed */
-        .leads-feed-container, .alerts-container {
-            background-color: #1f2a3e;
-            padding: 20px;
-            border-radius: 8px;
+        .leads-feed {
             margin-bottom: 30px;
-            overflow-x: auto;
         }
-        .leads-feed-container h3, .alerts-container h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            color: #3b82f6; /* Blue accent */
-        }
-        .lead-item {
+
+        .leads-feed-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #2a3447;
+            margin-bottom: 15px;
         }
+
+        .leads-feed-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .leads-list {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 0; /* Remove padding, list items have it */
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .lead-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--card-border);
+            transition: background 0.2s ease;
+        }
+
         .lead-item:last-child {
             border-bottom: none;
         }
-        .lead-info, .alert-info {
+
+        .lead-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .lead-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-blue); /* Default */
+            border-radius: 50%;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-right: 15px;
+            flex-shrink: 0;
         }
-        .lead-detail, .alert-detail {
-            color: #adb5bd;
+
+        .lead-info {
+            flex-grow: 1;
         }
-        .lead-name { font-weight: bold; color: #ffffff; }
-        .lead-source { color: #00b4d8; } /* WA color */
-        .lead-company.wa { color: #00b4d8; }
-        .lead-company.oa { color: #6c5ce7; }
-        .lead-company.pbc { color: #ff6b6b; }
-        .lead-cpl { font-weight: bold; }
+
+        .lead-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .lead-details {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .lead-source-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin-left: 10px;
+            font-size: 0.8em;
+            flex-shrink: 0;
+        }
+
+        .lead-cpl {
+            font-weight: 600;
+            margin-left: 15px;
+            flex-shrink: 0;
+        }
 
         /* Alerts Panel */
-        .alert-item {
+        .alerts-panel {
+            margin-bottom: 30px;
+        }
+
+        .alerts-panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #2a3447;
+            margin-bottom: 15px;
         }
+
+        .alerts-panel-header h3 {
+            margin: 0;
+            font-size: 1.3em;
+        }
+
+        .alert-list {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--card-border);
+            font-size: 0.9em;
+        }
+
         .alert-item:last-child {
             border-bottom: none;
         }
-        .alert-message { font-weight: bold; }
-        .alert-status.green { color: #2ecc71; }
-        .alert-status.yellow { color: #f1c40f; }
-        .alert-status.red { color: #e74c3c; }
 
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .kpi-bar {
-                flex-direction: column;
-                align-items: center;
+        .alert-icon {
+            margin-right: 12px;
+            font-size: 1.2em;
+        }
+        .alert-icon.warning { color: var(--warning-yellow); }
+        .alert-icon.success { color: var(--success-green); }
+        .alert-icon.info { color: var(--info-blue); }
+        .alert-icon.danger { color: var(--danger-red); }
+
+        .alert-message {
+            flex-grow: 1;
+            margin-right: 15px;
+        }
+
+        .alert-time {
+            opacity: 0.6;
+            font-size: 0.8em;
+            white-space: nowrap;
+        }
+
+        .dismiss-button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 1em;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .dismiss-button:hover {
+            opacity: 1;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(0.9); opacity: 1; }
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1200px) {
+            .charts-grid {
+                grid-template-columns: 1fr;
             }
-            .kpi-item {
+            .company-cards, .kpi-cards {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .header h1 {
+                font-size: 1.8em;
                 margin-bottom: 15px;
             }
-            .company-cards-container {
-                grid-template-columns: 1fr;
-            }
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
-            .channel-table, .leads-feed-container, .alerts-container {
+            .header-right {
+                flex-direction: column;
+                align-items: flex-start;
                 width: 100%;
-                overflow-x: auto; /* Ensure tables scroll */
-                display: block; /* Necessary for overflow-x: auto */
             }
-            .channel-table th, .channel-table td {
-                white-space: nowrap; /* Prevent wrapping in table cells */
+            .live-status, .filters, .date-ranges {
+                margin-bottom: 10px;
+                width: 100%;
+                justify-content: space-between;
+            }
+            .filter-pill, .date-range-pill {
+                font-size: 0.75em;
+                padding: 5px 10px;
+            }
+            .lead-item, .alert-item {
+                flex-wrap: wrap;
+            }
+            .lead-info, .alert-message {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+            .lead-source-badge, .lead-cpl, .alert-time, .dismiss-button {
+                margin-left: 0;
+                margin-top: 5px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="main-content">
-        <h1>Marketing Performance Dashboard</h1>
+    <div class="container">
+        <!-- 1. Header -->
+        <header class="header">
+            <h1 class="fade-in">Marketing Command Center</h1>
+            <div class="header-right fade-in">
+                <div class="live-status">
+                    <div class="pulse"></div>
+                    <span class="last-updated">Last updated <span id="last-updated-time">--</span> min ago</span>
+                </div>
+                <div class="filters">
+                    <span class="filter-pill active" data-filter="all">All</span>
+                    <span class="filter-pill" data-filter="WA">WA</span>
+                    <span class="filter-pill" data-filter="OA">OA</span>
+                    <span class="filter-pill" data-filter="PBC">PBC</span>
+                </div>
+                <div class="date-ranges">
+                    <span class="date-range-pill" data-range="today">Today</span>
+                    <span class="date-range-pill active" data-range="7d">7D</span>
+                    <span class="date-range-pill" data-range="30d">30D</span>
+                </div>
+            </div>
+        </header>
 
-        <!-- 1. Top Bar — Key KPIs -->
-        <div class="kpi-bar">
-            <div class="kpi-item">
-                <div class="label">Total Ad Spend (This Month)</div>
-                <div class="value">$<span id="kpi-total-spend-month">2,850.00</span></div>
-                <div class="sub-value">Today: $<span id="kpi-total-spend-today">0.00</span></div>
-            </div>
-            <div class="kpi-item">
-                <div class="label">Total Leads (This Month)</div>
-                <div class="value"><span id="kpi-total-leads-month">68</span></div>
-                <div class="sub-value">Today: <span id="kpi-total-leads-today">0</span></div>
-            </div>
-            <div class="kpi-item">
-                <div class="label">Blended CPL (This Month)</div>
-                <div class="value">$<span id="kpi-blended-cpl-month">41.91</span></div>
-                <div class="sub-value">Today: $<span id="kpi-blended-cpl-today">0.00</span></div>
-            </div>
-            <div class="kpi-item">
-                <div class="label">Budget Remaining</div>
-                <div class="value"><span id="kpi-budget-remaining-pct">43</span>%</div>
-                <div class="sub-value">Used: $<span id="kpi-budget-used">2850.00</span> / $5000</div>
-            </div>
+        <!-- 2. KPI Cards -->
+        <div class="kpi-cards" id="kpi-cards">
+            <!-- KPI cards will be generated here -->
         </div>
 
-        <!-- 2. Company Cards -->
-        <div class="company-cards-container">
-            <div class="company-card wa">
-                <div class="company-card-header">
-                    <div class="company-card-title">Worthey Aquatics</div>
-                    <div class="company-card-status good">Good</div>
-                </div>
-                <div class="company-data-grid">
-                    <div class="company-data-item">
-                        <div class="label">Active Campaigns</div>
-                        <div class="value"><span id="wa-campaigns">10</span></div>
-                    </div>
-                    <div class="company-data-item spend">
-                        <div class="label">Spend (MTD)</div>
-                        <div class="value">$<span id="wa-spend-month">1,200.00</span></div>
-                    </div>
-                    <div class="company-data-item leads">
-                        <div class="label">Leads (MTD)</div>
-                        <div class="value"><span id="wa-leads-month">15</span></div>
-                    </div>
-                    <div class="company-data-item cpl">
-                        <div class="label">CPL (MTD)</div>
-                        <div class="value">$<span id="wa-cpl-month">80.00</span></div>
-                    </div>
-                     <div class="company-data-item">
-                        <div class="label">Spend (Today)</div>
-                        <div class="value">$<span id="wa-spend-today">0.00</span></div>
-                    </div>
-                    <div class="company-data-item">
-                        <div class="label">Leads (Today)</div>
-                        <div class="value"><span id="wa-leads-today">0</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="company-card oa">
-                <div class="company-card-header">
-                    <div class="company-card-title">OverAssessed</div>
-                    <div class="company-card-status good">Good</div>
-                </div>
-                <div class="company-data-grid">
-                    <div class="company-data-item">
-                        <div class="label">Active Campaigns</div>
-                        <div class="value"><span id="oa-campaigns">5</span></div>
-                    </div>
-                    <div class="company-data-item spend">
-                        <div class="label">Spend (MTD)</div>
-                        <div class="value">$<span id="oa-spend-month">1,500.00</span></div>
-                    </div>
-                    <div class="company-data-item leads">
-                        <div class="label">Leads (MTD)</div>
-                        <div class="value"><span id="oa-leads-month">45</span></div>
-                    </div>
-                    <div class="company-data-item cpl">
-                        <div class="label">CPL (MTD)</div>
-                        <div class="value">$<span id="oa-cpl-month">33.00</span></div>
-                    </div>
-                     <div class="company-data-item">
-                        <div class="label">Spend (Today)</div>
-                        <div class="value">$<span id="oa-spend-today">0.00</span></div>
-                    </div>
-                    <div class="company-data-item">
-                        <div class="label">Leads (Today)</div>
-                        <div class="value"><span id="oa-leads-today">0</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="company-card pbc">
-                <div class="company-card-header">
-                    <div class="company-card-title">ProfitBlueprintCo</div>
-                    <div class="company-card-status good">Good</div>
-                </div>
-                <div class="company-data-grid">
-                    <div class="company-data-item">
-                        <div class="label">Active Campaigns</div>
-                        <div class="value"><span id="pbc-campaigns">3</span></div>
-                    </div>
-                    <div class="company-data-item spend">
-                        <div class="label">Spend (MTD)</div>
-                        <div class="value">$<span id="pbc-spend-month">150.00</span></div>
-                    </div>
-                    <div class="company-data-item leads">
-                        <div class="label">Sales (MTD)</div>
-                        <div class="value"><span id="pbc-leads-month">8</span></div>
-                    </div>
-                    <div class="company-data-item cpl">
-                        <div class="label">CPL (MTD)</div>
-                        <div class="value">$<span id="pbc-cpl-month">19.00</span></div>
-                    </div>
-                     <div class="company-data-item">
-                        <div class="label">Spend (Today)</div>
-                        <div class="value">$<span id="pbc-spend-today">0.00</span></div>
-                    </div>
-                    <div class="company-data-item">
-                        <div class="label">Sales (Today)</div>
-                        <div class="value"><span id="pbc-leads-today">0</span></div>
-                    </div>
-                </div>
-            </div>
+        <!-- 3. Company Cards -->
+        <div class="company-cards" id="company-cards">
+            <!-- Company cards will be generated here -->
         </div>
 
-        <!-- 3. Channel Performance Table -->
-        <div class="channel-table-container">
+        <!-- 4. Channel Table -->
+        <div class="channel-table-container fade-in">
             <h3>Channel Performance</h3>
             <table class="channel-table">
                 <thead>
                     <tr>
-                        <th>Channel</th>
-                        <th>Company</th>
-                        <th>Spend</th>
-                        <th>Impressions</th>
-                        <th>Clicks</th>
-                        <th>CTR</th>
-                        <th>Leads</th>
-                        <th>CPL</th>
-                        <th>Status</th>
+                        <th data-sort="channel">Channel</th>
+                        <th data-sort="company">Company</th>
+                        <th data-sort="spend" class="numeric">Spend</th>
+                        <th data-sort="impressions" class="numeric">Impressions</th>
+                        <th data-sort="clicks" class="numeric">Clicks</th>
+                        <th data-sort="ctr" class="numeric">CTR</th>
+                        <th data-sort="leads" class="numeric">Leads</th>
+                        <th data-sort="cpl" class="numeric">CPL</th>
+                        <th data-sort="status">Status</th>
                     </tr>
                 </thead>
-                <tbody id="channel-performance-body">
-                    <!-- Data will be populated by JavaScript -->
-                    <tr>
-                        <td>Google Search</td>
-                        <td class="company-col wa">Worthey Aquatics</td>
-                        <td>$400.00</td>
-                        <td>10,000</td>
-                        <td>500</td>
-                        <td>5.00%</td>
-                        <td>5</td>
-                        <td>$80.00</td>
-                        <td class="status-good">Good</td>
-                    </tr>
-                    <tr>
-                        <td>Google LSA</td>
-                        <td class="company-col wa">Worthey Aquatics</td>
-                        <td>$300.00</td>
-                        <td>5,000</td>
-                        <td>300</td>
-                        <td>6.00%</td>
-                        <td>3</td>
-                        <td>$100.00</td>
-                        <td class="status-watch">Watch</td>
-                    </tr>
-                    <tr>
-                        <td>Meta</td>
-                        <td class="company-col wa">Worthey Aquatics</td>
-                        <td>$500.00</td>
-                        <td>20,000</td>
-                        <td>400</td>
-                        <td>2.00%</td>
-                        <td>7</td>
-                        <td>$71.43</td>
-                        <td class="status-good">Good</td>
-                    </tr>
-                     <tr>
-                        <td>Google Search</td>
-                        <td class="company-col oa">OverAssessed</td>
-                        <td>$600.00</td>
-                        <td>15,000</td>
-                        <td>750</td>
-                        <td>5.00%</td>
-                        <td>20</td>
-                        <td>$30.00</td>
-                        <td class="status-good">Good</td>
-                    </tr>
-                    <tr>
-                        <td>Meta</td>
-                        <td class="company-col oa">OverAssessed</td>
-                        <td>$700.00</td>
-                        <td>30,000</td>
-                        <td>900</td>
-                        <td>3.00%</td>
-                        <td>25</td>
-                        <td>$28.00</td>
-                        <td class="status-good">Good</td>
-                    </tr>
-                    <tr>
-                        <td>Organic</td>
-                        <td class="company-col oa">OverAssessed</td>
-                        <td>$200.00</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>0.00%</td>
-                        <td>0</td>
-                        <td>$0.00</td>
-                        <td class="status-good">Good</td>
-                    </tr>
-                    <tr>
-                        <td>Google Search</td>
-                        <td class="company-col pbc">ProfitBlueprintCo</td>
-                        <td>$80.00</td>
-                        <td>3,000</td>
-                        <td>150</td>
-                        <td>5.00%</td>
-                        <td>4</td>
-                        <td>$20.00</td>
-                        <td class="status-good">Good</td>
-                    </tr>
-                    <tr>
-                        <td>Meta</td>
-                        <td class="company-col pbc">ProfitBlueprintCo</td>
-                        <td>$70.00</td>
-                        <td>5,000</td>
-                        <td>100</td>
-                        <td>2.00%</td>
-                        <td>4</td>
-                        <td>$17.50</td>
-                        <td class="status-good">Good</td>
-                    </tr>
+                <tbody id="channel-table-body">
+                    <!-- Channel table rows will be generated here -->
                 </tbody>
             </table>
         </div>
 
-        <!-- 4. Charts Section -->
-        <div class="charts-container">
-            <div class="chart-wrapper">
-                <h3>Daily CPL Trend (Last 30 Days)</h3>
-                <canvas id="dailyCplTrendChart" class="chart-canvas"></canvas>
+        <!-- 5. Charts -->
+        <div class="charts-grid">
+            <div class="chart-container fade-in">
+                <h3>CPL Trend (30 Days)</h3>
+                <canvas id="cplTrendChart"></canvas>
             </div>
-            <div class="chart-wrapper">
-                <h3>Leads by Channel (This Month)</h3>
-                <canvas id="leadsByChannelChart" class="chart-canvas"></canvas>
+            <div class="chart-container fade-in">
+                <h3>Leads by Channel</h3>
+                <canvas id="leadsByChannelChart"></canvas>
             </div>
-            <div class="chart-wrapper">
-                <h3>Ad Spend Allocation by Channel</h3>
-                <canvas id="adSpendPieChart" class="chart-canvas"></canvas>
+            <div class="chart-container fade-in" style="position: relative;">
+                <h3>Spend Allocation</h3>
+                <canvas id="spendAllocationChart"></canvas>
+                <div class="doughnut-center-text">Total Spend<br/><span id="doughnut-center-spend">$0</span></div>
             </div>
-            <div class="chart-wrapper">
-                <h3>Daily Spend (Last 30 Days)</h3>
-                <canvas id="dailySpendChart" class="chart-canvas"></canvas>
-            </div>
-        </div>
-
-        <!-- 5. Recent Leads Feed -->
-        <div class="leads-feed-container">
-            <h3>Recent Leads</h3>
-            <div id="recent-leads-body">
-                <!-- Data will be populated by JavaScript -->
-                <div class="lead-item">
-                    <div class="lead-info">
-                        <span class="lead-name">John Smith</span> - <span class="lead-company wa">Worthey Aquatics</span> (<span class="lead-source">Google Search</span>)
-                    </div>
-                    <div class="lead-details">
-                        Time: <span class="lead-time">19:10</span> | Assigned: <span class="lead-assigned">Sales Team</span> | CPL: <span class="lead-cpl">$85.00</span>
-                    </div>
-                </div>
-                 <div class="lead-item">
-                    <div class="lead-info">
-                        <span class="lead-name">Jane Doe</span> - <span class="lead-company oa">OverAssessed</span> (<span class="lead-source">Meta</span>)
-                    </div>
-                    <div class="lead-details">
-                        Time: <span class="lead-time">19:05</span> | Assigned: <span class="lead-assigned">Agent A</span> | CPL: <span class="lead-cpl">$28.00</span>
-                    </div>
-                </div>
-                <!-- ... more leads ... -->
+            <div class="chart-container fade-in">
+                <h3>Daily Spend vs Budget</h3>
+                <canvas id="dailySpendBudgetChart"></canvas>
             </div>
         </div>
 
-        <!-- 6. Alerts Panel -->
-        <div class="alerts-container">
-            <h3>Alerts</h3>
-            <div id="alerts-body">
-                <!-- Data will be populated by JavaScript -->
-                <div class="alert-item">
-                    <div class="alert-info">
-                        <span class="alert-status yellow">●</span>
-                        <span class="alert-message">OverAssessed CPL is trending above target ($38 vs $33).</span>
-                    </div>
-                    <div class="alert-details">Timestamp: <span class="alert-timestamp">2026-03-20T18:00:00Z</span></div>
-                </div>
-                 <div class="alert-item">
-                    <div class="alert-info">
-                        <span class="alert-status green">●</span>
-                        <span class="alert-message">ProfitBlueprintCo channel performance is within target CPLs.</span>
-                    </div>
-                    <div class="alert-details">Timestamp: <span class="alert-timestamp">2026-03-20T18:30:00Z</span></div>
-                </div>
-                <!-- ... more alerts ... -->
+        <!-- 6. Recent Leads Feed -->
+        <div class="leads-feed fade-in">
+            <div class="leads-feed-header">
+                <h3>Recent Leads</h3>
+                <span class="date-range-pill" data-range="all">View All</span>
+            </div>
+            <div class="leads-list" id="recent-leads-list">
+                <!-- Recent leads will be generated here -->
             </div>
         </div>
 
+        <!-- 7. Alerts Panel -->
+        <div class="alerts-panel fade-in">
+            <div class="alerts-panel-header">
+                <h3>Alerts</h3>
+            </div>
+            <div class="alert-list" id="alerts-list">
+                <!-- Alerts will be generated here -->
+            </div>
+        </div>
     </div>
 
-    <!-- Include Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Chart.js Doughnut Label Plugin (optional, for center text) -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel@0.4.1/dist/chartjs-plugin-doughnutlabel.min.js"></script>
+    <!-- Sparkline/SVG - we'll generate this inline -->
 
     <script>
-        // Placeholder for Chart.js configuration and data loading
-        document.addEventListener('DOMContentLoaded', () => {
-            // Fetch data from the backend API
-            fetch('/api/marketing/dashboard')
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Dashboard data loaded:", data);
+        // Embedded DEMO_DATA (with dynamic generation for trends/leads)
+        const DEMO_DATA = {
+            kpis: {
+                totalSpend: 2850, totalLeads: 68, blendedCPL: 41.91, budgetUsedPct: 63,
+                sparklines: { spend: [80,95,110,88,105,120,98], leads: [2,3,4,2,5,3,4], cpl: [45,42,38,44,40,39,42] },
+                changes: { spend: 12.5, leads: 18.2, cpl: -8.3 }
+            },
+            companies: {
+                "Worthey Aquatics": { color: "#00b4d8", spend: 1200, leads: 15, cpl: 80, ctr: 3.2, conversions: 12, roas: 4.2, campaigns: 3, status: "watch", change: 15.3, channels: { "Google Search": 500, "Meta": 450, "LSA": 250 } },
+                "OverAssessed": { color: "#7c3aed", spend: 1500, leads: 45, cpl: 33.33, ctr: 4.1, conversions: 38, roas: 6.8, campaigns: 5, status: "good", change: 22.1, channels: { "Meta TX": 600, "Meta GA": 450, "Meta WA": 450 } },
+                "ProfitBlueprintCo": { color: "#f43f5e", spend: 150, leads: 8, cpl: 18.75, ctr: 2.8, conversions: 8, roas: 3.1, campaigns: 2, status: "good", change: 5.7, channels: { "Pinterest": 100, "Etsy": 50 } }
+            },
+            channels: [
+                { channel: "Google Search", company: "Worthey Aquatics", spend: 500, impressions: 12500, clicks: 400, ctr: 3.2, leads: 5, cpl: 100, status: "watch" },
+                { channel: "Meta Ads", company: "Worthey Aquatics", spend: 450, impressions: 28000, clicks: 840, ctr: 3.0, leads: 7, cpl: 64.29, status: "good" },
+                { channel: "Google LSA", company: "Worthey Aquatics", spend: 250, impressions: 5000, clicks: 200, ctr: 4.0, leads: 3, cpl: 83.33, status: "watch" },
+                { channel: "Meta TX", company: "OverAssessed", spend: 600, impressions: 35000, clicks: 1400, ctr: 4.0, leads: 20, cpl: 30, status: "good" },
+                { channel: "Meta GA", company: "OverAssessed", spend: 450, impressions: 22000, clicks: 880, ctr: 4.0, leads: 13, cpl: 34.62, status: "good" },
+                { channel: "Meta WA", company: "OverAssessed", spend: 450, impressions: 20000, clicks: 800, ctr: 4.0, leads: 12, cpl: 37.50, status: "good" },
+                { channel: "Pinterest", company: "ProfitBlueprintCo", spend: 100, impressions: 45000, clicks: 900, ctr: 2.0, leads: 5, cpl: 20, status: "good" },
+                { channel: "Etsy Ads", company: "ProfitBlueprintCo", spend: 50, impressions: 8000, clicks: 240, ctr: 3.0, leads: 3, cpl: 16.67, status: "good" }
+            ],
+            // Dynamically generated data will be added here
+            dailyTrends: {},
+            recentLeads: [],
+            alerts: [
+                { severity: "warning", message: "WA Google Search CPL ($100) approaching threshold ($100)", time: "2h ago" },
+                { severity: "success", message: "OA Meta TX campaign hit record low CPL ($28) today", time: "5h ago" },
+                { severity: "info", message: "PBC Pinterest impressions up 45% this week", time: "1d ago" }
+            ]
+        };
 
-                    // Update KPIs
-                    document.getElementById('kpi-total-spend-month').textContent = data.kpis.totalSpend.toFixed(2);
-                    document.getElementById('kpi-total-leads-month').textContent = data.kpis.totalLeads;
-                    document.getElementById('kpi-blended-cpl-month').textContent = data.kpis.blendedCPL.toFixed(2);
-                    document.getElementById('kpi-budget-remaining-pct').textContent = (100 - data.kpis.budgetUsedPct).toFixed(0);
-                    document.getElementById('kpi-budget-used').textContent = (data.kpis.totalSpend).toFixed(2); // Assuming totalSpend is already month-to-date
+        // --- Utility Functions ---
+        function getRandomNumber(min, max) {
+            return Math.random() * (max - min) + min;
+        }
 
-                    // Update Company Cards
-                    const companyMap = {
-                        'worthey-aquatics': 'WA',
-                        'overassessed': 'OA',
-                        'profitblueprintco': 'PBC'
-                    };
-                    const companyColors = {
-                        'worthey-aquatics': '#00b4d8',
-                        'overassessed': '#6c5ce7',
-                        'profitblueprintco': '#ff6b6b'
-                    };
-                    const statusMap = {
-                        'good': 'Good', 'watch': 'Watch', 'alert': 'Alert'
-                    };
+        function generateDates(days) {
+            const dates = [];
+            const today = new Date(new Date().setUTCHours(0, 0, 0, 0)); // Start of today in UTC
+            for (let i = 0; i < days; i++) {
+                const date = new Date(today);
+                // Decrement by (days - 1 - i) to get dates from oldest to newest
+                date.setDate(today.getDate() - (days - 1 - i));
+                dates.push(date.toISOString().split('T')[0]);
+            }
+            return dates;
+        }
 
-                    Object.keys(data.companies).forEach(companyKey => {
-                        const companyData = data.companies[companyKey];
-                        const companyPrefix = companyMap[companyKey];
-                        document.getElementById(`${companyPrefix.toLowerCase()}-campaigns`).textContent = companyData.campaigns;
-                        document.getElementById(`${companyPrefix.toLowerCase()}-spend-month`).textContent = companyData.spend.toFixed(2);
-                        document.getElementById(`${companyPrefix.toLowerCase()}-leads-month`).textContent = companyData.leads;
-                        document.getElementById(`${companyPrefix.toLowerCase()}-cpl-month`).textContent = companyData.cpl.toFixed(2);
-                        // Assuming today's data is 0 for now in the sample state
-                        document.getElementById(`${companyPrefix.toLowerCase()}-spend-today`).textContent = '0.00';
-                        document.getElementById(`${companyPrefix.toLowerCase()}-leads-today`).textContent = '0';
+        function generateLeads(count, companiesData, sources) {
+            const leads = [];
+            const names = ["Maria Garcia", "James Wilson", "Sophia Lee", "Noah Kim", "Olivia Chen", "Liam Patel", "Emma Rodriguez", "Oliver Wang", "Ava Martinez", "Elijah Hernandez", "Mia Lopez", "William Davis", "Charlotte Miller", "Ethan Wilson", "Amelia Moore", "Alexander Taylor", "Harper Anderson", "Michael Thomas", "Evelyn Jackson", "Daniel White"];
+            const timeAgoOptions = ["2h ago", "5h ago", "1d ago", "3h ago", "6h ago", "2d ago", "4h ago", "12h ago", "1d ago", "3d ago"];
 
-                        // Update company card status indicator
-                        const statusElement = document.querySelector(`.company-card.${companyPrefix.toLowerCase()} .company-card-status`);
-                        if (statusElement) {
-                            statusElement.textContent = statusMap[companyData.status] || 'Unknown';
-                            statusElement.className = `company-card-status ${companyData.status}`;
-                        }
-                    });
+            for (let i = 0; i < count; i++) {
+                const companyName = companiesData[Math.floor(Math.random() * companiesData.length)];
+                const company = Object.keys(DEMO_DATA.companies).find(c => c === companyName); // Find the actual company object
+                const companyColor = company ? DEMO_DATA.companies[company].color : 'var(--accent-blue)'; // Fallback color
 
-                    // Update Channel Performance Table
-                    const channelBody = document.getElementById('channel-performance-body');
-                    channelBody.innerHTML = ''; // Clear existing placeholder rows
-                    data.channels.forEach(channel => {
-                        const row = document.createElement('tr');
-                        const companyCode = companyMap[channel.company];
-                        const companyColorClass = `company-col ${companyCode.toLowerCase()}`;
-                        let statusClass = 'status-good';
-                        if (channel.cpl > 1.2 * data.companies[channel.company].cpl) statusClass = 'status-alert';
-                        else if (channel.cpl > 1.05 * data.companies[channel.company].cpl) statusClass = 'status-watch';
+                // Generate a CPL that's somewhat related to the company's average CPL or a general range
+                let cpl;
+                if (company === "Worthey Aquatics") cpl = getRandomNumber(60, 120);
+                else if (company === "OverAssessed") cpl = getRandomNumber(25, 45);
+                else if (company === "ProfitBlueprintCo") cpl = getRandomNumber(12, 25);
+                else cpl = getRandomNumber(20, 80); // General range
 
-                        row.innerHTML = `
-                            <td>${channel.channel}</td>
-                            <td class="${companyColorClass}">${companyCode}</td>
-                            <td>$${channel.spend.toFixed(2)}</td>
-                            <td>${channel.impressions.toLocaleString()}</td>
-                            <td>${channel.clicks.toLocaleString()}</td>
-                            <td>${channel.ctr.toFixed(2)}%</td>
-                            <td>${channel.leads}</td>
-                            <td>$${channel.cpl.toFixed(2)}</td>
-                            <td class="${statusClass}">${statusMap[channel.status] || 'Unknown'}</td>
-                        `;
-                        channelBody.appendChild(row);
-                    });
+                leads.push({
+                    name: names[Math.floor(Math.random() * names.length)],
+                    source: sources[Math.floor(Math.random() * sources.length)],
+                    company: company,
+                    companyColor: companyColor,
+                    cpl: cpl.toFixed(2),
+                    time: timeAgoOptions[Math.floor(Math.random() * timeAgoOptions.length)]
+                });
+            }
+            return leads;
+        }
 
-                    // Update Recent Leads Feed
-                    const leadsBody = document.getElementById('recent-leads-body');
-                    leadsBody.innerHTML = ''; // Clear existing placeholder rows
-                    data.recentLeads.slice(0, 20).forEach(lead => {
-                        const leadItem = document.createElement('div');
-                        leadItem.classList.add('lead-item');
-                        const companyColorClass = `lead-company ${companyMap[lead.company] ? companyMap[lead.company].toLowerCase() : ''}`;
-                        leadItem.innerHTML = `
-                            <div class="lead-info">
-                                <span class="lead-name">${lead.name}</span> - <span class="lead-company ${companyColorClass}">${companyMap[lead.company] ? companyMap[lead.company] : lead.company}</span> (<span class="lead-source">${lead.source}</span>)
+        function formatCurrency(value, decimals = 2) {
+            return `$${Number(value).toFixed(decimals).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')}`;
+        }
+
+        function formatPercentage(value, decimals = 1) {
+            return `${Number(value).toFixed(decimals)}%`;
+        }
+
+        // --- Data Initialization ---
+        const NUM_DAYS_TREND = 30;
+        const NUM_LEADS_FEED = 20;
+        const COMPANY_NAMES = Object.keys(DEMO_DATA.companies);
+        const LEAD_SOURCES = ["Google Search","Meta Ads","Pinterest","Organic","LSA","Etsy"];
+
+        DEMO_DATA.dailyTrends = {
+            dates: generateDates(NUM_DAYS_TREND),
+            wa_cpl: Array.from({ length: NUM_DAYS_TREND }, () => getRandomNumber(60, 120).toFixed(2)),
+            oa_cpl: Array.from({ length: NUM_DAYS_TREND }, () => getRandomNumber(25, 45).toFixed(2)),
+            pbc_cpl: Array.from({ length: NUM_DAYS_TREND }, () => getRandomNumber(12, 25).toFixed(2)),
+            wa_spend: Array.from({ length: NUM_DAYS_TREND }, () => getRandomNumber(30, 60).toFixed(2)),
+            oa_spend: Array.from({ length: NUM_DAYS_TREND }, () => getRandomNumber(40, 65).toFixed(2)),
+            pbc_spend: Array.from({ length: NUM_DAYS_TREND }, () => getRandomNumber(3, 8).toFixed(2))
+        };
+
+        DEMO_DATA.recentLeads = generateLeads(NUM_LEADS_FEED, COMPANY_NAMES, LEAD_SOURCES);
+
+        // --- Animation Functions ---
+        function animateCounter(element, start, end, duration = 1500) {
+            let startTime = null;
+            const range = end - start;
+            const format = element.classList.contains('currency') ? formatCurrency : formatPercentage;
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const current = start + range * progress;
+                element.textContent = format(current);
+
+                if (progress < 1) {
+                    requestAnimationFrame(step);
+                } else {
+                    element.textContent = format(end); // Ensure final value is exact
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function animateSparkline(selector, data, color) {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach((el, index) => {
+                if (data[index] && data[index].length > 0) {
+                    const svgNS = "http://www.w3.org/2000/svg";
+                    const svg = document.createElementNS(svgNS, "svg");
+                    svg.setAttribute("class", "sparkline");
+                    svg.setAttribute("viewBox", "0 0 100 50"); // Aspect ratio adjusted
+
+                    const points = data[index].map((value, i, arr) => {
+                        // Scale value to fit within viewBox height, assuming min=0, max is dynamic or set
+                        // For simplicity, let's assume data is somewhat normalized or find max
+                        const maxValue = Math.max(...arr.map(Number));
+                        const scaledValue = (value / maxValue) * 40; // Scale to 0-40 within 50 height
+                        const x = (i / (arr.length - 1)) * 90 + 5; // Start at 5, end at 95 for padding
+                        return `${x},${50 - scaledValue}`; // Y is inverted, 0 at bottom
+                    }).join(" ");
+
+                    const polyline = document.createElementNS(svgNS, "polyline");
+                    polyline.setAttribute("points", points);
+                    polyline.setAttribute("fill", "none");
+                    polyline.setAttribute("stroke", color || "var(--accent-blue)");
+                    polyline.setAttribute("stroke-width", "2");
+                    svg.appendChild(polyline);
+                    el.appendChild(svg);
+                }
+            });
+        }
+
+        function applyFadeIns() {
+            document.querySelectorAll('.fade-in').forEach((el, index) => {
+                // Delay each element's fade-in slightly to stagger the animation
+                el.style.animationDelay = `${index * 50}ms`;
+            });
+        }
+
+        // --- Rendering Functions ---
+        function renderKpiCards(kpis) {
+            const kpiCardsContainer = document.getElementById('kpi-cards');
+            kpiCardsContainer.innerHTML = ''; // Clear existing
+
+            const kpiDefs = [
+                { id: 'totalSpend', label: '💰 Ad Spend', value: kpis.totalSpend, change: kpis.changes.spend, sparkline: kpis.sparklines.spend },
+                { id: 'totalLeads', label: '👥 Leads', value: kpis.totalLeads, change: kpis.changes.leads, sparkline: kpis.sparklines.leads },
+                { id: 'blendedCPL', label: '📊 CPL', value: kpis.blendedCPL, change: kpis.changes.cpl, sparkline: kpis.sparklines.cpl },
+                { id: 'budgetPacing', label: '🎯 Budget Pacing', value: kpis.budgetUsedPct, change: null, sparkline: null } // Budget pacing is a ring, not a % change
+            ];
+
+            kpiDefs.forEach(kpi => {
+                const card = document.createElement('div');
+                card.className = `card kpi-card fade-in`;
+                card.id = `kpi-${kpi.id}`;
+
+                let content = `
+                    <div class="label">${kpi.label}</div>
+                    <div class="value ${kpi.id === 'blendedCPL' ? 'accent-wa' : ''} ${kpi.id === 'totalSpend' || kpi.id === 'totalLeads' ? 'currency' : ''}">
+                        ${kpi.id === 'budgetPacing' ? `<div class="circular-progress" data-value="${kpi.value}" data-color="var(--accent-blue)" data-size="120" data-thickness="8"></div>` : formatCurrency(kpi.value)}
+                    </div>
+                `;
+                if (kpi.id !== 'budgetPacing' && kpi.id !== 'blendedCPL') {
+                    content += `<div class="change ${kpi.change >= 0 ? 'positive' : 'negative'}">${kpi.change >= 0 ? '+' : ''}${formatPercentage(kpi.change)} vs prior period</div>`;
+                } else if (kpi.id === 'blendedCPL') {
+                    content += `<div class="change ${kpi.change >= 0 ? 'positive' : 'negative'}">${kpi.change >= 0 ? '+' : ''}${formatPercentage(kpi.change)} vs prior period</div>`;
+                }
+
+                card.innerHTML = content;
+                kpiCardsContainer.appendChild(card);
+            });
+
+            // Animate numbers and sparklines after rendering
+            const numElements = kpiCardsContainer.querySelectorAll('.value');
+            numElements.forEach(el => {
+                const isCurrency = el.classList.contains('currency');
+                const startValue = isCurrency ? 0 : parseFloat(el.textContent.replace(/[$,%]/g, ''));
+                const endValue = isCurrency ? formatCurrency(kpis[el.closest('.kpi-card').id.replace('kpi-', '')], 2) : formatPercentage(kpis[el.closest('.kpi-card').id.replace('kpi-', '')]);
+                animateCounter(el, 0, parseFloat(endValue.replace(/[$,%]/g, '')), 1500);
+            });
+
+            // Sparklines
+            animateSparkline('.kpi-card .value', [kpis.sparklines.spend, kpis.sparklines.leads, kpis.sparklines.cpl], 'var(--accent-blue)');
+
+            // Circular Progress for Budget Pacing
+            renderCircularProgress();
+        }
+
+        function renderCompanyCards(companies) {
+            const companyCardsContainer = document.getElementById('company-cards');
+            companyCardsContainer.innerHTML = '';
+
+            Object.entries(companies).forEach(([name, data]) => {
+                const card = document.createElement('div');
+                card.className = `card company-card fade-in`;
+                const glowColor = data.color || 'var(--accent-blue)';
+
+                const statusMap = {
+                    "good": "On Track",
+                    "watch": "Watch",
+                    "alert": "Alert"
+                };
+                const statusClass = data.status === "good" ? "on-track" : data.status === "watch" ? "watch" : "alert";
+
+                card.innerHTML = `
+                    <div class="company-card-glow" style="background: ${glowColor};"></div>
+                    <div class="company-card-content">
+                        <div class="company-card-header">
+                            <span style="color: ${glowColor}; font-weight: 700;">${name}</span>
+                            <span class="status-badge ${statusClass}">${statusMap[data.status] || data.status}</span>
+                        </div>
+                        <div class="company-card-grid">
+                            <div class="metric-item">
+                                <div class="value currency">${formatCurrency(data.spend)}</div>
+                                <div class="label">Spend</div>
                             </div>
-                            <div class="lead-details">
-                                Time: <span class="lead-time">${lead.time}</span> | Assigned: <span class="lead-assigned">${lead.assigned_to}</span> | CPL: <span class="lead-cpl">$${lead.cpl.toFixed(2)}</span>
+                            <div class="metric-item">
+                                <div class="value">${data.leads}</div>
+                                <div class="label">Leads</div>
                             </div>
-                        `;
-                        leadsBody.appendChild(leadItem);
-                    });
-
-                    // Update Alerts Panel
-                    const alertsBody = document.getElementById('alerts-body');
-                    alertsBody.innerHTML = ''; // Clear existing placeholder rows
-                    data.alerts.forEach(alert => {
-                        const alertItem = document.createElement('div');
-                        alertItem.classList.add('alert-item');
-                        alertItem.innerHTML = `
-                            <div class="alert-info">
-                                <span class="alert-status ${alert.status}">●</span>
-                                <span class="alert-message">${alert.message}</span>
+                            <div class="metric-item">
+                                <div class="value accent-wa">${formatCurrency(data.cpl)}</div>
+                                <div class="label">CPL</div>
                             </div>
-                            <div class="alert-details">Timestamp: <span class="alert-timestamp">${new Date(alert.timestamp).toLocaleString()}</span></div>
-                        `;
-                        alertsBody.appendChild(alertItem);
-                    });
+                            <div class="metric-item">
+                                <div class="value">${formatPercentage(data.ctr)}</div>
+                                <div class="label">CTR</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="value">${data.conversions}</div>
+                                <div class="label">Conversions</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="value">${data.roas.toFixed(1)}x</div>
+                                <div class="label">ROAS</div>
+                            </div>
+                        </div>
+                        <div class="trend ${data.change >= 0 ? 'positive' : 'negative'}">
+                            ${data.change >= 0 ? '+' : ''}${formatPercentage(data.change)} vs prior period
+                        </div>
+                    </div>
+                `;
+                companyCardsContainer.appendChild(card);
+            });
+        }
 
-                    // Charts Initialization
-                    // 1. Daily CPL Trend Chart
-                    const dailyCplCtx = document.getElementById('dailyCplTrendChart').getContext('2d');
-                    new Chart(dailyCplCtx, {
-                        type: 'line',
-                        data: {
-                            labels: data.dailyTrends.dates,
-                            datasets: [
-                                { label: 'Worthey Aquatics CPL', data: data.dailyTrends.wa_cpl, borderColor: companyColors['worthey-aquatics'], fill: false, tension: 0.1 },
-                                { label: 'OverAssessed CPL', data: data.dailyTrends.oa_cpl, borderColor: companyColors['overassessed'], fill: false, tension: 0.1 },
-                                { label: 'ProfitBlueprintCo CPL', data: data.dailyTrends.pbc_cpl, borderColor: companyColors['profitblueprintco'], fill: false, tension: 0.1 }
-                            ]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: false } } }
-                    });
+        function renderChannelTable(channels) {
+            const tableBody = document.getElementById('channel-table-body');
+            tableBody.innerHTML = '';
 
-                    // 2. Leads by Channel Chart (This Month)
-                    // This requires aggregating leads by channel. For now, we'll use sample data directly or aggregate from the channels table.
-                    // Let's aggregate from the channels table for a more dynamic representation.
+            channels.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.channel}</td>
+                    <td><span style="color: ${DEMO_DATA.companies[row.company]?.color || 'var(--accent-blue)'};">${row.company}</span></td>
+                    <td class="numeric currency">${formatCurrency(row.spend)}</td>
+                    <td class="numeric">${row.impressions.toLocaleString()}</td>
+                    <td class="numeric">${row.clicks.toLocaleString()}</td>
+                    <td class="numeric">${formatPercentage(row.ctr)}</td>
+                    <td class="numeric">${row.leads}</td>
+                    <td class="numeric cpl-cell ${getCplClass(row.cpl)}">${formatCurrency(row.cpl)}</td>
+                    <td><span class="status-badge ${getStatusClass(row.status)}">${row.status === 'good' ? 'On Track' : row.status.charAt(0).toUpperCase() + row.status.slice(1)}</span></td>
+                `;
+                tableBody.appendChild(tr);
+            });
+            applyTableSorting(); // Re-apply sorting listeners after content is updated
+            applyFadeIns(); // Apply fade-ins to newly added rows
+        }
+
+        function getCplClass(cpl) {
+            const numericCpl = parseFloat(cpl);
+            if (numericCpl < 25) return 'low';
+            if (numericCpl < 50) return 'medium';
+            return 'high';
+        }
+
+        function getStatusClass(status) {
+            if (status === 'good') return 'on-track';
+            if (status === 'watch') return 'watch';
+            if (status === 'alert') return 'alert';
+            return '';
+        }
+
+        function renderRecentLeads(leads) {
+            const leadsList = document.getElementById('recent-leads-list');
+            leadsList.innerHTML = '';
+
+            leads.forEach(lead => {
+                const item = document.createElement('div');
+                item.className = 'lead-item';
+                const avatarText = lead.name.split(' ').map(n => n[0]).join('').toUpperCase();
+                item.innerHTML = `
+                    <div class="lead-avatar" style="background-color: ${lead.companyColor || 'var(--accent-blue)'};">${avatarText}</div>
+                    <div class="lead-info">
+                        <div class="lead-name">${lead.name}</div>
+                        <div class="lead-details">${lead.company} - ${lead.source}</div>
+                    </div>
+                    <span class="lead-source-badge">${lead.source}</span>
+                    <span class="lead-cpl accent-wa">${formatCurrency(lead.cpl)}</span>
+                    <span class="lead-time">${lead.time}</span>
+                `;
+                leadsList.appendChild(item);
+            });
+        }
+
+        function renderAlerts(alerts) {
+            const alertsList = document.getElementById('alerts-list');
+            alertsList.innerHTML = '';
+
+            alerts.forEach(alert => {
+                const item = document.createElement('div');
+                item.className = 'alert-item';
+                let icon = '';
+                if (alert.severity === 'warning') icon = '⚠️';
+                else if (alert.severity === 'success') icon = '✅';
+                else if (alert.severity === 'info') icon = 'ℹ️';
+                else if (alert.severity === 'danger') icon = '🔴';
+
+                item.innerHTML = `
+                    <span class="alert-icon ${alert.severity}">${icon}</span>
+                    <span class="alert-message">${alert.message}</span>
+                    <span class="alert-time">${alert.time}</span>
+                    <button class="dismiss-button">✕</button>
+                `;
+                alertsList.appendChild(item);
+            });
+
+            // Add event listeners for dismiss buttons
+            alertsList.querySelectorAll('.dismiss-button').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.target.closest('.alert-item').remove();
+                    if (alertsList.children.length === 0) {
+                        alertsList.innerHTML = '<div class="no-alerts">No active alerts.</div>';
+                    }
+                });
+            });
+            if (alertsList.children.length === 0) {
+                alertsList.innerHTML = '<div class="no-alerts">No active alerts.</div>';
+            }
+        }
+
+        // --- Chart Rendering ---
+        let cplTrendChart, leadsByChannelChart, spendAllocationChart, dailySpendBudgetChart;
+
+        function renderCharts(data) {
+            const { dailyTrends, companies, channels } = data;
+            const chartConfigs = [
+                { id: 'cplTrendChart', type: 'line', title: 'CPL Trend (30 Days)', options: {
+                    scales: {
+                        x: { ticks: { color: 'var(--text-color)', font: { size: 10 } }, grid: { color: 'var(--subtle-grid-color)' } },
+                        y: { ticks: { color: 'var(--text-color)', font: { size: 10 }, callback: function(value) { return formatCurrency(value); } }, grid: { color: 'var(--subtle-grid-color)' } }
+                    },
+                    plugins: { legend: { labels: { color: 'var(--text-color)' } } }
+                }, (ctx) => {
+                    const waCpl = dailyTrends.wa_cpl.map(Number);
+                    const oaCpl = dailyTrends.oa_cpl.map(Number);
+                    const pbcCpl = dailyTrends.pbc_cpl.map(Number);
+                    const maxCpl = Math.max(...waCpl, ...oaCpl, ...pbcCpl);
+                    const waGradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
+                    waGradient.addColorStop(0, 'rgba(0, 180, 216, 0.5)'); // WA color
+                    waGradient.addColorStop(1, 'rgba(0, 180, 216, 0.1)');
+                    const oaGradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
+                    oaGradient.addColorStop(0, 'rgba(124, 58, 237, 0.5)'); // OA color
+                    oaGradient.addColorStop(1, 'rgba(124, 58, 237, 0.1)');
+                    const pbcGradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
+                    pbcGradient.addColorStop(0, 'rgba(244, 63, 94, 0.5)'); // PBC color
+                    pbcGradient.addColorStop(1, 'rgba(244, 63, 94, 0.1)');
+
+                    return {
+                        labels: dailyTrends.dates,
+                        datasets: [
+                            { label: 'Worthey Aquatics', data: waCpl, borderColor: 'var(--accent-wa)', fill: 'origin', backgroundColor: waGradient, tension: 0.4 },
+                            { label: 'OverAssessed', data: oaCpl, borderColor: 'var(--accent-oa)', fill: 'origin', backgroundColor: oaGradient, tension: 0.4 },
+                            { label: 'ProfitBlueprintCo', data: pbcCpl, borderColor: 'var(--accent-pbc)', fill: 'origin', backgroundColor: pbcGradient, tension: 0.4 }
+                        ]
+                    };
+                }},
+                { id: 'leadsByChannelChart', type: 'bar', title: 'Leads by Channel', options: {
+                    indexAxis: 'y',
+                    scales: {
+                        x: { ticks: { color: 'var(--text-color)', font: { size: 10 } }, grid: { color: 'var(--subtle-grid-color)' } },
+                        y: { ticks: { color: 'var(--text-color)', font: { size: 10 } }, grid: { color: 'var(--subtle-grid-color)' } }
+                    },
+                    plugins: { legend: { labels: { color: 'var(--text-color)' } } }
+                }, (ctx) => {
+                    // Aggregate leads by channel
                     const leadsByChannel = {};
-                    data.channels.forEach(channel => {
-                        const companyCode = companyMap[channel.company];
-                        if (!leadsByChannel[channel.channel]) {
-                            leadsByChannel[channel.channel] = { totalLeads: 0, companies: {} };
+                    channels.forEach(c => {
+                        if (!leadsByChannel[c.channel]) {
+                            leadsByChannel[c.channel] = 0;
                         }
-                        leadsByChannel[channel.channel].totalLeads += channel.leads;
-                        leadsByChannel[channel.channel].companies[companyCode] = (leadsByChannel[channel.channel].companies[companyCode] || 0) + channel.leads;
+                        leadsByChannel[c.channel] += c.leads;
                     });
-
-                    const channelLabels = Object.keys(leadsByChannel);
-                    const channelDatasets = ['WA', 'OA', 'PBC'].map(companyCode => ({
-                        label: companyCode,
-                        data: channelLabels.map(channel => leadsByChannel[channel].companies[companyCode] || 0),
-                        backgroundColor: companyColors[Object.keys(companyMap).find(key => companyMap[key] === companyCode)]
-                    }));
-
-                    const leadsByChannelCtx = document.getElementById('leadsByChannelChart').getContext('2d');
-                    new Chart(leadsByChannelCtx, {
-                        type: 'bar',
-                        data: {
-                            labels: channelLabels,
-                            datasets: channelDatasets
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, scales: { y: { stacked: true, beginAtZero: true } }, x: { stacked: true } }
-                    });
-
-                    // 3. Ad Spend Allocation by Channel Pie Chart
-                    const adSpendByChannel = {};
-                    let totalAdSpend = 0;
-                    data.channels.forEach(channel => {
-                        if (!adSpendByChannel[channel.channel]) {
-                            adSpendByChannel[channel.channel] = 0;
-                        }
-                        adSpendByChannel[channel.channel] += channel.spend;
-                        totalAdSpend += channel.spend;
-                    });
-                    const pieLabels = Object.keys(adSpendByChannel);
-                    const pieData = pieLabels.map(channel => adSpendByChannel[channel]);
-
-                    const adSpendPieCtx = document.getElementById('adSpendPieChart').getContext('2d');
-                    new Chart(adSpendPieCtx, {
-                        type: 'pie',
-                        data: {
-                            labels: pieLabels,
-                            datasets: [{
-                                data: pieData,
-                                backgroundColor: [
-                                    '#00b4d8', '#6c5ce7', '#ff6b6b', '#f1c40f', '#3b82f6', '#2ecc71'
-                                ]
+                    const sortedChannels = Object.entries(leadsByChannel).sort(([, a], [, b]) => b - a);
+                    return {
+                        labels: sortedChannels.map(([channel]) => channel),
+                        datasets: [{
+                            label: 'Leads',
+                            data: sortedChannels.map(([, leads]) => leads),
+                            backgroundColor: Object.entries(leadsByChannel).map(([channelName], i) => {
+                                const company = channels.find(c => c.channel === channelName)?.company;
+                                return DEMO_DATA.companies[company]?.color || 'var(--accent-blue)';
+                            }),
+                            tension: 0.4
+                        }]
+                    };
+                }},
+                { id: 'spendAllocationChart', type: 'doughnut', title: 'Spend Allocation', options: {
+                    plugins: {
+                        legend: { labels: { color: 'var(--text-color)' } },
+                        doughnutlabel: {
+                            labels: [{
+                                text: '', // Placeholder for dynamic total spend
+                                color: 'var(--text-color)',
+                                font: { size: 14, weight: 'bold' }
                             }]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false }
+                        }
+                    },
+                    cutout: '70%' // Makes it a doughnut chart
+                }, (ctx) => {
+                    const totalSpend = channels.reduce((sum, c) => sum + c.spend, 0);
+                    document.getElementById('doughnut-center-spend').textContent = formatCurrency(totalSpend);
+                    return {
+                        labels: channels.map(c => `${c.channel} (${c.company})`),
+                        datasets: [{
+                            data: channels.map(c => c.spend),
+                            backgroundColor: channels.map(c => DEMO_DATA.companies[c.company]?.color || 'var(--accent-blue)'),
+                            hoverOffset: 4
+                        }]
+                    };
+                }},
+                { id: 'dailySpendBudgetChart', type: 'bar', title: 'Daily Spend vs Budget', options: {
+                    scales: {
+                        x: { ticks: { color: 'var(--text-color)', font: { size: 10 } }, grid: { color: 'var(--subtle-grid-color)' } },
+                        y: { ticks: { color: 'var(--text-color)', font: { size: 10 }, callback: function(value) { return formatCurrency(value); } }, grid: { color: 'var(--subtle-grid-color)' } }
+                    },
+                    plugins: { legend: { labels: { color: 'var(--text-color)' } } }
+                }, (ctx) => {
+                    const allSpends = [...dailyTrends.wa_spend, ...dailyTrends.oa_spend, ...dailyTrends.pbc_spend].map(Number);
+                    const budgetTarget = Math.max(...allSpends) * 1.5; // Simple budget target assumption
+
+                    const waSpend = dailyTrends.wa_spend.map(Number);
+                    const oaSpend = dailyTrends.oa_spend.map(Number);
+                    const pbcSpend = dailyTrends.pbc_spend.map(Number);
+
+                    return {
+                        labels: dailyTrends.dates,
+                        datasets: [
+                            {
+                                label: 'Budget Target',
+                                data: Array(dailyTrends.dates.length).fill(budgetTarget),
+                                type: 'line', // Display target as a line
+                                borderColor: 'rgba(255, 255, 255, 0.7)',
+                                borderWidth: 2,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointRadius: 0,
+                                hoverBorderWidth: 0,
+                                hoverRadius: 0
+                            },
+                            { label: 'Worthey Aquatics Spend', data: waSpend, backgroundColor: 'var(--accent-wa)', stack: 'spend' },
+                            { label: 'OverAssessed Spend', data: oaSpend, backgroundColor: 'var(--accent-oa)', stack: 'spend' },
+                            { label: 'ProfitBlueprintCo Spend', data: pbcSpend, backgroundColor: 'var(--accent-pbc)', stack: 'spend' }
+                        ]
+                    };
+                }}
+            ];
+
+            chartConfigs.forEach(config => {
+                const ctx = document.getElementById(config.id).getContext('2d');
+                // Apply chart styling defaults
+                Chart.defaults.font.family = "'Inter', sans-serif";
+                Chart.defaults.color = 'var(--text-color)';
+                Chart.defaults.grid.color = 'var(--subtle-grid-color)';
+
+                const chartData = config.datasetFn(ctx);
+
+                const chartOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    ...config.options,
+                    plugins: {
+                        ...(config.options.plugins || {}),
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) {
+                                        if (context.dataset.label === 'Budget Target') {
+                                            label += formatCurrency(context.parsed.y);
+                                        } else if (config.id === 'cplTrendChart' || config.id === 'dailySpendBudgetChart') {
+                                            label += formatCurrency(context.parsed.y);
+                                        } else {
+                                            label += context.parsed.y.toLocaleString();
+                                        }
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                };
+
+                const chartInstance = new Chart(ctx, {
+                    type: config.type,
+                    data: chartData,
+                    options: chartOptions
+                });
+
+                // Store chart instances for potential updates
+                if (config.id === 'cplTrendChart') cplTrendChart = chartInstance;
+                else if (config.id === 'leadsByChannelChart') leadsByChannelChart = chartInstance;
+                else if (config.id === 'spendAllocationChart') spendAllocationChart = chartInstance;
+                else if (config.id === 'dailySpendBudgetChart') dailySpendBudgetChart = chartInstance;
+            });
+        }
+
+
+        // --- Table Sorting ---
+        function applyTableSorting() {
+            const table = document.querySelector('.channel-table');
+            const headers = table.querySelectorAll('th[data-sort]');
+            let currentSortColumn = null;
+            let currentSortDirection = 'asc';
+
+            headers.forEach(header => {
+                header.addEventListener('click', () => {
+                    const column = header.getAttribute('data-sort');
+                    const isNumeric = header.classList.contains('numeric');
+
+                    if (currentSortColumn === column) {
+                        currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSortColumn = column;
+                        currentSortDirection = 'asc';
+                    }
+
+                    // Remove existing sort indicators
+                    headers.forEach(h => h.removeAttribute('data-sort-dir'));
+                    header.setAttribute('data-sort-dir', currentSortDirection);
+
+                    // Sort data
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+
+                    rows.sort((rowA, rowB) => {
+                        const cellA = rowA.querySelector(`td[data-sort="${column}"]`) || rowA.cells[Array.from(rowA.cells).findIndex(cell => cell.textContent === header.textContent.trim())]; // Fallback by index
+                        const cellB = rowB.querySelector(`td[data-sort="${column}"]`) || rowB.cells[Array.from(rowB.cells).findIndex(cell => cell.textContent === header.textContent.trim())];
+
+                        let valA, valB;
+
+                        if (isNumeric) {
+                            valA = parseFloat(cellA.textContent.replace(/[$,%]/g, '').replace(/,/g, ''));
+                            valB = parseFloat(cellB.textContent.replace(/[$,%]/g, '').replace(/,/g, ''));
+                        } else {
+                            valA = cellA.textContent.trim().toLowerCase();
+                            valB = cellB.textContent.trim().toLowerCase();
+                        }
+
+                        if (valA < valB) return currentSortDirection === 'asc' ? -1 : 1;
+                        if (valA > valB) return currentSortDirection === 'asc' ? 1 : -1;
+                        return 0;
                     });
 
-                    // 4. Daily Spend Chart (Last 30 Days)
-                    // This requires calculating daily spend for each company, which is not directly in the state file.
-                    // For demonstration, I'll use a simplified approach, perhaps summing daily trends or creating dummy data.
-                    // A better approach would be to have daily spend data in the state file.
-                    // For now, I'll create a dummy daily spend based on the CPL trends.
-                    const dailySpendWA = data.dailyTrends.wa_cpl.map(cpl => cpl * 1.5); // Dummy spend
-                    const dailySpendOA = data.dailyTrends.oa_cpl.map(cpl => cpl * 2.0); // Dummy spend
-                    const dailySpendPBC = data.dailyTrends.pbc_cpl.map(cpl => cpl * 0.2); // Dummy spend
+                    // Re-append sorted rows
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            });
+        }
 
-                    const dailySpendCtx = document.getElementById('dailySpendChart').getContext('2d');
-                    new Chart(dailySpendCtx, {
-                        type: 'line',
-                        data: {
-                            labels: data.dailyTrends.dates,
-                            datasets: [
-                                { label: 'Worthey Aquatics Spend', data: dailySpendWA, borderColor: companyColors['worthey-aquatics'], fill: false, tension: 0.1 },
-                                { label: 'OverAssessed Spend', data: dailySpendOA, borderColor: companyColors['overassessed'], fill: false, tension: 0.1 },
-                                { label: 'ProfitBlueprintCo Spend', data: dailySpendPBC, borderColor: companyColors['profitblueprintco'], fill: false, tension: 0.1 },
-                                // Placeholder for budget target line
-                                { label: 'Monthly Budget Target Line', data: Array(data.dailyTrends.dates.length).fill(5000/30), borderColor: '#e74c3c', fill: false, borderDash: [5, 5] }
-                            ]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-                    });
-                })
-                .catch(error => console.error('Error fetching dashboard data:', error));
+        // --- Data Fetching and Refresh ---
+        let currentData = DEMO_DATA; // Start with demo data
+        let lastFetchTime = Date.now();
+        const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
-            // Set auto-refresh
-            setInterval(() => {
-                fetch('/api/marketing/dashboard')
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Auto-refreshing dashboard data...");
-                        // Re-render all components - this part would be optimized in a real app
-                        // For now, just reload the whole page for simplicity on interval
-                        // window.location.reload();
-                        // A better approach would be to update elements individually like done above
-                        // For simplicity in this example, we'll just log that it happened.
-                        // In a real app, you'd call the update functions here.
-                    })
-                    .catch(error => console.error('Error auto-refreshing dashboard data:', error));
-            }, 5 * 60 * 1000); // 5 minutes
+        async function fetchData() {
+            try {
+                // In a real scenario, this would fetch from the API.
+                // For this self-contained example, we'll just use the static DEMO_DATA.
+                // If you want to simulate a fetch failure, comment out the try block
+                // and ensure currentData remains DEMO_DATA.
+
+                // const response = await fetch('/api/marketing/dashboard', {
+                //     headers: {
+                //         'Authorization': `Bearer ${localStorage.getItem('wf_token')}`
+                //     }
+                // });
+                // if (!response.ok) {
+                //     console.warn('API fetch failed, using DEMO_DATA.');
+                //     // Optionally update last-updated text to show fetch failure
+                //     return DEMO_DATA; // Fallback to demo data
+                // }
+                // const data = await response.json();
+                // console.log('Data fetched successfully.');
+                // return data;
+
+                // For now, directly use DEMO_DATA as if it were fetched and valid
+                console.log('Using static DEMO_DATA for demonstration.');
+                return DEMO_DATA;
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                console.warn('API fetch failed, using DEMO_DATA.');
+                // Ensure currentData stays DEMO_DATA if fetch fails
+                return DEMO_DATA;
+            }
+        }
+
+        function updateDashboard() {
+            const now = Date.now();
+            const minutesAgo = Math.floor((now - lastFetchTime) / 60000);
+            document.getElementById('last-updated-time').textContent = minutesAgo;
+
+            // Only fetch and re-render if the interval has passed
+            if (now - lastFetchTime > REFRESH_INTERVAL) {
+                fetchData().then(data => {
+                    currentData = data;
+                    renderDashboard(currentData);
+                    lastFetchTime = now; // Reset timer only on successful data load
+                }).catch(err => {
+                    console.error("Error during updateDashboard sequence:", err);
+                    // Ensure lastFetchTime is updated even on error to avoid hammering API
+                    lastFetchTime = now;
+                });
+            }
+        }
+
+        function renderDashboard(data) {
+            renderKpiCards(data.kpis);
+            renderCompanyCards(data.companies);
+            renderChannelTable(data.channels);
+            renderCharts(data);
+            renderRecentLeads(data.recentLeads);
+            renderAlerts(data.alerts);
+            applyFadeIns(); // Apply animations after content is rendered
+        }
+
+        // --- Circular Progress Renderer ---
+        function renderCircularProgress() {
+            document.querySelectorAll('.circular-progress').forEach(element => {
+                const value = parseFloat(element.getAttribute('data-value'));
+                const color = element.getAttribute('data-color');
+                const size = parseInt(element.getAttribute('data-size'), 10);
+                const thickness = parseInt(element.getAttribute('data-thickness'), 10);
+
+                // SVG representation for circular progress
+                const radius = (size / 2) - (thickness / 2);
+                const circumference = 2 * Math.PI * radius;
+                const offset = circumference - (value / 100) * circumference;
+
+                element.innerHTML = `
+                    <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="transform: rotate(-90deg);">
+                        <circle cx="${size / 2}" cy="${size / 2}" r="${radius}" fill="none" stroke="rgba(255,255,255,0.2)" stroke-width="${thickness}"></circle>
+                        <circle cx="${size / 2}" cy="${size / 2}" r="${radius}" fill="none" stroke="${color || 'var(--accent-blue)'}" stroke-width="${thickness}"
+                                stroke-dasharray="${circumference}" stroke-dashoffset="${offset}"
+                                style="transition: stroke-dashoffset 1.5s ease-in-out;"></circle>
+                    </svg>
+                    <div class="kpi-card-center-text">
+                        <span class="value currency">${formatCurrency(DEMO_DATA.kpis.totalSpend)}</span><br> <!-- Placeholder, will be animated -->
+                        <span class="label">Budget Pacing</span>
+                    </div>
+                `;
+                // Animate the circle's stroke offset
+                const circle = element.querySelector('circle[stroke-dashoffset]');
+                setTimeout(() => { // Small delay to allow SVG to render before animation
+                    circle.style.strokeDashoffset = 0; // Animate to final position
+                }, 100);
+
+                // Animate the center text
+                const centerValueElement = element.querySelector('.kpi-card-center-text .value');
+                animateCounter(centerValueElement, 0, value, 1500);
+            });
+        }
+
+
+        // --- Event Listeners ---
+        function setupEventListeners() {
+            // Filter pills
+            document.querySelectorAll('.filter-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    filterTableByPill(pill.getAttribute('data-filter'));
+                });
+            });
+
+            // Date range pills
+            document.querySelectorAll('.date-range-pill').forEach(pill => {
+                pill.addEventListener('click', () => {
+                    document.querySelectorAll('.date-range-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    // In a real app, this would re-fetch data for the new range
+                    console.log(`Date range set to: ${pill.getAttribute('data-range')}`);
+                });
+            });
+
+            // Dismiss alert buttons (handled in renderAlerts)
+        }
+
+        function filterTableByPill(filter) {
+            const tbody = document.getElementById('channel-table-body');
+            const rows = tbody.querySelectorAll('tr');
+            rows.forEach(row => {
+                const companyCell = row.cells[1].querySelector('span'); // Company is inside a span
+                const companyName = companyCell ? companyCell.textContent : '';
+
+                if (filter === 'all' || companyName === filter) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderDashboard(currentData); // Initial render with demo data
+            applyTableSorting(); // Apply sorting initially
+            setupEventListeners(); // Setup interactive elements
+            applyFadeIns(); // Apply fade-in animations
+
+            // Start interval for dashboard updates
+            setInterval(updateDashboard, 10000); // Check every 10 seconds, but only update data every REFRESH_INTERVAL
         });
     </script>
 </body>
