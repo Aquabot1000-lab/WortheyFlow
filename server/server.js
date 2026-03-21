@@ -271,6 +271,20 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Marketing Dashboard — PUBLIC read-only endpoint (no auth)
+app.get('/api/marketing/data', (req, res) => {
+    try {
+        const stateFile = path.join(__dirname, '..', 'marketing', 'dashboard-state.json');
+        if (fs.existsSync(stateFile)) {
+            const data = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+            return res.json(data);
+        }
+        res.json({ kpis: {}, companies: {}, channels: [], dailyTrends: {}, recentLeads: [], alerts: [] });
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to load dashboard data' });
+    }
+});
+
 // ========== GHL WEBHOOK (no auth — secured by secret) ==========
 const GHL_WEBHOOK_SECRET = process.env.GHL_WEBHOOK_SECRET || 'worthey-ghl-2026';
 
@@ -738,7 +752,7 @@ app.get('/api/logs', (req, res) => {
     res.json(loadLog());
 });
 
-// ========== MARKETING DASHBOARD API ==========
+// ========== MARKETING DASHBOARD API (public — read-only) ==========
 app.get('/api/marketing/dashboard', (req, res) => {
     try {
         const stateFile = path.join(__dirname, '..', 'marketing', 'dashboard-state.json');

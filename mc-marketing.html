@@ -1285,10 +1285,7 @@
 
         async function fetchData() {
             try {
-                const token = localStorage.getItem('wf_token');
-                const response = await fetch('/api/marketing/dashboard', {
-                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
-                });
+                const response = await fetch('/api/marketing/data');
                 if (response.ok) {
                     const data = await response.json();
                     if (data && data.kpis && data.kpis.totalSpend !== undefined) {
