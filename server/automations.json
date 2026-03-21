@@ -107,7 +107,7 @@
         "type": "email",
         "to": "{{lead.email}}",
         "subject": "Worthey Aquatics \u2014 We'll Be in Touch About Your Pool Service",
-        "body": "Hi {{lead.name}},\n\nThank you for contacting Worthey Aquatics! We appreciate you trusting us with your pool service needs.\n\nOur Service Manager, Richard Castille, will be reaching out to discuss your specific needs and get you taken care of.\n\nWhether it's weekly maintenance, equipment repair, or a one-time service call, we've got you covered. We service the entire San Antonio area and pride ourselves on reliable, quality work.\n\nFeel free to reach out to Richard directly whenever it's convenient \u2014 call, text, or just reply to this email:\n\n\ud83d\udcde Call or text: (210) 250-1416\n\ud83d\udce7 Email: Richardc@wortheyaquatics.com\n\nBest regards,\nRichard Castille\nService Manager\nWorthey Aquatics\n(210) 250-1416"
+        "body": "Hi {{lead.name}},\n\nThank you for contacting Worthey Aquatics! We appreciate you trusting us with your pool service needs.\n\nOur Service Manager, Richard Castille, will be reaching out to discuss your specific needs and get you taken care of.\n\nWhether it's weekly maintenance, equipment repair, or a one-time service call, we've got you covered. We service the entire South Central Texas area and pride ourselves on reliable, quality work.\n\nFeel free to reach out to Richard directly whenever it's convenient \u2014 call, text, or just reply to this email:\n\n\ud83d\udcde Call or text: (210) 250-1416\n\ud83d\udce7 Email: Richardc@wortheyaquatics.com\n\nBest regards,\nRichard Castille\nService Manager\nWorthey Aquatics\n(210) 250-1416"
       }
     ]
   },
