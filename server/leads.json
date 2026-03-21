@@ -3858,7 +3858,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "T9jhRYPn9YyPUhrwPNmW",
-    "ghlTags": "imported, wavv-imported, wavv-no-answer, wavv-bad-number, bad/wrong number"
+    "ghlTags": "imported, wavv-imported, wavv-no-answer, wavv-bad-number, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774101858214,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0131",
@@ -4782,7 +4790,7 @@
   {
     "id": "GHL-0161",
     "name": "Darlene Thompson",
-    "email": "dhtrn@msn.con",
+    "email": "dhtrn@msn.com",
     "phone": "(713) 252-2128",
     "company": "",
     "address": "",
@@ -5588,7 +5596,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "fE2lkLMhl03FQoQVcbQi",
-    "ghlTags": "new pool, no answer, outdoordesignai, 2 week reminder, wavv-bad-number, bad/wrong number"
+    "ghlTags": "new pool, no answer, outdoordesignai, 2 week reminder, wavv-bad-number, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774101859266,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0192",
@@ -5615,7 +5631,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "LQSSCXjZ7lD8esgiYBTw",
-    "ghlTags": "new pool, no answer, outdoordesignai, wavv-bad-number, bad/wrong number"
+    "ghlTags": "new pool, no answer, outdoordesignai, wavv-bad-number, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774101860308,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0193",
@@ -6109,7 +6133,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "0mjAjYVPf65Zr8yQm55v",
-    "ghlTags": "new pool, no answer, outdoordesignai, wavv-bad-number, bad/wrong number"
+    "ghlTags": "new pool, no answer, outdoordesignai, wavv-bad-number, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774101861362,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0211",
@@ -6449,7 +6481,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "TMgWYyhDveLsIXwuh9EZ",
-    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, 2 week reminder, bad/wrong number"
+    "ghlTags": "new pool, no answer, power dialer, wavv-no-answer, 2 week reminder, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774101862391,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0228",
@@ -6700,7 +6740,15 @@
     "lossReason": null,
     "equipmentAge": null,
     "ghlId": "FmwFmpXb7Xkskm49a3oK",
-    "ghlTags": "new pool, no answer, 2 week reminder, wavv-bad-number, bad/wrong number"
+    "ghlTags": "new pool, no answer, 2 week reminder, wavv-bad-number, bad/wrong number",
+    "activities": [
+      {
+        "type": "auto_email",
+        "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
+        "timestamp": 1774101863414,
+        "automated": true
+      }
+    ]
   },
   {
     "id": "GHL-0240",

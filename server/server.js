@@ -911,6 +911,42 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`WortheyFlow Automation Server running on port ${PORT}`);
     console.log(`Twilio: ${process.env.TWILIO_ACCOUNT_SID ? 'configured' : 'DRY RUN mode'}`);
     console.log(`SendGrid: ${process.env.SENDGRID_API_KEY ? 'configured' : 'DRY RUN mode'}`);
+
+    // ── Server-side duration check (runs every 5 minutes) ──
+    // This ensures drip automations fire even when nobody has the CRM open
+    setInterval(async () => {
+        try {
+            const LEADS_FILE = path.join(__dirname, 'leads.json');
+            let leads = [];
+            try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) { return; }
+            const contactDirectory = loadContactDirectory();
+            const rules = loadAutomations().filter(r => r.enabled && r.trigger?.type === 'stage_duration');
+            let triggered = 0;
+
+            for (const lead of leads) {
+                const dripCheck = shouldSkipDrip(lead);
+                if (dripCheck.skip) continue;
+
+                const minsInStage = lead.stageChangedAt ? Math.floor((Date.now() - lead.stageChangedAt) / 60000) : 0;
+
+                for (const rule of rules) {
+                    if (!matchesTrigger(rule, { type: 'stage_duration', lead, minutesInStage: minsInStage })) continue;
+                    if (!evaluateConditions(rule.conditions, lead)) continue;
+                    if (isDuplicate(rule.id, lead.id)) continue;
+
+                    const actionResults = await executeActions(rule.actions, lead, contactDirectory);
+                    markSent(rule.id, lead.id);
+                    triggered++;
+                    appendLog({ action: 'server_duration_check', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, minutesInStage: minsInStage, actionResults });
+                    console.log(`[AUTO] ${rule.name} → ${lead.name} (${minsInStage} min in ${lead.stage})`);
+                }
+            }
+            if (triggered > 0) console.log(`[AUTO] Duration check: ${triggered} automations fired`);
+        } catch(err) {
+            console.error('[AUTO] Duration check error:', err.message);
+        }
+    }, 300000); // every 5 minutes
+    console.log('Server-side duration checks: ACTIVE (every 5 min)');
 });
 
 // ─── Inbound SMS Handler (Twilio Webhook) ──────────────────────────
