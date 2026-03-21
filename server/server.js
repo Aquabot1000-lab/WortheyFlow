@@ -739,7 +739,7 @@ app.get('/api/logs', (req, res) => {
 });
 
 // ========== MARKETING DASHBOARD API ==========
-app.get('/api/marketing/dashboard', authMiddleware, (req, res) => {
+app.get('/api/marketing/dashboard', (req, res) => {
     try {
         const stateFile = path.join(__dirname, '..', 'marketing', 'dashboard-state.json');
         if (fs.existsSync(stateFile)) {

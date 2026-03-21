@@ -1285,33 +1285,21 @@
 
         async function fetchData() {
             try {
-                // In a real scenario, this would fetch from the API.
-                // For this self-contained example, we'll just use the static DEMO_DATA.
-                // If you want to simulate a fetch failure, comment out the try block
-                // and ensure currentData remains DEMO_DATA.
-
-                // const response = await fetch('/api/marketing/dashboard', {
-                //     headers: {
-                //         'Authorization': `Bearer ${localStorage.getItem('wf_token')}`
-                //     }
-                // });
-                // if (!response.ok) {
-                //     console.warn('API fetch failed, using DEMO_DATA.');
-                //     // Optionally update last-updated text to show fetch failure
-                //     return DEMO_DATA; // Fallback to demo data
-                // }
-                // const data = await response.json();
-                // console.log('Data fetched successfully.');
-                // return data;
-
-                // For now, directly use DEMO_DATA as if it were fetched and valid
-                console.log('Using static DEMO_DATA for demonstration.');
+                const token = localStorage.getItem('wf_token');
+                const response = await fetch('/api/marketing/dashboard', {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data && data.kpis && data.kpis.totalSpend !== undefined) {
+                        console.log('Live data fetched successfully.');
+                        return data;
+                    }
+                }
+                console.warn('API returned empty/invalid, using DEMO_DATA.');
                 return DEMO_DATA;
-
             } catch (error) {
-                console.error('Error fetching data:', error);
-                console.warn('API fetch failed, using DEMO_DATA.');
-                // Ensure currentData stays DEMO_DATA if fetch fails
+                console.warn('API fetch failed, using DEMO_DATA:', error.message);
                 return DEMO_DATA;
             }
         }
