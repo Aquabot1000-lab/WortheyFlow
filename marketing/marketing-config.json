@@ -9,7 +9,7 @@
         "service": 30,
         "equipment": 50
       },
-      "daily_budget": 50.00,
+      "daily_budget": 50.0,
       "currency": "USD"
     },
     "overassessed": {
@@ -19,7 +19,7 @@
       "cpl_targets": {
         "default": 25
       },
-      "daily_budget": 50.00,
+      "daily_budget": 50.0,
       "currency": "USD"
     },
     "profitblueprintco": {
@@ -29,8 +29,26 @@
       "cpl_targets": {
         "default": 5
       },
-      "daily_budget": 10.00,
+      "daily_budget": 10.0,
       "currency": "USD"
+    },
+    "milepilot": {
+      "google_ads_id": null,
+      "meta_ad_account_id": null,
+      "apple_search_ads_id": null,
+      "cpl_targets": {
+        "app_install": 3,
+        "subscription": 15
+      },
+      "daily_budget_target": 20,
+      "platforms": [
+        "App Store",
+        "Google Play",
+        "Meta",
+        "TikTok",
+        "Google Ads"
+      ],
+      "note": "Pre-Launch"
     }
   },
   "rules": {
