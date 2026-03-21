@@ -223,14 +223,46 @@ async function executeActions(actions, lead, contactDir) {
             const msg = renderTemplate(action.message, lead, contactDir);
             const r = await sendSMS(to, msg);
             results.push({ type: 'sms', ...r });
+            // Record delivery on lead's activity log
+            if (!r.error) {
+                recordDeliveryOnLead(lead.id, { type: 'sms', to, message: msg, status: 'sent', sid: r.sid });
+            }
         } else if (action.type === 'email') {
             const subject = renderTemplate(action.subject, lead, contactDir);
             const body = renderTemplate(action.body, lead, contactDir);
             const r = await sendEmail(to, subject, body);
             results.push({ type: 'email', ...r });
+            // Record delivery on lead's activity log
+            if (!r.error) {
+                recordDeliveryOnLead(lead.id, { type: 'email', to, subject, status: 'sent' });
+            }
         }
     }
     return results;
+}
+
+// Record automated delivery to a lead's activity history in leads.json
+function recordDeliveryOnLead(leadId, delivery) {
+    try {
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) { return; }
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return;
+        if (!lead.activities) lead.activities = [];
+        lead.activities.push({
+            type: delivery.type === 'sms' ? 'auto_sms' : 'auto_email',
+            note: delivery.type === 'sms'
+                ? `📤 Auto SMS to ${delivery.to}: "${delivery.message.substring(0, 80)}${delivery.message.length > 80 ? '...' : ''}"`
+                : `📤 Auto Email to ${delivery.to}: "${delivery.subject}"`,
+            timestamp: Date.now(),
+            automated: true,
+            deliveryDetails: delivery
+        });
+        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+    } catch(e) {
+        console.error('Failed to record delivery on lead:', e.message);
+    }
 }
 
 // ========== AUTH ==========

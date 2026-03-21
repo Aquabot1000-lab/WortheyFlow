@@ -2212,7 +2212,10 @@
         const all = [];
         // Merge activities + legacy activityNotes
         (lead.activities || []).forEach(a => {
-            all.push({ type: a.type, text: a.note, date: a.date, by: a.by, ts: new Date(a.date).getTime() });
+            // Handle automated deliveries (from server) — they use 'timestamp' not 'date'
+            const date = a.date || (a.timestamp ? new Date(a.timestamp).toISOString() : new Date().toISOString());
+            const by = a.automated ? '🤖 AquaBot' : (a.by || 'Unknown');
+            all.push({ type: a.type, text: a.note, date: date, by: by, ts: new Date(date).getTime(), automated: !!a.automated });
         });
         // Add legacy notes that don't have a matching activity
         (lead.activityNotes || []).forEach(n => {
@@ -2221,13 +2224,16 @@
         });
         all.sort((a, b) => b.ts - a.ts);
         if (all.length === 0) return '<p style="color:var(--gray-400);font-size:13px">No activity yet. Log your first call or note above.</p>';
-        const typeEmojis = { call: '📞', text: '💬', email: '📧', meeting: '🤝', note: '📝' };
-        return all.map(a => `
-            <div class="activity-note-item">
-                <div class="activity-note-meta">${typeEmojis[a.type] || '📝'} <strong>${esc(a.type ? a.type.charAt(0).toUpperCase() + a.type.slice(1) : 'Note')}</strong> by ${esc(a.by || 'Unknown')} · ${new Date(a.date).toLocaleString()}</div>
+        const typeEmojis = { call: '📞', text: '💬', email: '📧', meeting: '🤝', note: '📝', auto_sms: '📤', auto_email: '📨' };
+        return all.map(a => {
+            const autoTag = a.automated ? ' <span style="background:#e0f7fa;color:#00796b;padding:1px 6px;border-radius:8px;font-size:11px;font-weight:600">AUTO</span>' : '';
+            const typeName = a.type === 'auto_sms' ? 'Auto SMS' : a.type === 'auto_email' ? 'Auto Email' : (a.type ? a.type.charAt(0).toUpperCase() + a.type.slice(1) : 'Note');
+            return `
+            <div class="activity-note-item" style="${a.automated ? 'border-left:3px solid #00b4d8;padding-left:10px' : ''}">
+                <div class="activity-note-meta">${typeEmojis[a.type] || '📝'} <strong>${typeName}</strong>${autoTag} by ${esc(a.by)} · ${new Date(a.date).toLocaleString()}</div>
                 <div class="activity-note-text">${esc(a.text || '(no note)')}</div>
             </div>
-        `).join('');
+        `}).join('');
     }
 
     // ========== HEAT INDICATOR (Hot/Warm/Cold) ==========
