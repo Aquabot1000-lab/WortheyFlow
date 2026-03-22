@@ -563,6 +563,66 @@ app.post('/api/mc/revenue', (req, res) => {
     res.json(event);
 });
 
+// ========== AQUABOT API (secret-key auth, read/write access) ==========
+const AQUABOT_API_KEY = process.env.AQUABOT_API_KEY || 'wb-aquabot-2026-secret';
+
+function aquabotAuth(req, res, next) {
+    const key = req.headers['x-api-key'] || req.query.apiKey;
+    if (key !== AQUABOT_API_KEY) return res.status(401).json({ error: 'Invalid API key' });
+    req.user = { userId: 'aquabot', name: 'AquaBot', role: 'admin' };
+    next();
+}
+
+// AquaBot: Get all leads (with phone, salesperson, stage)
+app.get('/api/bot/leads', aquabotAuth, (req, res) => {
+    try {
+        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
+        res.json(leads);
+    } catch (e) { res.json([]); }
+});
+
+// AquaBot: Get single lead by email
+app.get('/api/bot/leads/by-email/:email', aquabotAuth, (req, res) => {
+    try {
+        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
+        const lead = leads.find(l => (l.email || '').toLowerCase() === req.params.email.toLowerCase());
+        if (!lead) return res.status(404).json({ error: 'Lead not found' });
+        res.json(lead);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// AquaBot: Search leads by name fragment
+app.get('/api/bot/leads/search', aquabotAuth, (req, res) => {
+    try {
+        const q = (req.query.q || '').toLowerCase();
+        if (!q) return res.status(400).json({ error: 'q parameter required' });
+        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
+        const results = leads.filter(l =>
+            (l.name || '').toLowerCase().includes(q) ||
+            (l.email || '').toLowerCase().includes(q) ||
+            (l.phone || '').includes(q)
+        );
+        res.json(results);
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
+// AquaBot: Pipeline summary (counts by stage + salesperson)
+app.get('/api/bot/pipeline', aquabotAuth, (req, res) => {
+    try {
+        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
+        const stages = {};
+        const bySalesperson = {};
+        for (const l of leads) {
+            const s = l.stage || 'Unknown';
+            const sp = l.salesperson || 'Unassigned';
+            stages[s] = (stages[s] || 0) + 1;
+            if (!bySalesperson[sp]) bySalesperson[sp] = {};
+            bySalesperson[sp][s] = (bySalesperson[sp][s] || 0) + 1;
+        }
+        res.json({ total: leads.length, stages, bySalesperson });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 // All other /api routes require auth
 app.use('/api', authMiddleware);
 

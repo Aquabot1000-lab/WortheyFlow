@@ -3532,16 +3532,16 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Contacted",
+    "stage": "DQ DNC",
     "salesperson": "Anibal",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774100498159,
+    "stageChangedAt": 1774108698835,
     "firstContactAt": 1774100498159,
-    "lossReason": null,
+    "lossReason": "Requested DND \u2014 do not contact (per Anibal 3/21)",
     "equipmentAge": null,
     "ghlId": "GoE5UcrILAr1w6eeefnZ",
     "ghlTags": "imported",
@@ -3551,6 +3551,13 @@
         "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
         "timestamp": 1774100498159,
         "automated": true
+      },
+      {
+        "type": "note",
+        "note": "\ud83d\udcdd Requested DND \u2014 do not contact (per Anibal 3/21)",
+        "timestamp": 1774108698835,
+        "automated": true,
+        "by": "Anibal \u2192 AquaBot"
       }
     ]
   },
@@ -4243,16 +4250,16 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Contacted",
+    "stage": "DQ DNC",
     "salesperson": "Anibal",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774100508514,
+    "stageChangedAt": 1774108698835,
     "firstContactAt": 1774100508514,
-    "lossReason": null,
+    "lossReason": "Requested DND \u2014 do not contact (per Anibal 3/21)",
     "equipmentAge": null,
     "ghlId": "tWSWC7HAKFPadrSBqQN1",
     "ghlTags": "imported, wavv-imported",
@@ -4262,6 +4269,13 @@
         "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
         "timestamp": 1774100508514,
         "automated": true
+      },
+      {
+        "type": "note",
+        "note": "\ud83d\udcdd Requested DND \u2014 do not contact (per Anibal 3/21)",
+        "timestamp": 1774108698835,
+        "automated": true,
+        "by": "Anibal \u2192 AquaBot"
       }
     ]
   },
@@ -5013,16 +5027,16 @@
     "lng": -98.4936,
     "jobType": "New Pool",
     "source": "Facebook Ads",
-    "stage": "Contacted",
+    "stage": "Lost",
     "salesperson": "Anibal",
     "quoteAmount": 0,
     "notes": "Imported from Techfektor GHL. Original stage: Imported. Tags: imported, wavv-imported",
     "nextAction": "",
     "nextActionDate": "",
     "createdAt": 1774018800000,
-    "stageChangedAt": 1774100520648,
+    "stageChangedAt": 1774108698835,
     "firstContactAt": 1774100520648,
-    "lossReason": null,
+    "lossReason": "Going with another company (per Anibal 3/21)",
     "equipmentAge": null,
     "ghlId": "mzV2Z39G1amXujb52Nqn",
     "ghlTags": "imported, wavv-imported",
@@ -5032,6 +5046,13 @@
         "note": "\ud83d\udce8 Auto Email: \"Welcome to Worthey Aquatics\"",
         "timestamp": 1774100520648,
         "automated": true
+      },
+      {
+        "type": "note",
+        "note": "\ud83d\udcdd Going with another company (per Anibal 3/21)",
+        "timestamp": 1774108698835,
+        "automated": true,
+        "by": "Anibal \u2192 AquaBot"
       }
     ]
   },
