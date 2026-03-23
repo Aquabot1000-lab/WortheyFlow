@@ -6,6 +6,7 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 app.use(cors());
@@ -16,6 +17,90 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
 const AUTOMATIONS_FILE = path.join(__dirname, 'automations.json');
 const LOG_FILE = path.join(__dirname, 'notification-log.json');
 const USERS_FILE = path.join(__dirname, 'users.json');
+
+// ========== SUPABASE CLIENT ==========
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ylxreuqvofgbpsatfsvr.supabase.co';
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseHJldXF2b2ZnYnBzYXRmc3ZyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTg1NzE4MCwiZXhwIjoyMDg3NDMzMTgwfQ.DxTv7ZC0oNRHBBS0Jxquh1M0wsGV8fQ005Q9S2iILdE';
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    db: { schema: 'public' },
+    auth: { persistSession: false }
+});
+
+// ========== DATABASE HELPERS ==========
+
+// Map camelCase JS fields to snake_case DB columns
+function leadToDbRow(lead) {
+    return {
+        id: lead.id || `lead-${Date.now()}`,
+        name: lead.name || '',
+        phone: lead.phone || null,
+        email: lead.email || null,
+        email_hers: lead.emailHers || null,
+        company: lead.company || null,
+        address: lead.address || null,
+        city: lead.city || null,
+        state: lead.state || 'TX',
+        zip: lead.zip || null,
+        lat: lead.lat || null,
+        lng: lead.lng || null,
+        job_type: lead.jobType || 'New Pool',
+        source: lead.source || null,
+        stage: lead.stage || 'New',
+        salesperson: lead.salesperson || null,
+        quote_amount: lead.quoteAmount || 0,
+        notes: lead.notes || null,
+        next_action: lead.nextAction || null,
+        next_action_date: lead.nextActionDate || null,
+        loss_reason: lead.lossReason || null,
+        equipment_age: lead.equipmentAge || null,
+        ghl_id: lead.ghlId || lead.ghlContactId || null,
+        ghl_tags: lead.ghlTags || null,
+        ghl_contact_id: lead.ghlContactId || null,
+        ghl_raw: lead.ghlRaw || null,
+        activities: lead.activities || [],
+        first_contact_at: lead.firstContactAt || 0,
+        created_at: lead.createdAt || Date.now(),
+        stage_changed_at: lead.stageChangedAt || Date.now(),
+        updated_at: new Date().toISOString()
+    };
+}
+
+// Map snake_case DB columns to camelCase JS fields
+function dbRowToLead(row) {
+    return {
+        id: row.id,
+        name: row.name || '',
+        phone: row.phone || '',
+        email: row.email || '',
+        emailHers: row.email_hers || '',
+        company: row.company || '',
+        address: row.address || '',
+        city: row.city || '',
+        state: row.state || 'TX',
+        zip: row.zip || '',
+        lat: row.lat || null,
+        lng: row.lng || null,
+        jobType: row.job_type || 'New Pool',
+        source: row.source || '',
+        stage: row.stage || 'New',
+        salesperson: row.salesperson || '',
+        quoteAmount: Number(row.quote_amount) || 0,
+        notes: row.notes || '',
+        nextAction: row.next_action || '',
+        nextActionDate: row.next_action_date || '',
+        lossReason: row.loss_reason || null,
+        equipmentAge: row.equipment_age || null,
+        ghlId: row.ghl_id || null,
+        ghlTags: row.ghl_tags || null,
+        ghlContactId: row.ghl_contact_id || null,
+        ghlRaw: row.ghl_raw || null,
+        activities: row.activities || [],
+        firstContactAt: row.first_contact_at || 0,
+        createdAt: row.created_at || Date.now(),
+        stageChangedAt: row.stage_changed_at || Date.now()
+    };
+}
 
 // ========== HELPERS ==========
 
@@ -255,16 +340,23 @@ async function executeActions(actions, lead, contactDir) {
     return results;
 }
 
-// Record automated delivery to a lead's activity history in leads.json
-function recordDeliveryOnLead(leadId, delivery) {
+// Record automated delivery to a lead's activity history in Supabase
+async function recordDeliveryOnLead(leadId, delivery) {
     try {
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) { return; }
-        const lead = leads.find(l => l.id === leadId);
-        if (!lead) return;
-        if (!lead.activities) lead.activities = [];
-        lead.activities.push({
+        // Fetch lead from Supabase
+        const { data: lead, error: fetchError } = await supabase
+            .from('wortheyflow_leads')
+            .select('activities')
+            .eq('id', leadId)
+            .single();
+
+        if (fetchError || !lead) {
+            console.error('Failed to fetch lead for delivery record:', fetchError?.message);
+            return;
+        }
+
+        const activities = lead.activities || [];
+        activities.push({
             type: delivery.type === 'sms' ? 'auto_sms' : 'auto_email',
             note: delivery.type === 'sms'
                 ? `📤 Auto SMS to ${delivery.to}: "${delivery.message.substring(0, 80)}${delivery.message.length > 80 ? '...' : ''}"`
@@ -273,7 +365,16 @@ function recordDeliveryOnLead(leadId, delivery) {
             automated: true,
             deliveryDetails: delivery
         });
-        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+
+        // Update lead in Supabase
+        const { error: updateError } = await supabase
+            .from('wortheyflow_leads')
+            .update({ activities, updated_at: new Date().toISOString() })
+            .eq('id', leadId);
+
+        if (updateError) {
+            console.error('Failed to record delivery on lead:', updateError.message);
+        }
     } catch(e) {
         console.error('Failed to record delivery on lead:', e.message);
     }
@@ -380,30 +481,49 @@ app.post('/api/webhook/ghl', async (req, res) => {
         lead.salesperson = 'Richard';
     }
 
-    // Save lead to leads.json
-    const LEADS_FILE = path.join(__dirname, 'leads.json');
-    let leads = [];
-    try {
-        leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
-    } catch(e) {
-        // If file doesn't exist, create it with empty array
-        fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2));
-        leads = [];
-    }
-
+    // Save lead to Supabase
     // Check for duplicate by phone
-    const existing = leads.find(l => l.phone && lead.phone && l.phone.replace(/\D/g,'') === lead.phone.replace(/\D/g,''));
-    if (existing) {
-        console.log('[GHL WEBHOOK] Duplicate phone detected:', lead.phone, '— updating existing lead');
-        existing.notes = (existing.notes || '') + '\n\n--- GHL Update ' + new Date().toLocaleString() + ' ---\n' + lead.notes;
-        if (lead.email && !existing.email) existing.email = lead.email;
-        existing.ghlContactId = lead.ghlContactId;
-        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
-        return res.json({ success: true, action: 'updated', leadId: existing.id });
+    if (lead.phone) {
+        const normalizedPhone = lead.phone.replace(/\D/g, '');
+        const { data: existingLeads } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .ilike('phone', `%${normalizedPhone}%`);
+
+        if (existingLeads && existingLeads.length > 0) {
+            const existing = existingLeads[0];
+            console.log('[GHL WEBHOOK] Duplicate phone detected:', lead.phone, '— updating existing lead');
+
+            const updatedNotes = (existing.notes || '') + '\n\n--- GHL Update ' + new Date().toLocaleString() + ' ---\n' + lead.notes;
+            const { error } = await supabase
+                .from('wortheyflow_leads')
+                .update({
+                    notes: updatedNotes,
+                    email: lead.email && !existing.email ? lead.email : existing.email,
+                    ghl_contact_id: lead.ghlContactId,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', existing.id);
+
+            if (error) {
+                console.error('[GHL WEBHOOK] Failed to update existing lead:', error.message);
+                return res.status(500).json({ error: 'Failed to update lead' });
+            }
+
+            return res.json({ success: true, action: 'updated', leadId: existing.id });
+        }
     }
 
-    leads.push(lead);
-    fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+    // Insert new lead to Supabase
+    const dbRow = leadToDbRow(lead);
+    const { error: insertError } = await supabase
+        .from('wortheyflow_leads')
+        .insert([dbRow]);
+
+    if (insertError) {
+        console.error('[GHL WEBHOOK] Failed to insert lead:', insertError.message);
+        return res.status(500).json({ error: 'Failed to create lead' });
+    }
 
     // Fire lead_created automation triggers
     const rules = loadAutomations();
@@ -586,42 +706,49 @@ function aquabotAuth(req, res, next) {
 }
 
 // AquaBot: Get all leads (with phone, salesperson, stage)
-app.get('/api/bot/leads', aquabotAuth, (req, res) => {
+app.get('/api/bot/leads', aquabotAuth, async (req, res) => {
     try {
-        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
+        const { data } = await supabase.from('wortheyflow_leads').select('*');
+        const leads = (data || []).map(dbRowToLead);
         res.json(leads);
     } catch (e) { res.json([]); }
 });
 
 // AquaBot: Get single lead by email
-app.get('/api/bot/leads/by-email/:email', aquabotAuth, (req, res) => {
+app.get('/api/bot/leads/by-email/:email', aquabotAuth, async (req, res) => {
     try {
-        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
-        const lead = leads.find(l => (l.email || '').toLowerCase() === req.params.email.toLowerCase());
-        if (!lead) return res.status(404).json({ error: 'Lead not found' });
-        res.json(lead);
+        const { data } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .ilike('email', req.params.email)
+            .limit(1);
+
+        if (!data || data.length === 0) return res.status(404).json({ error: 'Lead not found' });
+        res.json(dbRowToLead(data[0]));
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // AquaBot: Search leads by name fragment
-app.get('/api/bot/leads/search', aquabotAuth, (req, res) => {
+app.get('/api/bot/leads/search', aquabotAuth, async (req, res) => {
     try {
         const q = (req.query.q || '').toLowerCase();
         if (!q) return res.status(400).json({ error: 'q parameter required' });
-        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
-        const results = leads.filter(l =>
-            (l.name || '').toLowerCase().includes(q) ||
-            (l.email || '').toLowerCase().includes(q) ||
-            (l.phone || '').includes(q)
-        );
+
+        const { data } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .or(`name.ilike.%${q}%,email.ilike.%${q}%,phone.ilike.%${q}%`);
+
+        const results = (data || []).map(dbRowToLead);
         res.json(results);
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // AquaBot: Pipeline summary (counts by stage + salesperson)
-app.get('/api/bot/pipeline', aquabotAuth, (req, res) => {
+app.get('/api/bot/pipeline', aquabotAuth, async (req, res) => {
     try {
-        const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf-8'));
+        const { data } = await supabase.from('wortheyflow_leads').select('stage, salesperson');
+        const leads = (data || []).map(dbRowToLead);
         const stages = {};
         const bySalesperson = {};
         for (const l of leads) {
@@ -812,11 +939,11 @@ app.post('/api/automations/check-durations', async (req, res) => {
     const { leads: leadsData, contactDirectory } = req.body;
     if (!leadsData || !Array.isArray(leadsData)) return res.status(400).json({ error: 'Missing leads array' });
 
-    // Validate leads against server's leads.json — reject stale/cached leads from browser localStorage
-    const LEADS_FILE = path.join(__dirname, 'leads.json');
-    let serverLeads = [];
-    try { serverLeads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
-    const serverIds = new Set(serverLeads.map(l => l.id));
+    // Validate leads against server's Supabase — reject stale/cached leads from browser
+    const { data: serverLeadsDb } = await supabase
+        .from('wortheyflow_leads')
+        .select('id');
+    const serverIds = new Set((serverLeadsDb || []).map(l => l.id));
     const validLeads = leadsData.filter(l => serverIds.has(l.id));
     if (validLeads.length < leadsData.length) {
         console.log(`[Duration Check] Filtered ${leadsData.length - validLeads.length} stale leads from browser cache`);
@@ -931,38 +1058,46 @@ app.get('/api/activity/:leadId', authMiddleware, (req, res) => {
 });
 
 // Get all leads (for webhook sync)
-app.get('/api/leads', authMiddleware, (req, res) => {
+app.get('/api/leads', authMiddleware, async (req, res) => {
     try {
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try {
-            leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
-        } catch (e) {
-            // If file doesn't exist, return empty array
-            leads = [];
+        const { data, error } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('[GET /api/leads] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to load leads' });
         }
+
+        // Convert snake_case DB rows to camelCase JS objects
+        const leads = data.map(dbRowToLead);
         res.json(leads);
     } catch (err) {
-        console.error('[GET /api/leads] Error:', err);
+        console.error('[GET /api/leads] Error:', err.message);
         res.status(500).json({ error: 'Failed to load leads' });
     }
 });
 
 // Export all leads as JSON (for backup)
-app.get('/api/leads/export', authMiddleware, (req, res) => {
+app.get('/api/leads/export', authMiddleware, async (req, res) => {
     try {
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try {
-            leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
-        } catch (e) {
-            leads = [];
+        const { data, error } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('[GET /api/leads/export] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to export leads' });
         }
+
+        const leads = data.map(dbRowToLead);
         res.setHeader('Content-Type', 'application/json');
         res.setHeader('Content-Disposition', `attachment; filename="wortheyflow-leads-${new Date().toISOString().split('T')[0]}.json"`);
         res.json(leads);
     } catch (err) {
-        console.error('[GET /api/leads/export] Error:', err);
+        console.error('[GET /api/leads/export] Error:', err.message);
         res.status(500).json({ error: 'Failed to export leads' });
     }
 });
@@ -1022,24 +1157,45 @@ app.post('/api/booth-lead', async (req, res) => {
             lead.salesperson = 'Richard';
         }
 
-        // Save to leads.json
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
-
+        // Save to Supabase
         // Duplicate check by phone
         const digits = lead.phone.replace(/\D/g, '');
-        const existing = leads.find(l => l.phone && l.phone.replace(/\D/g, '') === digits);
-        if (existing) {
-            existing.notes = (existing.notes || '') + '\n\n--- Booth Update ' + new Date().toLocaleString() + ' ---\n' + lead.notes;
-            if (lead.email && !existing.email) existing.email = lead.email;
-            fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+        const { data: existingLeads } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .ilike('phone', `%${digits}%`);
+
+        if (existingLeads && existingLeads.length > 0) {
+            const existing = existingLeads[0];
+            const updatedNotes = (existing.notes || '') + '\n\n--- Booth Update ' + new Date().toLocaleString() + ' ---\n' + lead.notes;
+            const { error } = await supabase
+                .from('wortheyflow_leads')
+                .update({
+                    notes: updatedNotes,
+                    email: lead.email && !existing.email ? lead.email : existing.email,
+                    updated_at: new Date().toISOString()
+                })
+                .eq('id', existing.id);
+
+            if (error) {
+                console.error('[BOOTH] Failed to update existing lead:', error.message);
+                return res.status(500).json({ error: 'Failed to update lead' });
+            }
+
             console.log('[BOOTH] Duplicate updated:', existing.id, existing.name);
             return res.json({ success: true, action: 'updated', leadId: existing.id });
         }
 
-        leads.push(lead);
-        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+        // Insert new lead
+        const dbRow = leadToDbRow(lead);
+        const { error: insertError } = await supabase
+            .from('wortheyflow_leads')
+            .insert([dbRow]);
+
+        if (insertError) {
+            console.error('[BOOTH] Failed to insert lead:', insertError.message);
+            return res.status(500).json({ error: 'Failed to create lead' });
+        }
 
         // Fire automations
         const rules = loadAutomations();
@@ -1107,19 +1263,19 @@ async function scheduleUntouchedAlert(lead) {
     // Wait 10 minutes, then check if lead has been contacted
     setTimeout(async () => {
         try {
-            const LEADS_FILE = path.join(__dirname, 'leads.json');
-            let leads = [];
-            try {
-                leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
-            } catch (e) {
-                return;
+            const { data: currentLead, error } = await supabase
+                .from('wortheyflow_leads')
+                .select('*')
+                .eq('id', lead.id)
+                .single();
+
+            if (error || !currentLead) {
+                console.log('[Untouched Alert] Lead not found:', lead.id);
+                return; // Lead was deleted
             }
 
-            const currentLead = leads.find(l => l.id === lead.id);
-            if (!currentLead) return; // Lead was deleted
-
             // Check if lead has been contacted (firstContactAt timestamp or activity)
-            const hasActivity = currentLead.firstContactAt ||
+            const hasActivity = currentLead.first_contact_at ||
                 (currentLead.activities && currentLead.activities.length > 0) ||
                 currentLead.stage !== 'New';
 
@@ -1156,20 +1312,76 @@ async function scheduleUntouchedAlert(lead) {
 // Serve the CRM frontend (after API routes)
 
 // Webhook leads only endpoint (for frontend sync - MUST be before catch-all)
-app.get('/api/webhook-leads', authMiddleware, (req, res) => {
+app.get('/api/webhook-leads', authMiddleware, async (req, res) => {
     try {
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) { return res.json([]); }
         const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-        const webhookLeads = leads.filter(l => 
-            l.id && l.id.startsWith('ghl-') && 
-            l.createdAt && l.createdAt > sevenDaysAgo
-        );
+        const { data, error } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .like('id', 'ghl-%')
+            .gte('created_at', sevenDaysAgo);
+
+        if (error) {
+            console.error('[GET /api/webhook-leads] Error:', error.message);
+            return res.json([]);
+        }
+
+        const webhookLeads = data.map(dbRowToLead);
         res.json(webhookLeads);
     } catch(err) {
-        console.error('[GET /api/webhook-leads] Error:', err);
+        console.error('[GET /api/webhook-leads] Error:', err.message);
         res.json([]);
+    }
+});
+
+// Update a lead (for stage changes, edits)
+app.put('/api/leads/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const leadUpdate = req.body;
+
+        // Convert to database format
+        const dbUpdate = leadToDbRow(leadUpdate);
+        delete dbUpdate.id; // Don't update the ID
+
+        const { error } = await supabase
+            .from('wortheyflow_leads')
+            .update(dbUpdate)
+            .eq('id', id);
+
+        if (error) {
+            console.error('[PUT /api/leads/:id] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to update lead' });
+        }
+
+        res.json({ success: true, leadId: id });
+    } catch (err) {
+        console.error('[PUT /api/leads/:id] Error:', err.message);
+        res.status(500).json({ error: 'Failed to update lead' });
+    }
+});
+
+// Delete a lead (soft delete - just mark as deleted)
+app.delete('/api/leads/:id', authMiddleware, async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // For now, we'll do a hard delete
+        // In future, could add a 'deleted_at' column for soft deletes
+        const { error } = await supabase
+            .from('wortheyflow_leads')
+            .delete()
+            .eq('id', id);
+
+        if (error) {
+            console.error('[DELETE /api/leads/:id] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to delete lead' });
+        }
+
+        res.json({ success: true, leadId: id });
+    } catch (err) {
+        console.error('[DELETE /api/leads/:id] Error:', err.message);
+        res.status(500).json({ error: 'Failed to delete lead' });
     }
 });
 
@@ -1194,9 +1406,15 @@ app.listen(PORT, '0.0.0.0', () => {
     // This ensures drip automations fire even when nobody has the CRM open
     setInterval(async () => {
         try {
-            const LEADS_FILE = path.join(__dirname, 'leads.json');
-            let leads = [];
-            try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) { return; }
+            // Fetch all leads from Supabase
+            const { data: leadsDb } = await supabase
+                .from('wortheyflow_leads')
+                .select('*');
+
+            if (!leadsDb) return;
+
+            // Convert to camelCase
+            const leads = leadsDb.map(dbRowToLead);
             const contactDirectory = loadContactDirectory();
             const rules = loadAutomations().filter(r => r.enabled && r.trigger?.type === 'stage_duration');
             let triggered = 0;
@@ -1225,6 +1443,7 @@ app.listen(PORT, '0.0.0.0', () => {
         }
     }, 300000); // every 5 minutes
     console.log('Server-side duration checks: ACTIVE (every 5 min)');
+    console.log(`Supabase: ${SUPABASE_URL}`);
 });
 
 // ─── Inbound SMS Handler (Twilio Webhook) ──────────────────────────
@@ -1234,14 +1453,19 @@ app.post('/api/sms/inbound', async (req, res) => {
     const { From, Body, To } = req.body;
     console.log(`📨 Inbound SMS from ${From}: ${Body}`);
     
-    // Find the lead by phone number
-    const leads = JSON.parse(fs.readFileSync(path.join(__dirname, 'leads.json'), 'utf8') || '[]');
+    // Find the lead by phone number from Supabase
     const normalizePhone = (p) => (p || '').replace(/\D/g, '').slice(-10);
     const fromNorm = normalizePhone(From);
-    
-    const lead = leads.find(l => normalizePhone(l.phone) === fromNorm);
-    
-    const contactDir = JSON.parse(fs.readFileSync(path.join(__dirname, 'contact-directory.json'), 'utf8') || '[]');
+
+    const { data: leadsDb } = await supabase
+        .from('wortheyflow_leads')
+        .select('*')
+        .ilike('phone', `%${fromNorm}%`);
+
+    const leadDb = leadsDb && leadsDb.length > 0 ? leadsDb[0] : null;
+    const lead = leadDb ? dbRowToLead(leadDb) : null;
+
+    const contactDir = loadContactDirectory();
     const tyler = contactDir.find(c => c.name === 'Tyler Worthey') || { phone: '+12105598725' };
     
     // Format the forward message

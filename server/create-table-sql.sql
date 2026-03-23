@@ -1,0 +1,36 @@
+-- WortheyFlow Leads Table
+-- Run this in Supabase SQL Editor: https://supabase.com/dashboard/project/ylxreuqvofgbpsatfsvr/sql/new
+
+CREATE TABLE IF NOT EXISTS wortheyflow_leads (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL DEFAULT '',
+  phone TEXT,
+  email TEXT,
+  email_hers TEXT,
+  company TEXT,
+  address TEXT,
+  city TEXT,
+  state TEXT DEFAULT 'TX',
+  zip TEXT,
+  lat DOUBLE PRECISION,
+  lng DOUBLE PRECISION,
+  job_type TEXT DEFAULT 'New Pool',
+  source TEXT,
+  stage TEXT DEFAULT 'New',
+  salesperson TEXT,
+  quote_amount NUMERIC DEFAULT 0,
+  notes TEXT,
+  next_action TEXT,
+  next_action_date TEXT,
+  loss_reason TEXT,
+  equipment_age TEXT,
+  ghl_id TEXT,
+  ghl_tags TEXT,
+  ghl_contact_id TEXT,
+  ghl_raw JSONB,
+  activities JSONB DEFAULT '[]',
+  first_contact_at BIGINT DEFAULT 0,
+  created_at BIGINT NOT NULL DEFAULT 0,
+  stage_changed_at BIGINT,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
