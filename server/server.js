@@ -763,7 +763,7 @@ app.get('/api/bot/pipeline', aquabotAuth, async (req, res) => {
 });
 
 // All other /api routes require auth
-app.use('/api', authMiddleware);
+// authMiddleware applied per-route, not globally (login must be public)
 
 // Change password
 app.post('/api/auth/change-password', (req, res) => {
