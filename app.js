@@ -120,6 +120,9 @@
         startNotificationEngine();
         startDurationChecks();
         showHomeScreenBanner();
+        // Sync webhook leads on boot and every 30 seconds
+        syncWebhookLeads();
+        setInterval(syncWebhookLeads, 30000);
     }
 
     function showHomeScreenBanner() {
@@ -248,6 +251,62 @@
     function saveRoutes() { localStorage.setItem('wf_routes', JSON.stringify(serviceRouteData)); }
     function saveNotifs() { localStorage.setItem('wf_notifs', JSON.stringify(notifications)); }
     function saveDeletedLeads() { localStorage.setItem('wf_deleted_leads', JSON.stringify(deletedLeads)); }
+
+    // ========== WEBHOOK SYNC ==========
+    async function syncWebhookLeads() {
+        try {
+            const token = getToken();
+            if (!token) return;
+
+            const url = getApiUrl();
+            const response = await fetch(url + '/api/leads', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+
+            if (!response.ok) return;
+
+            const webhookLeads = await response.json();
+            if (!Array.isArray(webhookLeads) || webhookLeads.length === 0) return;
+
+            let newCount = 0;
+            const existingIds = new Set(leads.map(l => l.id));
+            const existingPhones = new Set(leads.map(l => l.phone ? l.phone.replace(/\D/g, '') : null).filter(Boolean));
+
+            webhookLeads.forEach(webhookLead => {
+                // Check if lead already exists by ID
+                if (existingIds.has(webhookLead.id)) return;
+
+                // Check if lead already exists by phone number
+                const webhookPhone = webhookLead.phone ? webhookLead.phone.replace(/\D/g, '') : null;
+                if (webhookPhone && existingPhones.has(webhookPhone)) return;
+
+                // New lead - add it to localStorage
+                leads.push(webhookLead);
+                existingIds.add(webhookLead.id);
+                if (webhookPhone) existingPhones.add(webhookPhone);
+                newCount++;
+
+                // Add notification
+                notifications.push({
+                    id: webhookLead.id,
+                    type: 'blue',
+                    title: 'New lead: ' + webhookLead.name,
+                    sub: 'From ' + (webhookLead.source || 'Unknown'),
+                    time: webhookLead.createdAt || Date.now()
+                });
+            });
+
+            if (newCount > 0) {
+                saveLeads();
+                saveNotifs();
+                updateBell();
+                renderCurrentPage();
+                console.log('[Webhook Sync] Added ' + newCount + ' new lead(s)');
+            }
+        } catch (err) {
+            console.error('[Webhook Sync] Error:', err);
+        }
+    }
 
     // ========== SAMPLE DATA ==========
     function getDefaultLeads() {
@@ -733,7 +792,7 @@
                 <div class="table-wrap">
                     <table id="inbox-table">
                         <thead><tr>
-                            <th></th><th>Name</th><th>Job Type</th><th>Stage</th><th>Value</th><th>Salesperson</th><th>Last Contact</th><th>Days in Stage</th><th>Next Action</th><th>Source</th><th class="qa-header">Actions</th>
+                            <th></th><th>Name</th><th>Date Added</th><th>Job Type</th><th>Stage</th><th>Value</th><th>Salesperson</th><th>Last Contact</th><th>Days in Stage</th><th>Next Action</th><th>Source</th><th class="qa-header">Actions</th>
                         </tr></thead>
                         <tbody id="inbox-body"></tbody>
                     </table>
@@ -784,9 +843,11 @@
             const dc = daysColor(dis);
             const phoneClean = l.phone ? l.phone.replace(/[^+\d]/g, '') : '';
             const phoneTel = phoneClean.startsWith('+') ? phoneClean : (phoneClean ? '+1' + phoneClean : '');
+            const dateAdded = l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) : '—';
             return `<tr class="clickable" onclick="WF.viewLead('${l.id}')">
                 <td style="text-align:center;width:28px">${getHeatIndicator(l)}</td>
                 <td><strong>${esc(l.name)}</strong><br><small style="color:var(--gray-400)">${esc(l.company || '')}</small></td>
+                <td style="font-size:12px">${dateAdded}</td>
                 <td>${esc(l.jobType)}</td>
                 <td><span class="badge ${stageClass(l.stage)}">${l.stage}</span></td>
                 <td>${fmt(l.quoteAmount)}</td>

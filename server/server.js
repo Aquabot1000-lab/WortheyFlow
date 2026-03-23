@@ -383,7 +383,13 @@ app.post('/api/webhook/ghl', async (req, res) => {
     // Save lead to leads.json
     const LEADS_FILE = path.join(__dirname, 'leads.json');
     let leads = [];
-    try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
+    try {
+        leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+    } catch(e) {
+        // If file doesn't exist, create it with empty array
+        fs.writeFileSync(LEADS_FILE, JSON.stringify([], null, 2));
+        leads = [];
+    }
 
     // Check for duplicate by phone
     const existing = leads.find(l => l.phone && lead.phone && l.phone.replace(/\D/g,'') === lead.phone.replace(/\D/g,''));
@@ -915,6 +921,43 @@ app.get('/api/activity/:leadId', authMiddleware, (req, res) => {
     } catch (err) {
         console.error('[Activity API] Error:', err);
         res.status(500).json({ error: 'Failed to load activity' });
+    }
+});
+
+// Get all leads (for webhook sync)
+app.get('/api/leads', authMiddleware, (req, res) => {
+    try {
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try {
+            leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+        } catch (e) {
+            // If file doesn't exist, return empty array
+            leads = [];
+        }
+        res.json(leads);
+    } catch (err) {
+        console.error('[GET /api/leads] Error:', err);
+        res.status(500).json({ error: 'Failed to load leads' });
+    }
+});
+
+// Export all leads as JSON (for backup)
+app.get('/api/leads/export', authMiddleware, (req, res) => {
+    try {
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try {
+            leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+        } catch (e) {
+            leads = [];
+        }
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename="wortheyflow-leads-${new Date().toISOString().split('T')[0]}.json"`);
+        res.json(leads);
+    } catch (err) {
+        console.error('[GET /api/leads/export] Error:', err);
+        res.status(500).json({ error: 'Failed to export leads' });
     }
 });
 
