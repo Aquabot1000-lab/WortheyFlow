@@ -858,6 +858,66 @@ app.get('/api/logs', (req, res) => {
     res.json(loadLog());
 });
 
+// Get activity timeline for a lead (SMS/Email history)
+app.get('/api/activity/:leadId', authMiddleware, (req, res) => {
+    try {
+        const { leadId } = req.params;
+
+        // Get lead's activities from leads.json
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
+
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return res.status(404).json({ error: 'Lead not found' });
+
+        // Extract activity from lead.activities array (automated messages)
+        const activities = [];
+        if (Array.isArray(lead.activities)) {
+            lead.activities.forEach(act => {
+                if (act.type === 'auto_sms' || act.type === 'auto_email') {
+                    activities.push({
+                        type: act.type === 'auto_sms' ? 'sms' : 'email',
+                        direction: 'sent',
+                        timestamp: act.timestamp,
+                        preview: act.note || '',
+                        automated: true
+                    });
+                }
+            });
+        }
+
+        // Also check notification logs for this lead
+        const logs = loadLog();
+        logs.forEach(entry => {
+            if (entry.leadId === leadId && entry.actionResults) {
+                entry.actionResults.forEach(result => {
+                    if (result.type === 'sms' || result.type === 'email') {
+                        activities.push({
+                            type: result.type,
+                            direction: 'sent',
+                            timestamp: new Date(entry.timestamp).getTime(),
+                            preview: result.type === 'sms'
+                                ? (result.message || '').substring(0, 100)
+                                : (result.subject || ''),
+                            to: result.to,
+                            automated: true
+                        });
+                    }
+                });
+            }
+        });
+
+        // Sort by timestamp descending (newest first)
+        activities.sort((a, b) => b.timestamp - a.timestamp);
+
+        res.json({ leadId, activities });
+    } catch (err) {
+        console.error('[Activity API] Error:', err);
+        res.status(500).json({ error: 'Failed to load activity' });
+    }
+});
+
 // ========== MARKETING DASHBOARD API (public — read-only) ==========
 app.get('/api/marketing/dashboard', (req, res) => {
     try {

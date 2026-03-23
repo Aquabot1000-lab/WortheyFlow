@@ -137,7 +137,7 @@
     // ========== CONSTANTS ==========
     const STAGES = ['New', 'Contacted', 'Nurture', 'Consultation Scheduled', 'Proposal Sent', 'Negotiating', 'Signed', 'Lost', 'DND', 'DQ Service', 'DQ Budget', 'Imported'];
     const JOB_TYPES = ['New Pool', 'Remodel', 'Equipment Repair', 'Service Route', 'Commercial'];
-    const SOURCES = ['Google Ads', 'Facebook Ads', 'Pool Monopoly', 'Lead Rocket', 'Teckfactor', 'Marketing Show', 'Referral', 'Website', 'Phone Call (Inbound)', 'Nextdoor', 'Yard Sign', 'Repeat Customer', 'Other'];
+    const SOURCES = ['Google Ads', 'Facebook Ads', 'Pool Monopoly', 'Lead Rocket', 'Teckfactor', 'Marketing Show', 'Kerrville Show', 'Referral', 'Website', 'Phone Call (Inbound)', 'Nextdoor', 'Yard Sign', 'Repeat Customer', 'Other'];
     const LOSS_REASONS = ['Price', 'Went with Competitor', 'Timing', 'No Financing', 'Scope Mismatch', 'No Response', 'Other'];
     const SALESPEOPLE = ['Ricardo', 'Anibal', 'Richard'];
     const POOL_SALESPEOPLE = ['Ricardo', 'Anibal'];
@@ -1140,12 +1140,27 @@
                 </div>
             </div>
 
+            <!-- SMS & Email Action Banner -->
+            <div class="action-banner" style="display:flex;gap:10px;margin-bottom:20px;padding:12px;background:var(--navy-light);border-radius:var(--radius)">
+                <button class="btn btn-primary" onclick="WF.openSMSModal('${lead.id}')" style="flex:1">
+                    <span style="font-size:18px">📱</span> Send SMS
+                </button>
+                <button class="btn btn-primary" onclick="WF.openEmailModal('${lead.id}')" style="flex:1">
+                    <span style="font-size:18px">📧</span> Send Email
+                </button>
+            </div>
+
             <div class="kpi-grid" style="margin-bottom:20px">
                 ${isAdmin() ? `<div class="kpi-card blue"><div class="kpi-label">Deal Value</div><div class="kpi-value">${fmt(lead.quoteAmount)}</div></div>` : ''}
                 <div class="kpi-card ${dc === 'red' ? 'red' : dc === 'yellow' ? 'yellow' : 'blue'}"><div class="kpi-label">Days in Stage</div><div class="kpi-value">${dis}d</div></div>
                 <div class="kpi-card blue"><div class="kpi-label">Total Days in Pipeline</div><div class="kpi-value">${dip}d</div></div>
                 <div class="kpi-card green"><div class="kpi-label">Response Time</div><div class="kpi-value">${rt !== null ? (rt < 60 ? rt.toFixed(0) + 'm' : (rt / 60).toFixed(1) + 'h') : 'N/A'}</div></div>
             </div>
+
+            <!-- Main Content + Activity Sidebar Layout -->
+            <div style="display:flex;gap:20px;align-items:flex-start">
+                <!-- Main Content -->
+                <div style="flex:1;min-width:0">
 
             <div class="grid-2">
                 <div class="card">
@@ -1225,6 +1240,27 @@
                 </div>
             </div>
 
+                </div>
+                <!-- End Main Content -->
+
+                <!-- Activity Sidebar -->
+                <div class="activity-sidebar" style="width:340px;flex-shrink:0">
+                    <div class="card" style="position:sticky;top:20px;max-height:calc(100vh - 100px);overflow-y:auto">
+                        <h3 style="margin-bottom:12px;display:flex;align-items:center;gap:8px">
+                            <span>📊</span> Activity Timeline
+                        </h3>
+                        <div id="activity-timeline" style="min-height:200px">
+                            <div style="text-align:center;padding:20px;color:var(--gray-500)">
+                                <div style="font-size:32px;margin-bottom:8px">⏳</div>
+                                Loading activity...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Activity Sidebar -->
+            </div>
+            <!-- End Layout -->
+
             <!-- Mobile Fast Edit Bar -->
             <div class="fast-edit-bar" id="fast-edit">
                 <div class="fast-edit-actions">
@@ -1241,6 +1277,9 @@
                 </div>
             </div>
         `;
+
+        // Load activity timeline
+        loadActivityTimeline(lead.id);
     }
 
     function updateLead(e, id) {
@@ -1365,6 +1404,327 @@
         saveLeads();
         saveDeletedLeads();
         navigateTo('inbox');
+    }
+
+    // ========== ACTIVITY TIMELINE ==========
+    async function loadActivityTimeline(leadId) {
+        const container = document.getElementById('activity-timeline');
+        if (!container) return;
+
+        try {
+            const response = await fetch(`${getApiUrl()}/api/activity/${leadId}`, {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('wf_token')}` }
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to load activity');
+            }
+
+            const data = await response.json();
+            const activities = data.activities || [];
+
+            if (activities.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center;padding:40px 20px;color:var(--gray-500)">
+                        <div style="font-size:48px;margin-bottom:12px">📭</div>
+                        <div style="font-weight:600;margin-bottom:4px">No activity yet</div>
+                        <div style="font-size:13px">SMS and email messages will appear here</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activities.map(act => {
+                const icon = act.type === 'sms' ? '📱' : '📧';
+                const typeLabel = act.type === 'sms' ? 'SMS' : 'Email';
+                const time = new Date(act.timestamp).toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="activity-item" style="padding:12px;border-bottom:1px solid var(--gray-200);transition:background .2s">
+                        <div style="display:flex;align-items:start;gap:10px">
+                            <span style="font-size:20px;flex-shrink:0">${icon}</span>
+                            <div style="flex:1;min-width:0">
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                                    <span style="font-weight:600;font-size:13px;color:var(--blue)">${typeLabel}</span>
+                                    <span style="font-size:11px;color:var(--gray-500)">${act.direction === 'sent' ? 'Sent' : 'Received'}</span>
+                                    ${act.automated ? '<span style="font-size:11px;background:var(--yellow);color:white;padding:2px 6px;border-radius:4px">Auto</span>' : ''}
+                                </div>
+                                <div style="font-size:12px;color:var(--gray-700);margin-bottom:4px;overflow:hidden;text-overflow:ellipsis">${esc(act.preview || '')}</div>
+                                <div style="font-size:11px;color:var(--gray-500)">${time}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (err) {
+            console.error('Failed to load activity timeline:', err);
+            container.innerHTML = `
+                <div style="text-align:center;padding:20px;color:var(--red)">
+                    <div style="margin-bottom:8px">⚠️</div>
+                    <div style="font-size:13px">Failed to load activity</div>
+                </div>
+            `;
+        }
+    }
+
+    // ========== SMS & EMAIL MODALS ==========
+    function openSMSModal(leadId) {
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return;
+
+        const modalHtml = `
+            <div class="modal-overlay" id="sms-modal" onclick="if(event.target===this) WF.closeSMSModal()">
+                <div class="modal-content" style="max-width:500px" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3>📱 Send SMS to ${esc(lead.name)}</h3>
+                        <button class="modal-close" onclick="WF.closeSMSModal()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>To</label>
+                            <input class="form-control" id="sms-to" value="${esc(lead.phone || '')}" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea class="form-control" id="sms-message" rows="5" placeholder="Type your message..."></textarea>
+                            <div style="font-size:12px;color:var(--gray-500);margin-top:4px" id="sms-char-count">0 characters</div>
+                        </div>
+                        <div id="sms-error" style="color:var(--red);margin-bottom:10px;display:none"></div>
+                        <button class="btn btn-primary" onclick="WF.sendSMS('${leadId}')" id="sms-send-btn">Send SMS</button>
+                        <button class="btn btn-secondary" onclick="WF.closeSMSModal()" style="margin-left:8px">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+        // Add character counter
+        document.getElementById('sms-message').addEventListener('input', (e) => {
+            document.getElementById('sms-char-count').textContent = e.target.value.length + ' characters';
+        });
+    }
+
+    function closeSMSModal() {
+        const modal = document.getElementById('sms-modal');
+        if (modal) modal.remove();
+    }
+
+    async function sendSMS(leadId) {
+        const to = document.getElementById('sms-to').value.trim();
+        const message = document.getElementById('sms-message').value.trim();
+        const errorDiv = document.getElementById('sms-error');
+        const sendBtn = document.getElementById('sms-send-btn');
+
+        if (!message) {
+            errorDiv.textContent = 'Please enter a message';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Sending...';
+        errorDiv.style.display = 'none';
+
+        try {
+            const response = await fetch(`${getApiUrl()}/api/notify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('wf_token')}`
+                },
+                body: JSON.stringify({ type: 'sms', to, message })
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to send SMS');
+            }
+
+            // Optimistic update - add to activity timeline
+            const container = document.getElementById('activity-timeline');
+            if (container) {
+                const time = new Date().toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+                const newActivity = `
+                    <div class="activity-item" style="padding:12px;border-bottom:1px solid var(--gray-200)">
+                        <div style="display:flex;align-items:start;gap:10px">
+                            <span style="font-size:20px">📱</span>
+                            <div style="flex:1">
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                                    <span style="font-weight:600;font-size:13px;color:var(--blue)">SMS</span>
+                                    <span style="font-size:11px;color:var(--gray-500)">Sent</span>
+                                    <span style="font-size:11px;background:var(--green);color:white;padding:2px 6px;border-radius:4px">Just now</span>
+                                </div>
+                                <div style="font-size:12px;color:var(--gray-700);margin-bottom:4px">${esc(message.substring(0, 100))}</div>
+                                <div style="font-size:11px;color:var(--gray-500)">${time}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('afterbegin', newActivity);
+            }
+
+            showToast('✓ SMS sent successfully', 'success');
+            closeSMSModal();
+
+        } catch (err) {
+            console.error('Failed to send SMS:', err);
+            errorDiv.textContent = err.message || 'Failed to send SMS';
+            errorDiv.style.display = 'block';
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send SMS';
+        }
+    }
+
+    function openEmailModal(leadId) {
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return;
+
+        const modalHtml = `
+            <div class="modal-overlay" id="email-modal" onclick="if(event.target===this) WF.closeEmailModal()">
+                <div class="modal-content" style="max-width:600px" onclick="event.stopPropagation()">
+                    <div class="modal-header">
+                        <h3>📧 Send Email to ${esc(lead.name)}</h3>
+                        <button class="modal-close" onclick="WF.closeEmailModal()">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>To</label>
+                            <input class="form-control" id="email-to" value="${esc(lead.email || '')}" ${!lead.email ? '' : 'readonly'}>
+                        </div>
+                        <div class="form-group">
+                            <label>Subject</label>
+                            <input class="form-control" id="email-subject" placeholder="Email subject...">
+                        </div>
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea class="form-control" id="email-body" rows="8" placeholder="Email body..."></textarea>
+                        </div>
+                        <div id="email-error" style="color:var(--red);margin-bottom:10px;display:none"></div>
+                        <button class="btn btn-primary" onclick="WF.sendEmail('${leadId}')" id="email-send-btn">Send Email</button>
+                        <button class="btn btn-secondary" onclick="WF.closeEmailModal()" style="margin-left:8px">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
+    function closeEmailModal() {
+        const modal = document.getElementById('email-modal');
+        if (modal) modal.remove();
+    }
+
+    async function sendEmail(leadId) {
+        const to = document.getElementById('email-to').value.trim();
+        const subject = document.getElementById('email-subject').value.trim();
+        const body = document.getElementById('email-body').value.trim();
+        const errorDiv = document.getElementById('email-error');
+        const sendBtn = document.getElementById('email-send-btn');
+
+        if (!to || !subject || !body) {
+            errorDiv.textContent = 'Please fill in all fields';
+            errorDiv.style.display = 'block';
+            return;
+        }
+
+        sendBtn.disabled = true;
+        sendBtn.textContent = 'Sending...';
+        errorDiv.style.display = 'none';
+
+        try {
+            const response = await fetch(`${getApiUrl()}/api/notify`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('wf_token')}`
+                },
+                body: JSON.stringify({ type: 'email', to, subject, body })
+            });
+
+            const result = await response.json();
+
+            if (!result.success) {
+                throw new Error(result.error || 'Failed to send email');
+            }
+
+            // Optimistic update - add to activity timeline
+            const container = document.getElementById('activity-timeline');
+            if (container) {
+                const time = new Date().toLocaleString('en-US', {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: '2-digit'
+                });
+                const newActivity = `
+                    <div class="activity-item" style="padding:12px;border-bottom:1px solid var(--gray-200)">
+                        <div style="display:flex;align-items:start;gap:10px">
+                            <span style="font-size:20px">📧</span>
+                            <div style="flex:1">
+                                <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                                    <span style="font-weight:600;font-size:13px;color:var(--blue)">Email</span>
+                                    <span style="font-size:11px;color:var(--gray-500)">Sent</span>
+                                    <span style="font-size:11px;background:var(--green);color:white;padding:2px 6px;border-radius:4px">Just now</span>
+                                </div>
+                                <div style="font-size:12px;color:var(--gray-700);margin-bottom:4px">${esc(subject)}</div>
+                                <div style="font-size:11px;color:var(--gray-500)">${time}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                container.insertAdjacentHTML('afterbegin', newActivity);
+            }
+
+            showToast('✓ Email sent successfully', 'success');
+            closeEmailModal();
+
+        } catch (err) {
+            console.error('Failed to send email:', err);
+            errorDiv.textContent = err.message || 'Failed to send email';
+            errorDiv.style.display = 'block';
+            sendBtn.disabled = false;
+            sendBtn.textContent = 'Send Email';
+        }
+    }
+
+    // ========== TOAST NOTIFICATIONS ==========
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.style.cssText = `
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: ${type === 'success' ? 'var(--green)' : type === 'error' ? 'var(--red)' : 'var(--blue)'};
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            z-index: 10000;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+        `;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     function restoreLead(id) {
@@ -2304,7 +2664,8 @@
         toggleAutoEnabled, testAutomation, addConditionRow, addActionRow, toggleActionFields,
         toggleDuration, logout, changePassword,
         restoreLead, permanentlyDeleteLead, addActivityNote, saveFollowUp, clearFollowUp,
-        selectActivityType, logActivity, quickAdvance
+        selectActivityType, logActivity, quickAdvance,
+        openSMSModal, closeSMSModal, sendSMS, openEmailModal, closeEmailModal, sendEmail
     };
 
     // ========== BOOT ==========
