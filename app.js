@@ -346,9 +346,9 @@
             }
 
             const url = getApiUrl();
-            console.log('[Webhook Sync] Fetching from:', url + '/api/leads');
+            console.log('[Webhook Sync] Fetching from:', url + '/api/webhook-leads');
 
-            const response = await fetch(url + '/api/leads', {
+            const response = await fetch(url + '/api/webhook-leads', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
 

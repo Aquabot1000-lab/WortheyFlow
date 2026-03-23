@@ -1278,3 +1278,25 @@ app.post('/api/sms/inbound', async (req, res) => {
   }
 });
 // deploy 1774058894
+
+// Webhook leads only endpoint (for frontend sync)
+app.get('/api/webhook-leads', authMiddleware, (req, res) => {
+    try {
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) { return res.json([]); }
+        
+        // Only return leads created by webhook (id starts with ghl-) 
+        // and created in the last 7 days
+        const sevenDaysAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+        const webhookLeads = leads.filter(l => 
+            l.id && l.id.startsWith('ghl-') && 
+            l.createdAt && l.createdAt > sevenDaysAgo
+        );
+        
+        res.json(webhookLeads);
+    } catch(err) {
+        console.error('[GET /api/webhook-leads] Error:', err);
+        res.json([]);
+    }
+});
