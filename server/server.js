@@ -417,6 +417,12 @@ app.post('/api/webhook/ghl', async (req, res) => {
         appendLog({ action: 'ghl_webhook_trigger', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, actionResults });
     }
 
+    // 🆕 INSTANT SMS ALERT: Notify assigned salesperson immediately
+    sendNewLeadSMS(lead, contactDir);
+
+    // 🆕 SET 10-MINUTE UNTOUCHED ALERT: Check if lead goes untouched
+    scheduleUntouchedAlert(lead);
+
     console.log('[GHL WEBHOOK] Lead created:', lead.id, lead.name, '→', lead.salesperson);
     res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
 });
@@ -1047,6 +1053,12 @@ app.post('/api/booth-lead', async (req, res) => {
             appendLog({ action: 'booth_lead_trigger', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, actionResults });
         }
 
+        // 🆕 INSTANT SMS ALERT: Notify assigned salesperson immediately
+        sendNewLeadSMS(lead, contactDir);
+
+        // 🆕 SET 10-MINUTE UNTOUCHED ALERT: Check if lead goes untouched
+        scheduleUntouchedAlert(lead);
+
         console.log('[BOOTH] Lead created:', lead.id, lead.name, '→', lead.salesperson);
         res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
     } catch (err) {
@@ -1054,6 +1066,90 @@ app.post('/api/booth-lead', async (req, res) => {
         res.status(500).json({ error: 'Internal error' });
     }
 });
+
+// ========== NEW LEAD SMS ALERTS ==========
+
+async function sendNewLeadSMS(lead, contactDir) {
+    try {
+        // Find salesperson phone number
+        const salesperson = contactDir.find(c =>
+            c.name === lead.salesperson ||
+            c.fullName === lead.salesperson ||
+            c.name.toLowerCase() === lead.salesperson.toLowerCase()
+        );
+
+        if (!salesperson || !salesperson.phone) {
+            console.log('[New Lead SMS] No phone for salesperson:', lead.salesperson);
+            return;
+        }
+
+        const message = `🚨 NEW LEAD ASSIGNED TO YOU!\n\n` +
+            `Name: ${lead.name}\n` +
+            `Phone: ${lead.phone || 'N/A'}\n` +
+            `Job: ${lead.jobType}\n` +
+            `Source: ${lead.source}\n` +
+            `Value: $${lead.quoteAmount.toLocaleString()}\n\n` +
+            `👉 Log in to WortheyFlow to contact them NOW!\n` +
+            `https://wortheyflow-production.up.railway.app`;
+
+        const result = await sendSMS(salesperson.phone, message);
+        if (result.success) {
+            console.log(`[New Lead SMS] ✅ Sent to ${lead.salesperson} at ${salesperson.phone}`);
+        } else {
+            console.error(`[New Lead SMS] ❌ Failed to send to ${lead.salesperson}:`, result.error);
+        }
+    } catch (err) {
+        console.error('[New Lead SMS] Error:', err.message);
+    }
+}
+
+async function scheduleUntouchedAlert(lead) {
+    // Wait 10 minutes, then check if lead has been contacted
+    setTimeout(async () => {
+        try {
+            const LEADS_FILE = path.join(__dirname, 'leads.json');
+            let leads = [];
+            try {
+                leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8'));
+            } catch (e) {
+                return;
+            }
+
+            const currentLead = leads.find(l => l.id === lead.id);
+            if (!currentLead) return; // Lead was deleted
+
+            // Check if lead has been contacted (firstContactAt timestamp or activity)
+            const hasActivity = currentLead.firstContactAt ||
+                (currentLead.activities && currentLead.activities.length > 0) ||
+                currentLead.stage !== 'New';
+
+            if (hasActivity) {
+                console.log('[Untouched Alert] Lead was contacted, skipping alert for:', lead.name);
+                return;
+            }
+
+            // Send alert to Tyler
+            const tylerPhone = '+12105598725';
+            const message = `⚠️ UNTOUCHED LEAD ALERT!\n\n` +
+                `Lead: ${lead.name}\n` +
+                `Assigned to: ${lead.salesperson}\n` +
+                `Phone: ${lead.phone || 'N/A'}\n` +
+                `Job: ${lead.jobType}\n` +
+                `Source: ${lead.source}\n\n` +
+                `This lead has gone 10+ minutes without contact.\n` +
+                `https://wortheyflow-production.up.railway.app`;
+
+            const result = await sendSMS(tylerPhone, message);
+            if (result.success) {
+                console.log('[Untouched Alert] ✅ Sent to Tyler for lead:', lead.name);
+            } else {
+                console.error('[Untouched Alert] ❌ Failed to send:', result.error);
+            }
+        } catch (err) {
+            console.error('[Untouched Alert] Error:', err.message);
+        }
+    }, 10 * 60 * 1000); // 10 minutes
+}
 
 // ========== START ==========
 

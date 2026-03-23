@@ -252,21 +252,119 @@
     function saveNotifs() { localStorage.setItem('wf_notifs', JSON.stringify(notifications)); }
     function saveDeletedLeads() { localStorage.setItem('wf_deleted_leads', JSON.stringify(deletedLeads)); }
 
+    // ========== NOTIFICATION SOUND ==========
+    function playNotificationSound() {
+        try {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            // Pleasant chime: C5 -> E5 -> G5
+            oscillator.frequency.value = 523.25; // C5
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.3);
+
+            // Second note
+            setTimeout(() => {
+                const osc2 = audioContext.createOscillator();
+                const gain2 = audioContext.createGain();
+                osc2.connect(gain2);
+                gain2.connect(audioContext.destination);
+                osc2.frequency.value = 659.25; // E5
+                gain2.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc2.start(audioContext.currentTime);
+                osc2.stop(audioContext.currentTime + 0.3);
+            }, 150);
+
+            // Third note
+            setTimeout(() => {
+                const osc3 = audioContext.createOscillator();
+                const gain3 = audioContext.createGain();
+                osc3.connect(gain3);
+                gain3.connect(audioContext.destination);
+                osc3.frequency.value = 783.99; // G5
+                gain3.gain.setValueAtTime(0.3, audioContext.currentTime);
+                gain3.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
+                osc3.start(audioContext.currentTime);
+                osc3.stop(audioContext.currentTime + 0.4);
+            }, 300);
+        } catch (err) {
+            console.log('[Sound] Could not play notification sound:', err.message);
+        }
+    }
+
+    // ========== SYNC INDICATOR ==========
+    let lastSyncTime = null;
+    let lastSyncSuccess = null;
+
+    function updateSyncIndicator(success) {
+        lastSyncTime = Date.now();
+        lastSyncSuccess = success;
+        renderSyncIndicator();
+    }
+
+    function renderSyncIndicator() {
+        let indicator = document.getElementById('sync-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.id = 'sync-indicator';
+            indicator.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--gray-400);z-index:999;box-shadow:0 2px 8px rgba(0,0,0,0.1)';
+            document.body.appendChild(indicator);
+        }
+
+        if (!lastSyncTime) {
+            indicator.textContent = '🔄 Syncing...';
+            return;
+        }
+
+        const secondsAgo = Math.floor((Date.now() - lastSyncTime) / 1000);
+        const status = lastSyncSuccess ? '✅' : '⚠️';
+        const timeText = secondsAgo < 60 ? secondsAgo + 's ago' : Math.floor(secondsAgo / 60) + 'm ago';
+
+        indicator.innerHTML = `${status} Last sync: ${timeText}`;
+    }
+
+    // Update sync indicator every 5 seconds
+    setInterval(() => {
+        if (lastSyncTime) renderSyncIndicator();
+    }, 5000);
+
     // ========== WEBHOOK SYNC ==========
     async function syncWebhookLeads() {
         try {
             const token = getToken();
-            if (!token) return;
+            if (!token) {
+                console.log('[Webhook Sync] No auth token, skipping sync');
+                updateSyncIndicator(false);
+                return;
+            }
 
             const url = getApiUrl();
+            console.log('[Webhook Sync] Fetching from:', url + '/api/leads');
+
             const response = await fetch(url + '/api/leads', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
 
-            if (!response.ok) return;
+            if (!response.ok) {
+                console.error('[Webhook Sync] Response not OK:', response.status, response.statusText);
+                updateSyncIndicator(false);
+                return;
+            }
 
             const webhookLeads = await response.json();
-            if (!Array.isArray(webhookLeads) || webhookLeads.length === 0) return;
+            console.log('[Webhook Sync] Received', webhookLeads.length, 'leads from server');
+
+            if (!Array.isArray(webhookLeads) || webhookLeads.length === 0) {
+                updateSyncIndicator(true);
+                return;
+            }
 
             let newCount = 0;
             const existingIds = new Set(leads.map(l => l.id));
@@ -278,7 +376,10 @@
 
                 // Check if lead already exists by phone number
                 const webhookPhone = webhookLead.phone ? webhookLead.phone.replace(/\D/g, '') : null;
-                if (webhookPhone && existingPhones.has(webhookPhone)) return;
+                if (webhookPhone && existingPhones.has(webhookPhone)) {
+                    console.log('[Webhook Sync] Duplicate phone detected:', webhookPhone, '- skipping');
+                    return;
+                }
 
                 // New lead - add it to localStorage
                 leads.push(webhookLead);
@@ -301,10 +402,15 @@
                 saveNotifs();
                 updateBell();
                 renderCurrentPage();
-                console.log('[Webhook Sync] Added ' + newCount + ' new lead(s)');
+                playNotificationSound();
+                showToast('New lead: ' + webhookLeads[webhookLeads.length - 1].name + ' from ' + (webhookLeads[webhookLeads.length - 1].source || 'Unknown'), 'info');
+                console.log('[Webhook Sync] ✅ Added ' + newCount + ' new lead(s)');
             }
+
+            updateSyncIndicator(true);
         } catch (err) {
             console.error('[Webhook Sync] Error:', err);
+            updateSyncIndicator(false);
         }
     }
 
