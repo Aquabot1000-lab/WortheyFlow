@@ -6,7 +6,7 @@
     let currentUser = null; // { id, name, email, role, salesperson }
 
     function getToken() { return localStorage.getItem('wf_token'); }
-    function setToken(t) { localStorage.setItem('wf_token', t); }
+    async function ensureValidToken() { const t = getToken(); if (!t) return null; try { const p = JSON.parse(atob(t.split(".")[1])); if (p.exp && p.exp < Date.now()/1000) { clearToken(); location.reload(); return null; } return t; } catch(e) { clearToken(); return null; } }    function setToken(t) { localStorage.setItem('wf_token', t); }
     function clearToken() { localStorage.removeItem('wf_token'); localStorage.removeItem('wf_user'); }
     function getStoredUser() { try { return JSON.parse(localStorage.getItem('wf_user')); } catch(e) { return null; } }
     function setStoredUser(u) { localStorage.setItem('wf_user', JSON.stringify(u)); }
@@ -71,7 +71,7 @@
     }
 
     function checkAuth() {
-        const token = getToken();
+        const token = await ensureValidToken();
         const user = getStoredUser();
         if (!token || !user) { showLoginScreen(); return false; }
         // Verify token is not expired by decoding (simple check)
@@ -338,7 +338,7 @@
     // ========== WEBHOOK SYNC ==========
     async function syncWebhookLeads() {
         try {
-            const token = getToken();
+            const token = await ensureValidToken();
             if (!token) {
                 console.log('[Webhook Sync] No auth token, skipping sync');
                 updateSyncIndicator(false);
