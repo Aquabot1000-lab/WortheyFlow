@@ -384,7 +384,7 @@
     // ========== HELPERS ==========
     function $(s) { return document.querySelector(s); }
     function $$(s) { return document.querySelectorAll(s); }
-    function fmt(n) { const v = n || 0; return '$' + v.toLocaleString('en-US', { minimumFractionDigits: v % 1 !== 0 ? 2 : 0, maximumFractionDigits: 2 }); }
+    function fmt(n) { const v = Number(n) || 0; return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
     function pct(n) { return (n * 100).toFixed(1) + '%'; }
     function daysBetween(a, b) { return Math.floor((b - a) / 86400000); }
     function daysInStage(lead) { return daysBetween(lead.stageChangedAt, Date.now()); }
@@ -959,7 +959,7 @@
                         </div>` : `<input type="hidden" id="al-salesperson" value="${currentUser ? currentUser.salesperson : ''}">`}
                     </div>
                     <div class="form-row">
-                        <div class="form-group"><label>Quote Amount ($)</label><input class="form-control" id="al-quote" type="number" min="0" step="0.01"></div>
+                        <div class="form-group"><label>Budget Amount</label><div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-weight:600">$</span><input class="form-control" id="al-quote" type="text" inputmode="numeric" placeholder="80,000.00" style="padding-left:24px" onblur="this.value=this.value?Number(this.value.replace(/[^0-9.]/g,'')).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):''"></div></div>
                     </div>
 
                     <!-- Dynamic fields based on job type -->
@@ -1081,7 +1081,7 @@
                 source: document.getElementById('al-source').value,
                 salesperson: document.getElementById('al-salesperson').value || autoAssign(document.getElementById('al-jobtype').value),
                 stage: 'New',
-                quoteAmount: parseFloat(document.getElementById('al-quote').value) || 0,
+                quoteAmount: parseFloat((document.getElementById('al-quote').value || '0').replace(/[^0-9.]/g, '')) || 0,
                 equipmentAge: document.getElementById('al-equip-age') ? (parseInt(document.getElementById('al-equip-age').value) || null) : null,
                 poolAge: document.getElementById('al-pool-age') ? (parseInt(document.getElementById('al-pool-age').value) || null) : null,
                 equipmentType: document.getElementById('al-equip-type') ? document.getElementById('al-equip-type').value : '',
@@ -1178,7 +1178,7 @@
                                 ${STAGES.map(s => `<option value="${s}" ${s === lead.stage ? 'selected' : ''}>${s}</option>`).join('')}
                             </select>
                         </div>
-                        <div class="form-group"><label>Quote Amount</label><input class="form-control" id="ld-quote" type="number" value="${lead.quoteAmount || 0}" min="0" step="0.01"></div>
+                        <div class="form-group"><label>Quote Amount</label><div style="position:relative"><span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--gray-400);font-weight:600">$</span><input class="form-control" id="ld-quote" type="text" inputmode="numeric" value="${lead.quoteAmount ? Number(lead.quoteAmount).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : ''}" style="padding-left:24px" onblur="this.value=this.value?Number(this.value.replace(/[^0-9.]/g,'')).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}):''"></div></div>
                         ${isAdmin() ? `<div class="form-group"><label>Salesperson</label>
                             <select class="form-control" id="ld-salesperson">
                                 ${SALESPEOPLE.map(s => `<option value="${s}" ${s === lead.salesperson ? 'selected' : ''}>${s}</option>`).join('')}
@@ -1251,7 +1251,7 @@
         errDiv.innerHTML = '';
 
         const newStage = document.getElementById('ld-stage').value;
-        const newQuote = parseFloat(document.getElementById('ld-quote').value) || 0;
+        const newQuote = parseFloat((document.getElementById('ld-quote').value || '0').replace(/[^0-9.]/g, '')) || 0;
         const newAction = document.getElementById('ld-nextaction').value.trim();
 
         // Validate: can't advance past CC without deal value
