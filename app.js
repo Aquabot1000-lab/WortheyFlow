@@ -442,8 +442,10 @@
         const now = Date.now();
         notifications = [];
         const notifLeads = currentUser && !isAdmin() ? myLeads() : leads;
+        // Only flag truly untouched NEW leads — skip imported, contacted, DQ, nurture, etc.
+        const skipStages = ['Signed', 'Lost', 'Contacted', 'DQ Service', 'DQ Budget', 'DQ Bad Number', 'DQ DNC', 'Nurture', 'Imported', 'Consultation Scheduled', 'Proposal Sent', 'Negotiating'];
         notifLeads.forEach(l => {
-            if (l.stage === 'Signed' || l.stage === 'Lost') return;
+            if (skipStages.includes(l.stage)) return;
             if (!l.firstContactAt && l.stage === 'New') {
                 const age = now - l.createdAt;
                 if (age > 86400000) {
@@ -471,13 +473,20 @@
         }
     }
 
+    function clearAllNotifications() {
+        notifications = [];
+        saveNotifs();
+        renderNotifications();
+        updateBell();
+    }
+
     function renderNotifications() {
         const list = document.getElementById('notif-list');
         if (notifications.length === 0) {
             list.innerHTML = '<p style="padding:20px;text-align:center;color:var(--gray-400)">No notifications 🎉</p>';
             return;
         }
-        list.innerHTML = notifications.map(n => `
+        list.innerHTML = '<div style="padding:8px 16px;text-align:right"><button onclick="WF.clearAllNotifications()" style="background:none;border:1px solid var(--gray-600);color:var(--gray-400);padding:4px 12px;border-radius:6px;cursor:pointer;font-size:0.75rem">Clear All</button></div>' + notifications.map(n => `
             <div class="notif-item" onclick="WF.viewLead('${n.id}')">
                 <div class="notif-dot ${n.type}"></div>
                 <div class="notif-body">
@@ -2290,7 +2299,7 @@
     window.WF = {
         navigateTo, viewLead, setFilter, submitLead, updateLead, quickNote, deleteLead,
         updateProb, resetProbs, updateTarget, exportData, exportAllData, importData,
-        setReviewRange, reassign, saveNotifSettings, addContactRow,
+        setReviewRange, reassign, clearAllNotifications, saveNotifSettings, addContactRow,
         addAutomation, editAutomation, cancelAutoEdit, saveAutomation, deleteAutomation,
         toggleAutoEnabled, testAutomation, addConditionRow, addActionRow, toggleActionFields,
         toggleDuration, logout, changePassword,
