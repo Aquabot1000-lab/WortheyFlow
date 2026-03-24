@@ -523,6 +523,8 @@
             case 'dashboard': renderDashboard(); break;
             case 'inbox': renderInbox(); break;
             case 'pipeline': renderPipeline(); break;
+            case 'service-inbox': renderServiceInbox(); break;
+            case 'service-pipeline': renderServicePipeline(); break;
             case 'addlead': renderAddLead(); break;
             case 'heatmap': renderHeatmap(); break;
             case 'serviceroutes': renderServiceRoutes(); break;
@@ -1133,6 +1135,182 @@
         updateBellBadge();
         fireAutomationTrigger({ type: 'stage_change', oldStage, newStage }, lead);
         renderPipeline();
+    }
+
+    // ========== SERVICE INBOX ==========
+    const SERVICE_STAGES = ['New', 'Contacted', 'Quote Sent', 'Scheduled', 'Active Account', 'Cancelled'];
+
+    function isServiceLead(lead) {
+        const jobType = (lead.jobType || '').toLowerCase();
+        return jobType.includes('service') || jobType.includes('maintenance') || jobType === 'equipment repair';
+    }
+
+    function renderServiceInbox() {
+        const el = document.getElementById('page-service-inbox');
+        el.innerHTML = `
+            <div class="filter-bar">
+                <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="WF.setServiceFilter('all')">All</button>
+                <button class="filter-btn ${currentFilter === 'new' ? 'active' : ''}" onclick="WF.setServiceFilter('new')">New</button>
+                <button class="filter-btn ${currentFilter === 'contacted' ? 'active' : ''}" onclick="WF.setServiceFilter('contacted')">Contacted</button>
+                <button class="filter-btn ${currentFilter === 'scheduled' ? 'active' : ''}" onclick="WF.setServiceFilter('scheduled')">Scheduled</button>
+                <button class="filter-btn ${currentFilter === 'active' ? 'active' : ''}" onclick="WF.setServiceFilter('active')">Active Account</button>
+                <button class="filter-btn ${currentFilter === 'closed' ? 'active' : ''}" onclick="WF.setServiceFilter('closed')">Closed</button>
+            </div>
+            <div class="card">
+                <div class="table-wrap">
+                    <table id="service-inbox-table">
+                        <thead><tr>
+                            <th>Name</th><th>Phone</th><th>Email</th><th>Service Type</th><th>Stage</th><th>Date Added</th><th>Assigned To</th><th>Source</th><th class="qa-header">Actions</th>
+                        </tr></thead>
+                        <tbody id="service-inbox-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+        renderServiceInboxRows();
+    }
+
+    function getServiceFilteredLeads() {
+        const base = isAdmin() ? leads.filter(isServiceLead) : myLeads().filter(isServiceLead);
+        switch (currentFilter) {
+            case 'new': return base.filter(l => l.stage === 'New');
+            case 'contacted': return base.filter(l => l.stage === 'Contacted');
+            case 'scheduled': return base.filter(l => l.stage === 'Scheduled');
+            case 'active': return base.filter(l => l.stage === 'Active Account');
+            case 'closed': return base.filter(l => l.stage === 'Cancelled' || l.stage === 'Lost');
+            default: return [...base];
+        }
+    }
+
+    function renderServiceInboxRows() {
+        const tbody = document.getElementById('service-inbox-body');
+        if (!tbody) return;
+        const filtered = getServiceFilteredLeads();
+
+        // Sort by newest first
+        filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        tbody.innerHTML = filtered.map(l => {
+            const phoneClean = l.phone ? l.phone.replace(/[^+\d]/g, '') : '';
+            const phoneTel = phoneClean.startsWith('+') ? phoneClean : (phoneClean ? '+1' + phoneClean : '');
+            const dateAdded = l.createdAt ? new Date(l.createdAt).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' }) : '—';
+            return `<tr class="clickable" onclick="WF.viewLead('${l.id}')">
+                <td><strong>${esc(l.name)}</strong></td>
+                <td>${l.phone ? `<a href="tel:${phoneTel}" onclick="event.stopPropagation()" style="color:var(--service-accent);text-decoration:none">${esc(l.phone)}</a>` : '—'}</td>
+                <td style="font-size:12px">${esc(l.email || '—')}</td>
+                <td>${esc(l.jobType)}</td>
+                <td><span class="badge service-badge ${stageClass(l.stage)}">${l.stage}</span></td>
+                <td style="font-size:12px">${dateAdded}</td>
+                <td>${esc(l.salesperson)}</td>
+                <td>${esc(l.source)}</td>
+                <td class="quick-actions" onclick="event.stopPropagation()">
+                    ${l.phone ? `<a href="tel:${phoneTel}" class="qa-btn qa-call" title="Call" style="border-color:var(--service-accent);color:var(--service-accent)">📞</a><a href="sms:${phoneTel}" class="qa-btn qa-sms" title="Text" style="border-color:var(--service-accent);color:var(--service-accent)">💬</a>` : ''}
+                    <button class="qa-btn" title="Change stage" onclick="WF.showServiceStageMenu('${l.id}')" style="border-color:var(--service-accent);color:var(--service-accent)">⚡</button>
+                    <button class="qa-btn" title="Add note" onclick="WF.quickAddNote('${l.id}')" style="border-color:var(--service-accent);color:var(--service-accent)">📝</button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+
+    // ========== SERVICE PIPELINE ==========
+    function renderServicePipeline() {
+        const el = document.getElementById('page-service-pipeline');
+        el.innerHTML = `<div class="kanban-board service-kanban" id="service-kanban-board"></div>`;
+        const board = document.getElementById('service-kanban-board');
+        const pipelineLeads = isAdmin() ? leads.filter(isServiceLead) : myLeads().filter(isServiceLead);
+
+        SERVICE_STAGES.forEach(stage => {
+            const col = document.createElement('div');
+            col.className = 'kanban-column service-column';
+            col.dataset.stage = stage;
+            const stageLeads = pipelineLeads.filter(l => l.stage === stage);
+            const totalVal = stageLeads.reduce((s, l) => s + (l.quoteAmount || 0), 0);
+            col.innerHTML = `
+                <div class="kanban-column-header service-header">
+                    <h4>${stage}</h4>
+                    <span class="kanban-count">${stageLeads.length}${totalVal > 0 ? ' · ' + fmt(totalVal) : ''}</span>
+                </div>
+                <div class="kanban-cards" data-stage="${stage}">
+                    ${stageLeads.map(l => {
+                const dis = daysInStage(l);
+                const dc = daysColor(dis);
+                const spInitials = l.salesperson ? l.salesperson.split(' ').map(w => w[0]).join('').toUpperCase() : '?';
+                return `<div class="kanban-card service-card" data-id="${l.id}" onclick="WF.viewLead('${l.id}')" style="position:relative">
+                            <div style="position:absolute;top:6px;right:8px;background:var(--service-accent);color:#fff;font-size:10px;font-weight:700;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;letter-spacing:-0.5px" title="${esc(l.salesperson || 'Unassigned')}">${spInitials}</div>
+                            <div class="kc-name" style="padding-right:28px">${esc(l.name)}</div>
+                            <div class="kc-meta">
+                                <span class="kc-jobtype badge service-badge">${l.jobType}</span>
+                                <span class="kc-days ${dc}">${dis}d</span>
+                            </div>
+                            ${l.phone ? `<div style="font-size:11px;color:var(--gray-400);margin-top:4px">📞 ${esc(l.phone)}</div>` : ''}
+                            <div class="kc-last-contact" style="font-size:11px;color:var(--gray-400);margin-top:2px">Last: ${getLastContactDisplay(l)}</div>
+                        </div>`;
+            }).join('')}
+                </div>
+            `;
+            board.appendChild(col);
+        });
+
+        // SortableJS
+        document.querySelectorAll('.kanban-cards').forEach(container => {
+            new Sortable(container, {
+                group: 'service-kanban',
+                animation: 200,
+                ghostClass: 'dragging',
+                onEnd: function (evt) {
+                    const leadId = evt.item.dataset.id;
+                    const newStage = evt.to.dataset.stage;
+                    changeServiceStage(leadId, newStage);
+                }
+            });
+        });
+    }
+
+    async function changeServiceStage(leadId, newStage) {
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return;
+        const oldStage = lead.stage;
+        if (oldStage === newStage) return;
+
+        lead.stage = newStage;
+        lead.stageChangedAt = Date.now();
+
+        // Mark first contact
+        if (oldStage === 'New' && newStage === 'Contacted' && !lead.firstContactAt) {
+            lead.firstContactAt = Date.now();
+        }
+
+        await saveLead(lead);
+        generateNotifications();
+        updateBellBadge();
+        fireAutomationTrigger({ type: 'stage_change', oldStage, newStage }, lead);
+        renderServicePipeline();
+    }
+
+    function showServiceStageMenu(leadId) {
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return;
+
+        const newStage = prompt('Change stage to:\n' + SERVICE_STAGES.map((s, i) => `${i+1}. ${s}`).join('\n') + '\n\nEnter number:', '');
+        if (!newStage) return;
+
+        const stageIndex = parseInt(newStage) - 1;
+        if (stageIndex >= 0 && stageIndex < SERVICE_STAGES.length) {
+            changeServiceStage(leadId, SERVICE_STAGES[stageIndex]);
+            renderServiceInbox();
+        }
+    }
+
+    function quickAddNote(leadId) {
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return;
+
+        const note = prompt('Add a quick note:');
+        if (!note) return;
+
+        lead.notes = (lead.notes || '') + '\n\n' + new Date().toLocaleString() + ': ' + note;
+        saveLead(lead);
+        alert('Note added!');
     }
 
     // ========== ADD LEAD ==========
@@ -2962,7 +3140,9 @@
         toggleDuration, logout, changePassword,
         restoreLead, permanentlyDeleteLead, addActivityNote, saveFollowUp, clearFollowUp,
         selectActivityType, logActivity, quickAdvance,
-        openSMSModal, closeSMSModal, sendSMS, openEmailModal, closeEmailModal, sendEmail
+        openSMSModal, closeSMSModal, sendSMS, openEmailModal, closeEmailModal, sendEmail,
+        setServiceFilter: (filter) => { currentFilter = filter; renderServiceInbox(); },
+        showServiceStageMenu, quickAddNote
     };
 
     // ========== BOOT ==========

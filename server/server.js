@@ -1079,6 +1079,50 @@ app.get('/api/leads', authMiddleware, async (req, res) => {
     }
 });
 
+// Get service leads only (jobType contains service, Service, maintenance, Equipment)
+app.get('/api/leads/service', authMiddleware, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .or('job_type.ilike.%service%,job_type.ilike.%maintenance%,job_type.eq.Equipment Repair')
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('[GET /api/leads/service] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to load service leads' });
+        }
+
+        const leads = data.map(dbRowToLead);
+        res.json(leads);
+    } catch (err) {
+        console.error('[GET /api/leads/service] Error:', err.message);
+        res.status(500).json({ error: 'Failed to load service leads' });
+    }
+});
+
+// Get construction leads only (jobType: New Pool, Pool Construction, Pool Remodel, Commercial)
+app.get('/api/leads/construction', authMiddleware, async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .in('job_type', ['New Pool', 'Pool Construction', 'Pool Remodel', 'Commercial', 'Remodel'])
+            .order('created_at', { ascending: false });
+
+        if (error) {
+            console.error('[GET /api/leads/construction] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to load construction leads' });
+        }
+
+        const leads = data.map(dbRowToLead);
+        res.json(leads);
+    } catch (err) {
+        console.error('[GET /api/leads/construction] Error:', err.message);
+        res.status(500).json({ error: 'Failed to load construction leads' });
+    }
+});
+
 // Create a new lead (for manual lead creation in CRM)
 app.post('/api/leads', authMiddleware, async (req, res) => {
     try {

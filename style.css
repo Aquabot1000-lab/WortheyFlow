@@ -26,6 +26,9 @@
     --radius: 10px;
     --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
     --shadow-lg: 0 10px 15px rgba(0,0,0,.1), 0 4px 6px rgba(0,0,0,.05);
+    --service-accent: #00b894;
+    --service-accent-light: #55efc4;
+    --service-accent-dark: #00796b;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -1037,4 +1040,61 @@ tr:hover .quick-actions { opacity: 1; }
 
     /* Hide actions column header text on mobile */
     .qa-header { width: auto; }
+}
+
+/* ========== SERVICE PAGES STYLING ========== */
+
+/* Service Kanban Board - Teal Accent */
+.service-kanban .kanban-column {
+    border-top: 3px solid var(--service-accent);
+}
+
+.service-header h4 {
+    color: var(--service-accent);
+}
+
+.service-card {
+    border-left: 3px solid var(--service-accent);
+}
+
+.service-card:hover {
+    border-left-color: var(--service-accent-light);
+    box-shadow: 0 4px 12px rgba(0, 184, 148, 0.15);
+}
+
+/* Service Badge */
+.service-badge {
+    background: rgba(0, 184, 148, 0.1);
+    color: var(--service-accent-dark);
+    border: 1px solid var(--service-accent);
+}
+
+/* Service Column Headers */
+.service-column .kanban-column-header {
+    background: linear-gradient(135deg, var(--service-accent) 0%, var(--service-accent-dark) 100%);
+}
+
+/* Service Inbox Table Row Hover */
+#service-inbox-table tbody tr:hover {
+    background: rgba(0, 184, 148, 0.05);
+}
+
+/* Service Filter Buttons Active State */
+#page-service-inbox .filter-btn.active,
+#page-service-pipeline .filter-btn.active {
+    background: var(--service-accent);
+    color: white;
+}
+
+#page-service-inbox .filter-btn:hover,
+#page-service-pipeline .filter-btn:hover {
+    border-color: var(--service-accent);
+    color: var(--service-accent);
+}
+
+/* Service Quick Actions */
+#service-inbox-table .qa-btn:hover {
+    background: var(--service-accent);
+    color: white;
+    border-color: var(--service-accent);
 }
