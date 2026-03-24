@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "prestart": "sed -i \"s/__DEPLOY_TS__/$(date +%s)/\" ../service-worker.js 2>/dev/null || true"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.7.0",
