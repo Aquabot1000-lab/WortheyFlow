@@ -1,12 +1,14 @@
-const CACHE_NAME = 'wortheyflow-v1';
-const APP_SHELL = ['/', '/index.html', '/app.js', '/style.css', '/logo.png'];
+// AUTO-UPDATED: change this version on every deploy to bust the cache
+const CACHE_VERSION = '1774355779';
+const CACHE_NAME = 'wortheyflow-' + CACHE_VERSION;
 
 self.addEventListener('install', e => {
-  e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(APP_SHELL)));
+  // Skip waiting so new SW activates immediately
   self.skipWaiting();
 });
 
 self.addEventListener('activate', e => {
+  // Delete ALL old caches
   e.waitUntil(
     caches.keys().then(keys =>
       Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
@@ -26,21 +28,8 @@ self.addEventListener('fetch', e => {
     return;
   }
 
-  // Cache-first for static assets
-  if (/\.(css|js|png|jpg|jpeg|gif|svg|woff2?|ttf|eot)$/.test(url.pathname)) {
-    e.respondWith(
-      caches.match(e.request).then(cached =>
-        cached || fetch(e.request).then(resp => {
-          const clone = resp.clone();
-          caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
-          return resp;
-        })
-      )
-    );
-    return;
-  }
-
-  // Network-first for navigation/HTML, fallback to cache
+  // Network-first for EVERYTHING (HTML, JS, CSS, images)
+  // Falls back to cache only when offline
   e.respondWith(
     fetch(e.request).then(resp => {
       const clone = resp.clone();

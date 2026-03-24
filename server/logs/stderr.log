@@ -1,0 +1,68 @@
+/Users/aquabot/Documents/WortheyFlow/server/server.js:342
+    const tags = (data.tags || '').toLowerCase();
+                                   ^
+
+TypeError: (data.tags || "").toLowerCase is not a function
+    at detectJobType (/Users/aquabot/Documents/WortheyFlow/server/server.js:342:36)
+    at /Users/aquabot/Documents/WortheyFlow/server/server.js:281:18
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/body-parser/lib/read.js:137:5
+
+Node.js v25.6.1
+/Users/aquabot/Documents/WortheyFlow/server/server.js:551
+    const tags = (data.tags || '').toLowerCase();
+                                   ^
+
+TypeError: (data.tags || "").toLowerCase is not a function
+    at detectJobType (/Users/aquabot/Documents/WortheyFlow/server/server.js:551:36)
+    at /Users/aquabot/Documents/WortheyFlow/server/server.js:459:18
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/body-parser/lib/read.js:137:5
+
+Node.js v25.6.1
+/Users/aquabot/Documents/WortheyFlow/server/server.js:551
+    const tags = (data.tags || '').toLowerCase();
+                                   ^
+
+TypeError: (data.tags || "").toLowerCase is not a function
+    at detectJobType (/Users/aquabot/Documents/WortheyFlow/server/server.js:551:36)
+    at /Users/aquabot/Documents/WortheyFlow/server/server.js:459:18
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/body-parser/lib/read.js:137:5
+
+Node.js v25.6.1
+/Users/aquabot/Documents/WortheyFlow/server/server.js:551
+    const tags = (data.tags || '').toLowerCase();
+                                   ^
+
+TypeError: (data.tags || "").toLowerCase is not a function
+    at detectJobType (/Users/aquabot/Documents/WortheyFlow/server/server.js:551:36)
+    at /Users/aquabot/Documents/WortheyFlow/server/server.js:459:18
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:149:13)
+    at Route.dispatch (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/route.js:119:3)
+    at Layer.handle [as handle_request] (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/layer.js:95:5)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:284:15
+    at router.process_params (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:346:12)
+    at next (/Users/aquabot/Documents/WortheyFlow/server/node_modules/express/lib/router/index.js:280:10)
+    at /Users/aquabot/Documents/WortheyFlow/server/node_modules/body-parser/lib/read.js:137:5
+
+Node.js v25.6.1

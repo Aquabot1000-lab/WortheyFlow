@@ -1424,6 +1424,13 @@ app.delete('/api/leads/:id', authMiddleware, async (req, res) => {
     }
 });
 
+// Never cache the service worker — browser must always fetch fresh
+app.get('/service-worker.js', (req, res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+    res.set('Pragma', 'no-cache');
+    res.sendFile(path.join(__dirname, '..', 'service-worker.js'));
+});
+
 app.use(express.static(path.join(__dirname, '..')));
 
 // Serve MC pages directly, fallback to index.html for SPA routes

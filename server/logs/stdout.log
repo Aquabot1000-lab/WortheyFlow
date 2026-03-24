@@ -58,3 +58,440 @@ SendGrid: configured
 WortheyFlow Automation Server running on port 3001
 Twilio: configured
 SendGrid: configured
+[GHL WEBHOOK] Received: {"first_name":"LSA Lead","phone":"(210) 602-4476","source":"Google LSA","tags":["new-pool","new-construction","urgent"],"notes":"New pool on new construction ASAP - from Google Local Service Ads. Lead came in via Lead Rocket LSA forwarded by Tyler 3/24."}
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+Server-side duration checks: ACTIVE (every 5 min)
+Supabase: https://ylxreuqvofgbpsatfsvr.supabase.co
+[GHL WEBHOOK] Received: {"first_name":"LSA Lead","phone":"(210) 602-4476","source":"Google LSA","tags":["new-pool","new-construction","urgent"],"notes":"New pool on new construction ASAP - from Google Local Service Ads. Lead came in via Lead Rocket LSA forwarded by Tyler 3/24."}
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+Server-side duration checks: ACTIVE (every 5 min)
+Supabase: https://ylxreuqvofgbpsatfsvr.supabase.co
+[GHL WEBHOOK] Received: {"first_name":"LSA Lead","phone":"(210) 602-4476","source":"Google LSA","tags":["new-pool","new-construction","urgent"],"notes":"New pool on new construction ASAP - from Google Local Service Ads. Lead forwarded by Tyler 3/24."}
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+Server-side duration checks: ACTIVE (every 5 min)
+Supabase: https://ylxreuqvofgbpsatfsvr.supabase.co
+[GHL WEBHOOK] Received: {"first_name":"LSA Lead","phone":"(210) 602-4476","source":"Google LSA","tags":["new-pool","new-construction","urgent"],"notes":"New pool on new construction ASAP - from Google Local Service Ads. Lead forwarded by Tyler 3/24."}
+WortheyFlow Automation Server running on port 3001
+Twilio: configured
+SendGrid: configured
+Server-side duration checks: ACTIVE (every 5 min)
+Supabase: https://ylxreuqvofgbpsatfsvr.supabase.co
+[SMS SENT] +12105598725 SM47f006036baa652e38d32d32dbc34860
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Joe Mallen (5600 min in New)
+[SMS SENT] +12105598725 SM911900d21ac5440e9c997ed9b6fd264e
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Joe Mallen (5600 min in New)
+[SMS SENT] +12105598725 SMdbf15ba1d5161814e75489b02c2973bd
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Patricia Palacios (5600 min in New)
+[SMS SENT] +12105598725 SM08cae0265092b948e5d4ec487e339a62
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Patricia Palacios (5600 min in New)
+[SMS SENT] +12105598725 SMdd12f291b32fe29b2785fb3846dc7485
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Gary Calkins (5600 min in New)
+[SMS SENT] +12105598725 SM152b90d0c8898ee3e0b6d8990c31ac89
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Gary Calkins (5600 min in New)
+[SMS SENT] +12105598725 SMc2fc4a009372a28bdf91f93feb4e2fb2
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Denis Brown (5600 min in New)
+[SMS SENT] +12105598725 SM3ef8766ea48fb86502c77802219058a7
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Denis Brown (5600 min in New)
+[SMS SENT] +12105598725 SM95e3603c9f3c8166d8dbeddf30a7acda
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Kristen Hollaway True (5600 min in New)
+[SMS SENT] +12105598725 SMd39d01d7af25719fe785aecd358cb43f
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Kristen Hollaway True (5600 min in New)
+[SMS SENT] +12105598725 SM58d3af1f6bb26bc6ea9a785781102315
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Quinton Burke (5600 min in New)
+[SMS SENT] +12105598725 SM7e025c9ab1697a861b39d279fe59bbbf
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Quinton Burke (5600 min in New)
+[SMS SENT] +12105598725 SM9945a222d75f90d47a0f396ae2a65a6d
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Victor Ortiz (5600 min in New)
+[SMS SENT] +12105598725 SMe2621193ef43fbaf3e61178b9f8e2dda
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Victor Ortiz (5600 min in New)
+[SMS SENT] +12105598725 SM0bf7a1523667418df86c7c87a9b2aa1b
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Fernando Hernandez (5600 min in New)
+[SMS SENT] +12105598725 SMcfc17d2b66d5ab24b4f723b147246328
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Fernando Hernandez (5600 min in New)
+[SMS SENT] +12105598725 SM8e2aab06ce3ae5f45e0109141ee1bad3
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Andy Phu (5600 min in New)
+[SMS SENT] +12105598725 SM1275fba1ff415680b6b487663db22f9c
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Andy Phu (5600 min in New)
+[SMS SENT] +12105598725 SM81150b21ea0d7eae65ea61640631c418
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Rick Dudley (5600 min in New)
+[SMS SENT] +12105598725 SMb6266ab914922fd98988ab76c1d8f1ec
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Rick Dudley (5600 min in New)
+[SMS SENT] +12105598725 SMaae88ce0cc415f89e672e748b7005e8c
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Laura Edwina Young (5600 min in New)
+[SMS SENT] +12105598725 SMf81a6fed430fc44d167ffda399d2ebe0
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Laura Edwina Young (5600 min in New)
+[SMS SENT] +12105598725 SM3ce87ee2ad54904c5eaa8aa123eed6bf
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Gloria Saqwun (5600 min in New)
+[SMS SENT] +12105598725 SM1867d38a05d846591d1683ed9f827bcb
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Gloria Saqwun (5600 min in New)
+[SMS SENT] +12105598725 SMbac6dd0e3de69012ca820ec56148c21c
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Daniel Hansen (5600 min in New)
+[SMS SENT] +12105598725 SM20df7d9b96cdc768a1ee19c7556ec0c8
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Daniel Hansen (5600 min in New)
+[SMS SENT] +12105598725 SMb7572576397a9e867df24709942c672b
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Fernanda Johnson (5600 min in New)
+[SMS SENT] +12105598725 SM7ff6ced097cfeef2b06ee8f46604fd5f
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Fernanda Johnson (5600 min in New)
+[SMS SENT] +12105598725 SMe609647a98e22ef7625fd6599ef7d2bc
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Janet Stone (5600 min in New)
+[SMS SENT] +12105598725 SMb64aacdd7902c4d1b76062c6d34d9d22
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Janet Stone (5600 min in New)
+[SMS SENT] +12105598725 SM654849ffdac61f2f62f56f075d35d5c0
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Kathy Touchstone (5600 min in New)
+[SMS SENT] +12105598725 SM4da8897165adea35fab9b53ab246b80c
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Kathy Touchstone (5600 min in New)
+[SMS SENT] +12105598725 SM67c7f3feda4e47dc91cc9b5f8d570db4
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Torres Amanda Marie (5600 min in New)
+[SMS SENT] +12105598725 SM7403faddbfda29f9d4eb42943be2c31c
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Torres Amanda Marie (5600 min in New)
+[SMS SENT] +12105598725 SM470212bdf15401fb33a359f91eaae82f
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Carlos Recoder (5600 min in New)
+[SMS SENT] +12105598725 SM2efb9cf4dac02379a77aaf5849913ead
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Carlos Recoder (5600 min in New)
+[SMS SENT] +12105598725 SMfb145a6574d8bb136509af7aaabc7c68
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Juan Esteban Partridge (5600 min in New)
+[SMS SENT] +12105598725 SM581154f5823d6f0a2bbdd8c85014c588
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Juan Esteban Partridge (5600 min in New)
+[SMS SENT] +12105598725 SMa04e9aacf634d898261c736da0ef4c91
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Johnnie Johnson (5600 min in New)
+[SMS SENT] +12105598725 SMb039d03ae36a6f8a7600e2527d364a19
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Johnnie Johnson (5600 min in New)
+[SMS SENT] +12105598725 SMbda78c93c38d194c31936c33f90ea37d
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Tomas Lazo (5600 min in New)
+[SMS SENT] +12105598725 SM6a1c7da54a8e427c8ce46c66e0fbf29b
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Tomas Lazo (5600 min in New)
+[SMS SENT] +12105598725 SM1665f26d75843fdc6dd5d262efe52e42
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Benjamin Conerly (5600 min in New)
+[SMS SENT] +12105598725 SM4b0d69388b596bdcb4cf6d9411622bf4
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Benjamin Conerly (5600 min in New)
+[SMS SENT] (210) 551-3725 SMea4f65d9f31147b56f55f0092b588689
+[AUTO] Proposal Sent — Day 2 Questions Follow-Up SMS → Jesse Mercer (5600 min in Proposal Sent)
+[SMS SENT] +12105598725 SMaa4de9cd57036729445e8346ac6f4e2e
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Forrest Faircloth (5600 min in New)
+[SMS SENT] +12105598725 SM31521acf4b592c15d5bf6bd1edf256c8
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Forrest Faircloth (5600 min in New)
+[SMS SENT] +12105598725 SM312c8df0e8d98d9ae3791b3b39cfe9d5
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Ashley Harris (5600 min in New)
+[SMS SENT] +12105598725 SM4f97d0ce8c2166da66bd2e4f702811d2
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Ashley Harris (5600 min in New)
+[SMS SENT] +12105598725 SMbb5f59dbb8229feb85d1c3065966d6c0
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Tyra Regino (5600 min in New)
+[SMS SENT] +12105598725 SMaa1662beaae8add2252b4a14b096001d
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Tyra Regino (5600 min in New)
+[SMS SENT] +12105598725 SM87b8c3556fe8d9e72d2d724d8d727707
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Ingrid Anderson (5600 min in New)
+[SMS SENT] +12105598725 SM3f988a54d2cd5e9224b8ba1217280f7e
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Ingrid Anderson (5600 min in New)
+[SMS SENT] +12105598725 SMc24bd597a835babdad64da7af74acbf8
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Marcus Soliz (5600 min in New)
+[SMS SENT] +12105598725 SMbb1fe0200930bbf200ae4dc3fc167f59
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Marcus Soliz (5600 min in New)
+[SMS SENT] +12105598725 SM8755d071e3bfd8a9e4d0517a2208aaa5
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Harlee-Marie Genzanto (5600 min in New)
+[SMS SENT] +12105598725 SM6301a198786b5e1aa29eae0386edb0e9
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Harlee-Marie Genzanto (5600 min in New)
+[SMS SENT] +12105598725 SM75306c73f96e17c312ee18fee14b28fb
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Amanda Ortiz (5600 min in New)
+[SMS SENT] +12105598725 SM270f9a0ff69590bb4da4f8268ea3008d
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Amanda Ortiz (5600 min in New)
+[SMS SENT] +12105598725 SM1012c1d4ecb7d202d9bbce2a37991879
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Bob Russell (5600 min in New)
+[SMS SENT] +12105598725 SM415628e6ca9d10c5aa8619a0ba4b3449
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Bob Russell (5600 min in New)
+[SMS SENT] +12105598725 SMba8723402f603fb35dc4e6b43a4648f7
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Di Clo (5600 min in New)
+[SMS SENT] +12105598725 SM5d17eb74d1b0f86f17f565b74b48a863
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Di Clo (5600 min in New)
+[SMS SENT] +12105598725 SMa194aa85837990bc9ed96adcadda0b61
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Edgar Modesto (5600 min in New)
+[SMS SENT] +12105598725 SMbdfb7ea89fc0017ab6aeadc49d285c24
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Edgar Modesto (5600 min in New)
+[SMS SENT] +12105598725 SMb5c62c1ffe9591e4b4af299a454fed46
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Chris Roberts (5600 min in New)
+[SMS SENT] +12105598725 SM1115d985bf5f44b726c4bd93b192ab8f
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Chris Roberts (5600 min in New)
+[SMS SENT] (830) 494-5573 SM71aff54f5c41b744afeb6e561456d7c5
+[AUTO] Proposal Sent — Day 2 Questions Follow-Up SMS → Peter MULLER (5600 min in Proposal Sent)
+[SMS SENT] +12105598725 SM0bc9ba3261d27afd7cdc8ed58bf58902
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Gilberto Ramirez (5600 min in New)
+[SMS SENT] +12105598725 SM9ea54272e350513321df30b8dadd08c9
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Gilberto Ramirez (5600 min in New)
+[SMS SENT] +12105598725 SM1c7b010b8064a7239c9a0689e3a1d73f
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Geneva Williams Nevills (5600 min in New)
+[SMS SENT] +12105598725 SM52aaea84c0a8c0280cffd87e54157fde
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Geneva Williams Nevills (5600 min in New)
+[SMS SENT] +12105598725 SMab5c6ed40962796e0c5411f7e558979e
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Jim Wilson (5600 min in New)
+[SMS SENT] +12105598725 SM8189b67aaa2d13ea931d4da52f1591ee
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Jim Wilson (5600 min in New)
+[SMS SENT] +12105598725 SM8ef5e321a7ba2ed1ca11db99189bfedf
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Gavin Kolner (5600 min in New)
+[SMS SENT] +12105598725 SMa64a6f4bddf4af0af634cdf76ae643a5
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Gavin Kolner (5600 min in New)
+[SMS SENT] +12105598725 SM580785f641e9d376e2e80e85da535ac6
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Hiral Patel (5600 min in New)
+[SMS SENT] +12105598725 SMdc1d02ccaa8262819310bade9aebf1f4
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Hiral Patel (5600 min in New)
+[SMS SENT] +12105598725 SM04db2df7c3bc5d932a0c0f33214a7f54
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → John Hall (5600 min in New)
+[SMS SENT] +12105598725 SM56be39cb013a58fe07ed54e25c59965a
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → John Hall (5600 min in New)
+[SMS SENT] +12105598725 SM256c330b8a0dd21c3460fba006d8f26d
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Samantha Montes (5600 min in New)
+[SMS SENT] +12105598725 SM74e574fdfac48621d0718f4ad2087165
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Samantha Montes (5600 min in New)
+[SMS SENT] (504) 220-3953 SMcefedbc80e9b3352d16e7c63518932ad
+[AUTO] Proposal Sent — Day 2 Questions Follow-Up SMS → Pierre (5600 min in Proposal Sent)
+[SMS SENT] +12105598725 SM89608506218e54d597d50cfb09512456
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Pedro Mejia (5600 min in New)
+[SMS SENT] +12105598725 SM96ad18508567afc9f444ac35a2c58c99
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Pedro Mejia (5600 min in New)
+[SMS SENT] +12105598725 SMa00479e0ae6e4b9d31b41b01e9784551
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → John Bonney (5600 min in New)
+[SMS SENT] +12105598725 SMcb49b44e9880c0ea01a7660588d03c9a
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → John Bonney (5600 min in New)
+[SMS SENT] +12105598725 SM52f4397f795976417572ed98bf1cda45
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Mike Godin (5600 min in New)
+[SMS SENT] +12105598725 SMfe6519af01c021880be7bcaca55b45b9
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Mike Godin (5600 min in New)
+[SMS SENT] +12105598725 SMe9bed4d4766f954bc59f409f892cea31
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Pepe Engler (5600 min in New)
+[SMS SENT] +12105598725 SM3c9051d88c2f97bd75714c951bdd7f1a
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Pepe Engler (5600 min in New)
+[SMS SENT] +12105598725 SMa85c146178fe96870942a8e61e6a7bee
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Linda Olivo (5600 min in New)
+[SMS SENT] +12105598725 SM430292cc7d4f6127c92218c40950ef41
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Linda Olivo (5600 min in New)
+[SMS SENT] +12105598725 SM9711e04991b0326b43a11feaa895b7b8
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Claudia Maribel Perez (5600 min in New)
+[SMS SENT] +12105598725 SMef6e1e8c8b533899fe4a68f942790e1b
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Claudia Maribel Perez (5600 min in New)
+[SMS SENT] +12105598725 SM83cd384b8e2aca96064c9af3bf4ec68e
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Raul Perez (5600 min in New)
+[SMS SENT] +12105598725 SMccde2a3ef89eed5d200851a2585397ad
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Raul Perez (5600 min in New)
+[SMS SENT] +12105598725 SM5cf927e97bd2c9b06e9c06acbc77b012
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Antoine Williams (5600 min in New)
+[SMS SENT] +12105598725 SMe2646a437abb096a4660e14d6114f8f5
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Antoine Williams (5600 min in New)
+[SMS SENT] +12105598725 SM808dc947a40ddc7e410d48decf220648
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Bart Pierce (5600 min in New)
+[SMS SENT] +12105598725 SM6965bafcabb8e388c69d92ae68890355
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Bart Pierce (5600 min in New)
+[SMS SENT] +12105598725 SM31769020f4d5d80b1908b55be1e515e8
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Vonnie Macfarlane (5600 min in New)
+[SMS SENT] +12105598725 SM552f13847846d7415bfe61b6609cc94b
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Vonnie Macfarlane (5600 min in New)
+[SMS SENT] +12105598725 SM47377d4e6b8b30631bc9bdceb2d6b965
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Aubrey Schuster (5600 min in New)
+[SMS SENT] +12105598725 SM7580366a25e991420e5dafbe9afd56c7
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Aubrey Schuster (5600 min in New)
+[SMS SENT] +12105598725 SM657d65294961d70babf2d8f00ce3a08d
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Mike Finley (5600 min in New)
+[SMS SENT] +12105598725 SMa2da13446e191a434f6e65826cbdb35c
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Mike Finley (5600 min in New)
+[SMS SENT] +12105598725 SM77348be44b228535fcff9eae93d4c133
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Meghan Myers (5600 min in New)
+[SMS SENT] +12105598725 SMa99ab464bb9fdc3aa2e15e4050202f4c
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Meghan Myers (5600 min in New)
+[SMS SENT] +12105598725 SM93756ee7d45ef37a25773ffd56127977
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Chelsea Greenlee (5600 min in New)
+[SMS SENT] +12105598725 SM876985227b3989041ab6a6fe2c567bd5
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Chelsea Greenlee (5600 min in New)
+[SMS SENT] +12105598725 SM465b949bd60a87cfc18dd64dfa878f19
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Sandra Razo (5600 min in New)
+[SMS SENT] +12105598725 SMca1906bf7f94d9e250a9b1d1fe912dee
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Sandra Razo (5600 min in New)
+[SMS SENT] +12105598725 SMc4a793edf20b61e250badaa1eef303ab
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Vengie Martinez (5600 min in New)
+[SMS SENT] +12105598725 SMea1a09d48edfd6b1a7512d04ef3b2af5
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Vengie Martinez (5600 min in New)
+[SMS SENT] +12105598725 SMfa540766a54b0ffdfea7bd2f0ff1be14
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Eddie Villanueva (5600 min in New)
+[SMS SENT] +12105598725 SM7b9c7ee34256bd60a5249a53482b855b
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Eddie Villanueva (5600 min in New)
+[SMS SENT] +12105598725 SM99eb36c417eda454c1dd53f6befb9cb8
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Patrick Wliay (5600 min in New)
+[SMS SENT] +12105598725 SM8324e3572d91850af572face5f6c7d59
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Patrick Wliay (5600 min in New)
+[SMS SENT] +12105598725 SM249d4954b79f2bfd955b8c3428d2b04e
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Chalice Logan (5600 min in New)
+[SMS SENT] +12105598725 SMba1fc8ed6a130d9676d824b8ffe5fbd8
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Chalice Logan (5600 min in New)
+[SMS SENT] +12105598725 SMd5570dbca6980aa279a4ad1a97d4edab
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Darlene Thompson (5600 min in New)
+[SMS SENT] +12105598725 SM8fc792f1e31a132fd02e11f88c1a5d89
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Darlene Thompson (5600 min in New)
+[SMS SENT] +12105598725 SM309a9bc8ceef984b60e4a03af0064e63
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Shanna Brantley (5600 min in New)
+[SMS SENT] +12105598725 SMff3fae11f3537fe23f2f55933de59f67
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Shanna Brantley (5600 min in New)
+[SMS SENT] +12105598725 SM1f857445fec56ecfe34b3a6433197790
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Michelle Perez (5600 min in New)
+[SMS SENT] +12105598725 SMfc4c03d500c6ec245c7798ccd9706627
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Michelle Perez (5600 min in New)
+[SMS SENT] +12105598725 SM3f5b9b4bc2f502ced26d78a630ae1d35
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Keith Smallwood (5600 min in New)
+[SMS SENT] +12105598725 SM1843975913555d2bf210a291e2e3d928
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Keith Smallwood (5600 min in New)
+[SMS SENT] +12105598725 SMa00fa6dd1fcdb507873e4dc647ead51e
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Kimberly Tillman (5600 min in New)
+[SMS SENT] +12105598725 SMddb2dedf6d8e15ba5722976ca44b5808
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Kimberly Tillman (5600 min in New)
+[SMS SENT] +12105598725 SM2f309ec5537edfbdd1c971936dd9ed46
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Margarita Ibarra (5600 min in New)
+[SMS SENT] +12105598725 SM52f629807ea6776ef8c6c84435cdfc3f
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Margarita Ibarra (5600 min in New)
+[SMS SENT] +12105598725 SM9bb8e10037a108dd1766136ec609bd27
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Antonio Vasquez (5600 min in New)
+[SMS SENT] +12105598725 SM61844271a5ab5b76d75da76f38e706d7
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Antonio Vasquez (5600 min in New)
+[SMS SENT] +12105598725 SMc9a7b12c0b606589e2811b10f8ecbae4
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Elizabeth Reynolds (5600 min in New)
+[SMS SENT] +12105598725 SM25eca937150cd4147a23f1ad8312fe47
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Elizabeth Reynolds (5600 min in New)
+[SMS SENT] +12105598725 SMd0f7ada2f36282fde37b5edea80f6322
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Nicole Walters Dupriest (5600 min in New)
+[SMS SENT] +12105598725 SMfe5874ece71db0fa1b8c79f39be27aac
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Nicole Walters Dupriest (5600 min in New)
+[SMS SENT] +12105598725 SM7ce178ac02147a9d774f848d776de627
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Marty Madsen (5600 min in New)
+[SMS SENT] +12105598725 SMe4441421626981650d69671c33b5362f
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Marty Madsen (5600 min in New)
+[SMS SENT] +12105598725 SM89e3850daa0e2659d2186fb84d5e6f58
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Diane Cervenka (5600 min in New)
+[SMS SENT] +12105598725 SM90387ce9d0266f83edf2169ec8b65a02
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Diane Cervenka (5600 min in New)
+[SMS SENT] +12105598725 SM4748000058b311467c3fb1b68508de85
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Bob White (5600 min in New)
+[SMS SENT] +12105598725 SM60396f709ca68872c79e76bafb33f98d
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Bob White (5600 min in New)
+[SMS SENT] +12105598725 SM23b1f5aa3a2f74404e5daa37e1923b12
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Marty Reyes (5600 min in New)
+[SMS SENT] +12105598725 SM51dd6bd5e7299668851866c943546caa
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Marty Reyes (5600 min in New)
+[SMS SENT] +12105598725 SM1b05d6bc557900e9c9e2eb5085d4fbbf
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Stephen Rentz (5600 min in New)
+[SMS SENT] +12105598725 SM479bd5b33f1b7b26364c5812184811c6
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Stephen Rentz (5600 min in New)
+[SMS SENT] +12105598725 SM8d1c0174c661a79917820b2bf2d04cfe
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Tim Perry (5600 min in New)
+[SMS SENT] +12105598725 SM4816d7e5e421a00fe416bf01c2ca4e02
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Tim Perry (5600 min in New)
+[SMS SENT] +12105598725 SMb10c03ff49da5b7b4325f0a5518ab117
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Terrence Short (5600 min in New)
+[SMS SENT] +12105598725 SMbea30b99b4e00c4580e3598b6aafb732
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Terrence Short (5600 min in New)
+[SMS SENT] +12105598725 SM6f6e0a7de78bf1f2f7b60215e5bd4003
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Tanneka Neal (5600 min in New)
+[SMS SENT] +12105598725 SMeb488ece3bf536c69d11a6ad86149514
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Tanneka Neal (5600 min in New)
+[SMS SENT] (956) 475-8203 SM46a11116a0b2a945d116ed01fbd345c8
+[AUTO] Proposal Sent — Day 2 Questions Follow-Up SMS → Jose Lius Alvarez (5600 min in Proposal Sent)
+[SMS SENT] +12105598725 SM8bf9ef2fd0866b9541b53b856560abb0
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Randa Shawa (5600 min in New)
+[SMS SENT] +12105598725 SMca5740e1605bdbe5cd67c9be28e61aaf
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Randa Shawa (5600 min in New)
+[SMS SENT] +12105598725 SM427f6fa4fc3e0e1de8acee10b5d910e4
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Julio Bocanegra (5600 min in New)
+[SMS SENT] +12105598725 SM0c812296a5289f6ffba79b9c0224e411
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Julio Bocanegra (5600 min in New)
+[SMS SENT] +12105598725 SMaac18b68c2f0bdd0b78ecde5454a28c1
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Cesar Cavazos (5600 min in New)
+[SMS SENT] +12105598725 SMfa8a5123d34dc4288a9be602f925ed87
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Cesar Cavazos (5600 min in New)
+[SMS SENT] +12105598725 SM257574c486c2f136a490234359098349
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Deon Hodo (5600 min in New)
+[SMS SENT] +12105598725 SMac437626b0480d07c62a0d590c638ff9
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Deon Hodo (5600 min in New)
+[SMS SENT] +12105598725 SMb8c77a3e6657725ad6f071c909cd8ed1
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Kimberly London (5600 min in New)
+[SMS SENT] +12105598725 SMd63df19a744889c3f33152191aa63a9d
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Kimberly London (5600 min in New)
+[SMS SENT] +12105598725 SM7a2b830feeaf294052cb63f39a5c15aa
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Christopher Kent (5600 min in New)
+[SMS SENT] +12105598725 SM44b3ee9b11bd688eb9e643b7bfde23f9
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Christopher Kent (5600 min in New)
+[SMS SENT] +12105598725 SMa9908db06de76483f28ad30e83fe374c
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Lety Rodriguez (5600 min in New)
+[SMS SENT] +12105598725 SMe5257bd60e977075880188f00a0b11de
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Lety Rodriguez (5600 min in New)
+[SMS SENT] +12105598725 SMba23153a99ebaca8d85afd2650baa9e3
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Nallely Perez (5600 min in New)
+[SMS SENT] +12105598725 SM4af9b03bb2af9117dad6e8668f2da1fe
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Nallely Perez (5600 min in New)
+[SMS SENT] +12105598725 SMe99c670787f1980a963a3b0727035827
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Brandon Upshaw (5600 min in New)
+[SMS SENT] +12105598725 SM60b06cb365af99ca71b6417637d2328b
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Brandon Upshaw (5600 min in New)
+[SMS SENT] +12105598725 SM6332b0265611177abb9e23407caf3eb7
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Farrell Fletcher (5600 min in New)
+[SMS SENT] +12105598725 SM04f889d587518c659bb4413545e8a085
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Farrell Fletcher (5600 min in New)
+[SMS SENT] +12105598725 SM07efa8401e81a96f8abe6ebbfb46c7bf
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Elizabeth Hanna Mathis (5600 min in New)
+[SMS SENT] +12105598725 SM83d3396891bbf425b6971a1bfd003b0a
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Elizabeth Hanna Mathis (5600 min in New)
+[SMS SENT] +12105598725 SMb31e1bce186cefd6ba309cce02282cc2
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Victoria Vergara (5600 min in New)
+[SMS SENT] +12105598725 SMd75e0e08282c53db0feebd13bfdd137a
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Victoria Vergara (5600 min in New)
+[SMS SENT] +12105598725 SM279ffa8ffd94719b22b76fa199180e92
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Tony Washington (5600 min in New)
+[SMS SENT] +12105598725 SM24ba2260c732d382df0c5e6356a6bd44
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Tony Washington (5600 min in New)
+[SMS SENT] +12105598725 SMfd1e26504724f40e62236918358b2b3d
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Roger Heather Brandon (5600 min in New)
+[SMS SENT] +12105598725 SM2eb7c1d71aae294c4b8304127b5aca46
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Roger Heather Brandon (5600 min in New)
+[SMS SENT] +12105598725 SM138e78ebf048eeecc6c72dd5063a8863
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Catherine O'connor Shaver (5600 min in New)
+[SMS SENT] +12105598725 SMd2e1d964d5486e94d8a4b63282bf7b67
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Catherine O'connor Shaver (5600 min in New)
+[SMS SENT] +12105598725 SM5128c98e20dddf9b55a708dce09c9872
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Jessica De Leon (5600 min in New)
+[SMS SENT] +12105598725 SMc817395933135c03a1897bb1e860927d
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Jessica De Leon (5600 min in New)
+[SMS SENT] +12105598725 SM70cf5c96ef79a4ce66ceb2cada517692
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Veronica Guerrero (5600 min in New)
+[SMS SENT] +12105598725 SMc959a64635ebe1f98a44b274fdf7e2b1
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Veronica Guerrero (5600 min in New)
+[SMS SENT] +12105598725 SM6b0a0b705ce4645f3bc611c3244e83e2
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Bryan Soto (5600 min in New)
+[SMS SENT] +12105598725 SMff5d857f5ab201451894bae7fe3f7d28
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Bryan Soto (5600 min in New)
+[SMS SENT] +12105598725 SM23fe11a3c64a8ce4569a11385390cd57
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Liz (5600 min in New)
+[SMS SENT] +12105598725 SM0b1502387b4d050349a900ff293785ae
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Liz (5600 min in New)
+[SMS SENT] +12105598725 SM77b087ebd57936e28801862c7675a447
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Brenda Garcia (5600 min in New)
+[SMS SENT] +12105598725 SM6e0ae4bc3452b8e10d33998261d8fa72
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Brenda Garcia (5600 min in New)
+[SMS SENT] +12105598725 SMc5f26222c4b43544f0814084e86e81d7
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Latonyia Mikell (5600 min in New)
+[SMS SENT] +12105598725 SM68585fa899d44debe1ea3baec5fe8e08
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Latonyia Mikell (5600 min in New)
+[SMS SENT] (619) 929-5103 SM852513812cb2e880f6311312e1b11ef8
+[AUTO] Proposal Sent — Day 2 Questions Follow-Up SMS → Alea Creighton Schuyler (5600 min in Proposal Sent)
+[SMS SENT] +12105598725 SM84c1ee21f5df7864517090002f3e874f
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Arlene Painagan (5600 min in New)
+[SMS SENT] +12105598725 SMc79cdd148d9d6105bf65f77ca087e495
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Arlene Painagan (5600 min in New)
+[SMS SENT] +12105598725 SM611d47aa6563bca220797b7f3abe9e56
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Pablo Ruiz (5600 min in New)
+[SMS SENT] +12105598725 SM1cc47194188d04f8894fe2e6adfc863e
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Pablo Ruiz (5600 min in New)
+[SMS SENT] +12105598725 SM507da0a31762e04645d44860722d0e84
+[AUTO] Untouched Lead Alert — 10 min (Tyler) → Jeanette Davila (5600 min in New)
+[SMS SENT] +12105598725 SMf9173de2b134ad40efe97dec8d327a47
+[AUTO] Untouched Lead Escalation — 1 hour (Tyler) → Jeanette Davila (5600 min in New)
+[SMS SENT] (915) 222-2668 SM14c8831fdb01fa5a171be466cf4e89b4
+[AUTO] Proposal Sent — Day 2 Questions Follow-Up SMS → Bobbi Eugenia Deras Imboden (5600 min in Proposal Sent)
+[AUTO] Duration check: 206 automations fired
