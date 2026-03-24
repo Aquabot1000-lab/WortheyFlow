@@ -1079,6 +1079,45 @@ app.get('/api/leads', authMiddleware, async (req, res) => {
     }
 });
 
+// Create a new lead (for manual lead creation in CRM)
+app.post('/api/leads', authMiddleware, async (req, res) => {
+    try {
+        const lead = req.body;
+
+        // Validate required fields
+        if (!lead.name || !lead.phone) {
+            return res.status(400).json({ error: 'Name and phone are required' });
+        }
+
+        // Ensure the lead has an ID
+        if (!lead.id) {
+            lead.id = 'manual-' + Date.now();
+        }
+
+        // Set default timestamps
+        if (!lead.createdAt) lead.createdAt = Date.now();
+        if (!lead.stageChangedAt) lead.stageChangedAt = Date.now();
+
+        // Convert to database format
+        const dbRow = leadToDbRow(lead);
+
+        const { error } = await supabase
+            .from('wortheyflow_leads')
+            .insert([dbRow]);
+
+        if (error) {
+            console.error('[POST /api/leads] Error:', error.message);
+            return res.status(500).json({ error: 'Failed to create lead' });
+        }
+
+        console.log('[POST /api/leads] Lead created:', lead.id, lead.name);
+        res.json({ success: true, leadId: lead.id });
+    } catch (err) {
+        console.error('[POST /api/leads] Error:', err.message);
+        res.status(500).json({ error: 'Failed to create lead' });
+    }
+});
+
 // Export all leads as JSON (for backup)
 app.get('/api/leads/export', authMiddleware, async (req, res) => {
     try {

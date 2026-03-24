@@ -109,11 +109,11 @@
         }
     }
 
-    function bootApp() {
+    async function bootApp() {
         hideLoginScreen();
         updateTopbarUser();
         applyNavPermissions();
-        loadData();
+        await loadData();
         renderCurrentPage();
         startNotificationEngine();
         startDurationChecks();
@@ -221,21 +221,37 @@
     }
 
     // ========== LOCAL STORAGE ==========
-    function loadData() {
+    async function loadData() {
         // Force reset via URL param or missing flag
         const urlReset = new URLSearchParams(window.location.search).get('reset') === 'force';
         if (urlReset || !localStorage.getItem('wf_ghl_v6')) {
             // Nuke ALL wf_ keys
             Object.keys(localStorage).forEach(k => { if (k.startsWith('wf_')) localStorage.removeItem(k); });
-            // Load GHL leads directly
-            if (typeof GHL_LEADS !== 'undefined' && GHL_LEADS.length > 0) {
-                localStorage.setItem('wf_leads', JSON.stringify(GHL_LEADS));
-            }
             localStorage.setItem('wf_ghl_v6', '1');
             // Clean URL
             if (urlReset) window.history.replaceState({}, '', window.location.pathname);
         }
-        leads = JSON.parse(localStorage.getItem('wf_leads') || 'null') || getDefaultLeads();
+
+        // Fetch leads from API
+        try {
+            const response = await fetch(`${getApiUrl()}/api/leads`, {
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+
+            if (response.ok) {
+                leads = await response.json();
+                // Cache in localStorage for offline fallback
+                localStorage.setItem('wf_leads', JSON.stringify(leads));
+            } else {
+                console.warn('[loadData] API fetch failed, using localStorage cache');
+                leads = JSON.parse(localStorage.getItem('wf_leads') || 'null') || getDefaultLeads();
+            }
+        } catch (err) {
+            console.error('[loadData] Error fetching leads:', err);
+            // Fallback to localStorage cache
+            leads = JSON.parse(localStorage.getItem('wf_leads') || 'null') || getDefaultLeads();
+        }
+
         deletedLeads = JSON.parse(localStorage.getItem('wf_deleted_leads') || '[]');
         probabilities = JSON.parse(localStorage.getItem('wf_probs') || 'null') || JSON.parse(JSON.stringify(DEFAULT_PROBS));
         monthlyTarget = JSON.parse(localStorage.getItem('wf_target') || '200000');
@@ -243,7 +259,45 @@
         notifications = JSON.parse(localStorage.getItem('wf_notifs') || '[]');
     }
 
-    function saveLeads() { localStorage.setItem('wf_leads', JSON.stringify(leads)); }
+    async function saveLeads() {
+        // Save to localStorage immediately for UI responsiveness
+        localStorage.setItem('wf_leads', JSON.stringify(leads));
+
+        // Note: Individual lead updates are now handled by saveLead(id)
+        // This function is kept for backward compatibility
+    }
+
+    async function saveLead(lead) {
+        if (!lead || !lead.id) {
+            console.error('[saveLead] Invalid lead:', lead);
+            return false;
+        }
+
+        try {
+            const response = await fetch(`${getApiUrl()}/api/leads/${lead.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify(lead)
+            });
+
+            if (response.ok) {
+                // Update localStorage cache
+                localStorage.setItem('wf_leads', JSON.stringify(leads));
+                return true;
+            } else {
+                console.error('[saveLead] API update failed:', await response.text());
+                return false;
+            }
+        } catch (err) {
+            console.error('[saveLead] Error updating lead:', err);
+            // Still update localStorage cache even if API fails
+            localStorage.setItem('wf_leads', JSON.stringify(leads));
+            return false;
+        }
+    }
     function saveProbs() { localStorage.setItem('wf_probs', JSON.stringify(probabilities)); }
     function saveTarget() { localStorage.setItem('wf_target', JSON.stringify(monthlyTarget)); }
     function saveRoutes() { localStorage.setItem('wf_routes', JSON.stringify(serviceRouteData)); }
@@ -396,7 +450,8 @@
             });
 
             if (newCount > 0) {
-                saveLeads();
+                // Update localStorage cache (webhook leads are already in Supabase)
+                localStorage.setItem('wf_leads', JSON.stringify(leads));
                 saveNotifs();
                 updateBell();
                 renderCurrentPage();
@@ -1025,7 +1080,7 @@
         });
     }
 
-    function changeStage(leadId, newStage, skipChecks) {
+    async function changeStage(leadId, newStage, skipChecks) {
         const lead = leads.find(l => l.id === leadId);
         if (!lead) return;
         const oldStage = lead.stage;
@@ -1044,13 +1099,13 @@
 
         // Loss reason
         if (newStage === 'Lost') {
-            showLossModal(reason => {
+            showLossModal(async reason => {
                 lead.lossReason = reason;
                 lead.stage = newStage;
                 lead.stageChangedAt = Date.now();
                 lead.nextAction = '';
                 lead.nextActionDate = '';
-                saveLeads();
+                await saveLead(lead);
                 generateNotifications();
                 updateBellBadge();
                 fireAutomationTrigger({ type: 'stage_change', oldStage, newStage }, lead);
@@ -1073,7 +1128,7 @@
         if (oldStage === 'New' && newStage === 'Contacted' && !lead.firstContactAt) {
             lead.firstContactAt = Date.now();
         }
-        saveLeads();
+        await saveLead(lead);
         generateNotifications();
         updateBellBadge();
         fireAutomationTrigger({ type: 'stage_change', oldStage, newStage }, lead);
@@ -1230,7 +1285,7 @@
             if (existing) dupes.push(`Email "${email}" already exists (${existing.name})`);
         }
 
-        const doAdd = () => {
+        const doAdd = async () => {
             const lead = {
                 id: uid(),
                 name: document.getElementById('al-name').value.trim(),
@@ -1261,8 +1316,31 @@
                 firstContactAt: null,
                 lossReason: null
             };
+
+            // Add to local array immediately for UI responsiveness
             leads.push(lead);
-            saveLeads();
+            localStorage.setItem('wf_leads', JSON.stringify(leads));
+
+            // POST to API
+            try {
+                const response = await fetch(`${getApiUrl()}/api/leads`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify(lead)
+                });
+
+                if (!response.ok) {
+                    console.error('[doAdd] API create failed:', await response.text());
+                    // Local cache already updated, so continue
+                }
+            } catch (err) {
+                console.error('[doAdd] Error creating lead:', err);
+                // Local cache already updated, so continue
+            }
+
             generateNotifications();
             updateBellBadge();
             fireAutomationTrigger({ type: 'lead_created' }, lead);
@@ -1485,7 +1563,7 @@
         return false;
     }
 
-    function finishUpdate(lead, newStage, newQuote, newAction) {
+    async function finishUpdate(lead, newStage, newQuote, newAction) {
         const oldStage = lead.stage;
         if (oldStage !== newStage) {
             lead.stageChangedAt = Date.now();
@@ -1503,7 +1581,7 @@
             lead.nextAction = '';
             lead.nextActionDate = '';
         }
-        saveLeads();
+        await saveLead(lead);
         generateNotifications();
         updateBellBadge();
         if (oldStage !== newStage) {
@@ -1513,16 +1591,16 @@
         renderLeadDetail(lead.id);
     }
 
-    function quickNote(id, note) {
+    async function quickNote(id, note) {
         if (!note.trim()) return;
         const lead = leads.find(l => l.id === id);
         if (!lead) return;
         lead.notes = (lead.notes ? lead.notes + '\n' : '') + '[' + new Date().toLocaleString() + '] ' + note.trim();
-        saveLeads();
+        await saveLead(lead);
         alert('Note added.');
     }
 
-    function addActivityNote(id) {
+    async function addActivityNote(id) {
         const input = document.getElementById('ld-new-note');
         const text = input.value.trim();
         if (!text) return;
@@ -1534,31 +1612,31 @@
             timestamp: Date.now(),
             author: currentUser ? currentUser.name : 'Tyler'
         });
-        saveLeads();
+        await saveLead(lead);
         input.value = '';
         renderLeadDetail(id);
     }
 
-    function saveFollowUp(id) {
+    async function saveFollowUp(id) {
         const lead = leads.find(l => l.id === id);
         if (!lead) return;
         lead.follow_up_date = document.getElementById('ld-followup-date').value;
         lead.follow_up_note = document.getElementById('ld-followup-note').value.trim();
-        saveLeads();
+        await saveLead(lead);
         alert('Follow-up reminder saved.');
         renderLeadDetail(id);
     }
 
-    function clearFollowUp(id) {
+    async function clearFollowUp(id) {
         const lead = leads.find(l => l.id === id);
         if (!lead) return;
         lead.follow_up_date = '';
         lead.follow_up_note = '';
-        saveLeads();
+        await saveLead(lead);
         renderLeadDetail(id);
     }
 
-    function deleteLead(id) {
+    async function deleteLead(id) {
         if (!isAdmin()) { alert('Only administrators can delete leads.'); return; }
         if (!confirm('Archive this lead? You can restore it from the Archived section.')) return;
         const lead = leads.find(l => l.id === id);
@@ -1566,7 +1644,23 @@
         lead.deletedAt = Date.now();
         deletedLeads.push(lead);
         leads = leads.filter(l => l.id !== id);
-        saveLeads();
+
+        // Delete from API
+        try {
+            const response = await fetch(`${getApiUrl()}/api/leads/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${getToken()}` }
+            });
+
+            if (!response.ok) {
+                console.error('[deleteLead] API delete failed:', await response.text());
+            }
+        } catch (err) {
+            console.error('[deleteLead] Error deleting lead:', err);
+        }
+
+        // Update local caches
+        localStorage.setItem('wf_leads', JSON.stringify(leads));
         saveDeletedLeads();
         navigateTo('inbox');
     }
@@ -1892,13 +1986,33 @@
         }, 3000);
     }
 
-    function restoreLead(id) {
+    async function restoreLead(id) {
         const lead = deletedLeads.find(l => l.id === id);
         if (!lead) return;
         delete lead.deletedAt;
         leads.push(lead);
         deletedLeads = deletedLeads.filter(l => l.id !== id);
-        saveLeads();
+
+        // POST the restored lead back to the API
+        try {
+            const response = await fetch(`${getApiUrl()}/api/leads`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getToken()}`
+                },
+                body: JSON.stringify(lead)
+            });
+
+            if (!response.ok) {
+                console.error('[restoreLead] API restore failed:', await response.text());
+            }
+        } catch (err) {
+            console.error('[restoreLead] Error restoring lead:', err);
+        }
+
+        // Update local caches
+        localStorage.setItem('wf_leads', JSON.stringify(leads));
         saveDeletedLeads();
         renderArchived();
     }
@@ -2641,10 +2755,28 @@
         const file = input.files[0];
         if (!file) return;
         const reader = new FileReader();
-        reader.onload = e => {
+        reader.onload = async e => {
             try {
                 const data = JSON.parse(e.target.result);
-                if (data.leads) { leads = data.leads; saveLeads(); }
+                if (data.leads) {
+                    leads = data.leads;
+                    // Import leads to API - batch POST each lead
+                    for (const lead of leads) {
+                        try {
+                            await fetch(`${getApiUrl()}/api/leads`, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${getToken()}`
+                                },
+                                body: JSON.stringify(lead)
+                            });
+                        } catch (err) {
+                            console.error('[Import] Failed to import lead:', lead.id, err);
+                        }
+                    }
+                    localStorage.setItem('wf_leads', JSON.stringify(leads));
+                }
                 if (data.probabilities) { probabilities = data.probabilities; saveProbs(); }
                 if (data.monthlyTarget) { monthlyTarget = data.monthlyTarget; saveTarget(); }
                 if (data.serviceRouteData) { serviceRouteData = data.serviceRouteData; saveRoutes(); }
@@ -2689,13 +2821,13 @@
     }
 
     // ========== REASSIGN ==========
-    function reassign(id) {
+    async function reassign(id) {
         const lead = leads.find(l => l.id === id);
         if (!lead) return;
         const newSP = prompt('Reassign "' + lead.name + '" to which salesperson?\n\n' + SALESPEOPLE.join('\n'), lead.salesperson);
         if (newSP && SALESPEOPLE.includes(newSP)) {
             lead.salesperson = newSP;
-            saveLeads();
+            await saveLead(lead);
             generateNotifications();
             updateBellBadge();
             renderNotifications();
@@ -2714,7 +2846,7 @@
         document.getElementById('ld-activity-note').focus();
     }
 
-    function logActivity(id) {
+    async function logActivity(id) {
         if (!selectedActivityType) { alert('Pick an activity type first.'); return; }
         const noteInput = document.getElementById('ld-activity-note');
         const note = noteInput.value.trim();
@@ -2737,7 +2869,7 @@
             timestamp: Date.now(),
             author: currentUser ? currentUser.name : 'Tyler'
         });
-        saveLeads();
+        await saveLead(lead);
         selectedActivityType = null;
         renderLeadDetail(id);
     }
