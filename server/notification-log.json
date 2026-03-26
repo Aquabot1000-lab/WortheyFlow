@@ -3706,5 +3706,4031 @@
       }
     ],
     "timestamp": "2026-03-24T12:20:50.963Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "ghl-1774306755105",
+    "leadName": "Final CRM Test",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM14fde77089542950c2bc7b7a04543506",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Final CRM Test has not been contacted yet (10 min). Assigned to Ricardo. Phone: 210-555-0099"
+      }
+    ],
+    "timestamp": "2026-03-24T23:00:05.961Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "ghl-1774306755105",
+    "leadName": "Final CRM Test",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMc5f07038940be0a4011e40827fa53467",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Final CRM Test still untouched after 1 HOUR. Assigned to Ricardo. Phone: 210-555-0099. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-24T23:00:06.228Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0038",
+    "leadName": "Joe Mallen",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM58d3cb89b42067cf8d5af6fe9abd31af",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Joe Mallen has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 381-7933"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:06.587Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0038",
+    "leadName": "Joe Mallen",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd975a393bae2369dfe7a99634c585f14",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Joe Mallen still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 381-7933. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:06.868Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0043",
+    "leadName": "Patricia Palacios",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM352ee3a890a88580f91a97504df34a10",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Patricia Palacios has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 551-7622"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:07.166Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0043",
+    "leadName": "Patricia Palacios",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM945427f0d84ef596fe39a7ba3df04ba3",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Patricia Palacios still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 551-7622. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:07.410Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0083",
+    "leadName": "Gary Calkins",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMbaf4b35b016f3e7f13a45d1faeb7a35b",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Gary Calkins has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 226-6800"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:07.661Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0083",
+    "leadName": "Gary Calkins",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM8d45f9dd2baf61e504f126474769b4a5",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Gary Calkins still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 226-6800. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:07.909Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0105",
+    "leadName": "Denis Brown",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6d020f7fec4396990bf102cdd7379a16",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Denis Brown has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 286-4200"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:08.160Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0105",
+    "leadName": "Denis Brown",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfce922fd8f52f0b499ece0dde81f5bec",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Denis Brown still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 286-4200. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:08.389Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0102",
+    "leadName": "Victor Ortiz",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM826a5bad3b40c209313eb927a76453a4",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Victor Ortiz has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 730-1280"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:08.678Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0102",
+    "leadName": "Victor Ortiz",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2c6c9fa55badbd9dc14dff8ba8904d99",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Victor Ortiz still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 730-1280. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:08.927Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0034",
+    "leadName": "Kristen Hollaway True",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM844b26bc4ad14d3413b1b565ff7b9c41",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Kristen Hollaway True has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 551-5070"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:09.198Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0034",
+    "leadName": "Kristen Hollaway True",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM003fa7f6f7ea20066e67c2358ef00000",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Kristen Hollaway True still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 551-5070. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:09.443Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0078",
+    "leadName": "Andy Phu",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa1e0556bdb89248510c0efb56f9df051",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Andy Phu has not been contacted yet (10 min). Assigned to Ricardo. Phone: (360) 210-2391"
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:09.677Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0078",
+    "leadName": "Andy Phu",
+    "minutesInStage": 7040,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM7d9a866677fc43cc88e16145a86cfa29",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Andy Phu still untouched after 1 HOUR. Assigned to Ricardo. Phone: (360) 210-2391. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:20:09.929Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0098",
+    "leadName": "Quinton Burke",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM74c6dbe19591e16c8c966a0724328025",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Quinton Burke has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 325-8703"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:06.387Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0098",
+    "leadName": "Quinton Burke",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb5d9056673ee87ad4530a0de162172a5",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Quinton Burke still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 325-8703. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:06.635Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0152",
+    "leadName": "Brenda Garcia",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfd8514926ede76dbadfb29d42e05d25a",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Brenda Garcia has not been contacted yet (10 min). Assigned to Ricardo. Phone: (830) 635-1862"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:06.863Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0152",
+    "leadName": "Brenda Garcia",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMdd32c0fb4ba1e0c2a1910070fe186652",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Brenda Garcia still untouched after 1 HOUR. Assigned to Ricardo. Phone: (830) 635-1862. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:07.083Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0164",
+    "leadName": "Arlene Painagan",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe6a4345f2bfbc4a5b0c75aa372277887",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Arlene Painagan has not been contacted yet (10 min). Assigned to Anibal. Phone: (224) 830-4833"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:07.336Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0164",
+    "leadName": "Arlene Painagan",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa1e5113f6f4cf98d7542176f69c444f3",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Arlene Painagan still untouched after 1 HOUR. Assigned to Anibal. Phone: (224) 830-4833. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:07.554Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0180",
+    "leadName": "Veronica Guerrero",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM516631fa959367d4b8dc944362fccb90",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Veronica Guerrero has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 216-5975"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:07.786Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0180",
+    "leadName": "Veronica Guerrero",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM175bb63d123c39077d48bb98d21e37fb",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Veronica Guerrero still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 216-5975. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:08.036Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0037",
+    "leadName": "Fernando Hernandez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2f0d2b2d0533e12b7424586e0feaac75",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Fernando Hernandez has not been contacted yet (10 min). Assigned to Anibal. Phone: (915) 892-7537"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:08.283Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0037",
+    "leadName": "Fernando Hernandez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMc2bdad7d4833beff38c80f11ed5c12df",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Fernando Hernandez still untouched after 1 HOUR. Assigned to Anibal. Phone: (915) 892-7537. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:08.507Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0041",
+    "leadName": "Fernanda Johnson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9e7fb6855c7218a8d0f6942ea3953c66",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Fernanda Johnson has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 210-5466"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:08.785Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0041",
+    "leadName": "Fernanda Johnson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5044a91f2052f946576fa09d8fd75d00",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Fernanda Johnson still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 210-5466. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:09.015Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0168",
+    "leadName": "Laura Edwina Young",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM74f3ec9887fc70c32defb9dacc424a62",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Laura Edwina Young has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 347-5523"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:09.246Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0168",
+    "leadName": "Laura Edwina Young",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa61bc9795ca7c6a023e87275eb0f7a9b",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Laura Edwina Young still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 347-5523. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:09.491Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0167",
+    "leadName": "Juan Esteban Partridge",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM7a3ff949f3b716558a62f73a0358a1be",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Juan Esteban Partridge has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 633-7017"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:09.713Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0167",
+    "leadName": "Juan Esteban Partridge",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM62f8b28fbe4b2c302af6ffa28723834b",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Juan Esteban Partridge still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 633-7017. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:09.931Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0072",
+    "leadName": "Harlee-Marie Genzanto",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2ce9b7dd5a924ebb649ba043dfa05bf9",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Harlee-Marie Genzanto has not been contacted yet (10 min). Assigned to Anibal. Phone: (908) 910-5709"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:10.212Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0072",
+    "leadName": "Harlee-Marie Genzanto",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM946925db0eb9b8736c3f6285fabecf77",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Harlee-Marie Genzanto still untouched after 1 HOUR. Assigned to Anibal. Phone: (908) 910-5709. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:10.467Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0148",
+    "leadName": "Elizabeth Hanna Mathis",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2a8d2827d0ec41e83835070358c9d68d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Elizabeth Hanna Mathis has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 364-9708"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:10.704Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0148",
+    "leadName": "Elizabeth Hanna Mathis",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMc6ae33a47a2e0e90f645eb03ece13d89",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Elizabeth Hanna Mathis still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 364-9708. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:10.938Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0035",
+    "leadName": "Johnnie Johnson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM40ad2eea4158da83db6aeac9f9182790",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Johnnie Johnson has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 279-8224"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:11.187Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0035",
+    "leadName": "Johnnie Johnson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM284dac49ab2f49f2c2b7c1160c9d2ee3",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Johnnie Johnson still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 279-8224. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:11.396Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0069",
+    "leadName": "Benjamin Conerly",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM49592b39f2d18743857b1fc3994839e8",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Benjamin Conerly has not been contacted yet (10 min). Assigned to Anibal. Phone: (601) 395-6011"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:11.621Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0069",
+    "leadName": "Benjamin Conerly",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMffc1c9018363fc601b61b2a0719bd1e1",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Benjamin Conerly still untouched after 1 HOUR. Assigned to Anibal. Phone: (601) 395-6011. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:11.835Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0135",
+    "leadName": "Rick Dudley",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM911f38dd92140a0feeb9b72d913f31f3",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Rick Dudley has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 863-4561"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:12.034Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0135",
+    "leadName": "Rick Dudley",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM143c11edbfb575c5dbd4264ad78ad32b",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Rick Dudley still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 863-4561. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:12.265Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0172",
+    "leadName": "Gloria Saqwun",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6c5dc05a675e9553b23db58b400013a6",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Gloria Saqwun has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 952-1945"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:12.496Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0172",
+    "leadName": "Gloria Saqwun",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMae1defb7333b5e2cddab4d8d8c26b46d",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Gloria Saqwun still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 952-1945. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:12.742Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0030",
+    "leadName": "Daniel Hansen",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM865a359ff5129c5437bc0d747df8539b",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Daniel Hansen has not been contacted yet (10 min). Assigned to Ricardo. Phone: (361) 389-0031"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:12.977Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0030",
+    "leadName": "Daniel Hansen",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9ba094dc6d44a9e8bc02a3000a86ba79",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Daniel Hansen still untouched after 1 HOUR. Assigned to Ricardo. Phone: (361) 389-0031. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:13.174Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0052",
+    "leadName": "Carlos Recoder",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMde00d0e117caf668117e686fe6c562f1",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Carlos Recoder has not been contacted yet (10 min). Assigned to Anibal. Phone: (832) 759-0818"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:13.408Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0052",
+    "leadName": "Carlos Recoder",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM4f06cfedc03851d0a806b96cf539d34d",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Carlos Recoder still untouched after 1 HOUR. Assigned to Anibal. Phone: (832) 759-0818. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:13.628Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0036",
+    "leadName": "Torres Amanda Marie",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM0ad179dd2618d674a70cf59f9b5df50a",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Torres Amanda Marie has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 237-7132"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:13.856Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0036",
+    "leadName": "Torres Amanda Marie",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd87ac49a6c8f48d30fd271ab29b0adea",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Torres Amanda Marie still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 237-7132. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:14.091Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0056",
+    "leadName": "Tomas Lazo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM8d6179a22f0bb9440d01b6b884f53638",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Tomas Lazo has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 517-6188"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:14.319Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0056",
+    "leadName": "Tomas Lazo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa0b23cabda7c9e9550829ba960a99897",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Tomas Lazo still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 517-6188. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:14.534Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 2 Questions Follow-Up SMS",
+    "ruleId": "new-rule-27",
+    "leadId": "GHL-0263",
+    "leadName": "Jesse Mercer",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM8bc475a4719ff5397d1453bc6b840b77",
+        "to": "(210) 551-3725",
+        "message": "Hey Jesse Mercer, just checking in — did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! — Anibal"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:14.807Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0049",
+    "leadName": "Forrest Faircloth",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM27d12acf7b5e7437a4a3d154cb022aa4",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Forrest Faircloth has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 862-7414"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:15.047Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0049",
+    "leadName": "Forrest Faircloth",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM15b843e785514656e4cfbb3e46789b51",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Forrest Faircloth still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 862-7414. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:15.258Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0064",
+    "leadName": "Tyra Regino",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe129839d9464316b305a4938a3b36f4d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Tyra Regino has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 487-8734"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:15.493Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0064",
+    "leadName": "Tyra Regino",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM15be044cabab41e9771e165ba942f17a",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Tyra Regino still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 487-8734. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:15.846Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0063",
+    "leadName": "Ashley Harris",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1adff5418db7944d6b1f3a4297bb21c7",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Ashley Harris has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 440-8364"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:16.066Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0063",
+    "leadName": "Ashley Harris",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6c6dade27721cb9e7f375c1e8b5fa15f",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Ashley Harris still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 440-8364. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:16.274Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0124",
+    "leadName": "Ingrid Anderson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM94642ae6c3f62966ad01a7d70fd55734",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Ingrid Anderson has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 373-3167"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:16.484Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0124",
+    "leadName": "Ingrid Anderson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM46a9d2893d9fa4418bccbe9c6537d59d",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Ingrid Anderson still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 373-3167. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:16.692Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0100",
+    "leadName": "John Hall",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe8f27524228025b817b336428ed2b835",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: John Hall has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 556-5180"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:16.887Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0100",
+    "leadName": "John Hall",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMed20b37421c50b1c7c92961b02333b5c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: John Hall still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 556-5180. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:17.115Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0066",
+    "leadName": "Marcus Soliz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf9908b303d7606b5ba1a26f99cbf71c9",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Marcus Soliz has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 900-4620"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:17.325Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0066",
+    "leadName": "Marcus Soliz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2354129976e3c3c09eb56f16caf1b13c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Marcus Soliz still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 900-4620. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:17.570Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0177",
+    "leadName": "Amanda Ortiz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM05f62a6ee980978ab90fd00aefdbaad7",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Amanda Ortiz has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 373-1192"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:17.833Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0177",
+    "leadName": "Amanda Ortiz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM4353a5fbd426983ef3d6094a7317a4cc",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Amanda Ortiz still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 373-1192. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:18.053Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0106",
+    "leadName": "Edgar Modesto",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMc1220fc9ab899e3eae29105fe8f2bcd0",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Edgar Modesto has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 723-5550"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:18.288Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0106",
+    "leadName": "Edgar Modesto",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMea555185bd0d8f1455bc302a3581e086",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Edgar Modesto still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 723-5550. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:18.524Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0101",
+    "leadName": "Di Clo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd927fc36defc2bdf902c3a75078f18b1",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Di Clo has not been contacted yet (10 min). Assigned to Anibal. Phone: (903) 918-0708"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:18.752Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0101",
+    "leadName": "Di Clo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM265ba968136327e55fd748a6ad08454a",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Di Clo still untouched after 1 HOUR. Assigned to Anibal. Phone: (903) 918-0708. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:18.976Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 2 Questions Follow-Up SMS",
+    "ruleId": "new-rule-27",
+    "leadId": "GHL-0212",
+    "leadName": "Peter MULLER",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf08fd337e616ad51e99d8b12ecb2e58c",
+        "to": "(830) 494-5573",
+        "message": "Hey Peter MULLER, just checking in — did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! — Ricardo"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:19.191Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0120",
+    "leadName": "Chris Roberts",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM775f6e25faf581c83dd5ddf1d7697d9e",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Chris Roberts has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 209-2211"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:19.436Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0120",
+    "leadName": "Chris Roberts",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd49d3116817606f4281b83750fea982f",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Chris Roberts still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 209-2211. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:19.638Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0179",
+    "leadName": "Gavin Kolner",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe83df3e3ae737fdd94e8e4d1fa9abbfb",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Gavin Kolner has not been contacted yet (10 min). Assigned to Anibal. Phone: (505) 453-5436"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:19.845Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0179",
+    "leadName": "Gavin Kolner",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM290dd041e7923a08d74e6329aa2a11c0",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Gavin Kolner still untouched after 1 HOUR. Assigned to Anibal. Phone: (505) 453-5436. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:20.058Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0088",
+    "leadName": "Jim Wilson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMef1446f1bdc50b783d7253b3ecf7971a",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Jim Wilson has not been contacted yet (10 min). Assigned to Ricardo. Phone: (951) 551-5852"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:20.275Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0088",
+    "leadName": "Jim Wilson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM7268102f0eec9df387983f48848bff41",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Jim Wilson still untouched after 1 HOUR. Assigned to Ricardo. Phone: (951) 551-5852. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:20.478Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0073",
+    "leadName": "Geneva Williams Nevills",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM3bb60a3fd9b97188b575fd168901a9e2",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Geneva Williams Nevills has not been contacted yet (10 min). Assigned to Ricardo. Phone: (619) 750-4781"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:20.698Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0073",
+    "leadName": "Geneva Williams Nevills",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM163f597701046af32ddff705ffb51a68",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Geneva Williams Nevills still untouched after 1 HOUR. Assigned to Ricardo. Phone: (619) 750-4781. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:20.911Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0188",
+    "leadName": "Samantha Montes",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM7da42a9ff004ebf1317de5afdb3edecf",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Samantha Montes has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 636-0015"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:21.129Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0188",
+    "leadName": "Samantha Montes",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMbd9f6950398097b83a68bcd7effbb7c1",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Samantha Montes still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 636-0015. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:21.336Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0031",
+    "leadName": "Hiral Patel",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMcca513284c703594f7b1d8b15f81d75b",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Hiral Patel has not been contacted yet (10 min). Assigned to Anibal. Phone: (516) 697-5064"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:21.577Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0031",
+    "leadName": "Hiral Patel",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMcae3236268e04e0f3b535f75e0b8dd3a",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Hiral Patel still untouched after 1 HOUR. Assigned to Anibal. Phone: (516) 697-5064. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:21.785Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0114",
+    "leadName": "Mike Godin",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM95d84eea67a8c120afdd50bab3716835",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Mike Godin has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 900-8500"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:22.014Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0114",
+    "leadName": "Mike Godin",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1e67612d371a13a4e4300b3bce192b63",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Mike Godin still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 900-8500. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:22.226Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0095",
+    "leadName": "Bob Russell",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd4917943b5443da10aca3dc446035f01",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Bob Russell has not been contacted yet (10 min). Assigned to Anibal. Phone: (830) 399-3889"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:22.442Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0095",
+    "leadName": "Bob Russell",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9efc518b4e7535822e0be90e3a226c98",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Bob Russell still untouched after 1 HOUR. Assigned to Anibal. Phone: (830) 399-3889. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:22.681Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0131",
+    "leadName": "Linda Olivo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb93a67a7fee900a0182a623bc38df77f",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Linda Olivo has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 857-9467"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:22.907Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0131",
+    "leadName": "Linda Olivo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM7bceaa893e563c81e14050bd4a6e53d0",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Linda Olivo still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 857-9467. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:23.124Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0046",
+    "leadName": "Julio Bocanegra",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf7a91addcc8cc69945c79fd2134fe95f",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Julio Bocanegra has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 620-0444"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:23.345Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0046",
+    "leadName": "Julio Bocanegra",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1a856b9cd283ac8389ab2287807df9b8",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Julio Bocanegra still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 620-0444. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:23.586Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0219",
+    "leadName": "Stephen Rentz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM502eb9ed2a84d32500cf00a8f88bb2f8",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Stephen Rentz has not been contacted yet (10 min). Assigned to Anibal. Phone: (484) 318-6647"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:23.805Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0219",
+    "leadName": "Stephen Rentz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM482058d32912eba260f10afd7fda98de",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Stephen Rentz still untouched after 1 HOUR. Assigned to Anibal. Phone: (484) 318-6647. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:24.029Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0032",
+    "leadName": "Kathy Touchstone",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMc5afe8638e9a53477fc47a11f5b5101b",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Kathy Touchstone has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 313-6014"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:24.261Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0032",
+    "leadName": "Kathy Touchstone",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM72a3266c69c49d32be03327b9cfafa1e",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Kathy Touchstone still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 313-6014. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:24.482Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0149",
+    "leadName": "Claudia Maribel Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa09a6b6390a1f2598dea0e6afb55d27d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Claudia Maribel Perez has not been contacted yet (10 min). Assigned to Anibal. Phone: (404) 536-3801"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:24.695Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0149",
+    "leadName": "Claudia Maribel Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM20ab4e2008be568c0d91cee3ec27165c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Claudia Maribel Perez still untouched after 1 HOUR. Assigned to Anibal. Phone: (404) 536-3801. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:24.905Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0096",
+    "leadName": "Pepe Engler",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd4850923e1ad510af8799c89bcf887f1",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Pepe Engler has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 385-2568"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:25.122Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0096",
+    "leadName": "Pepe Engler",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMea0265daeed174a98986768547f54272",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Pepe Engler still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 385-2568. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:25.379Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0138",
+    "leadName": "Bart Pierce",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM4d0a0304f80ed97ae370d807a7b738cd",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Bart Pierce has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 540-8386"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:25.604Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0138",
+    "leadName": "Bart Pierce",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa60459dd36c73fb58d98004036c1f492",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Bart Pierce still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 540-8386. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:25.831Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0146",
+    "leadName": "Vonnie Macfarlane",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM4b5777fa37ee318a98afff9eb847beb2",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Vonnie Macfarlane has not been contacted yet (10 min). Assigned to Ricardo. Phone: (706) 627-0395"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:26.034Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0146",
+    "leadName": "Vonnie Macfarlane",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM7754ccc2059c68d45cac20a3c6a40561",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Vonnie Macfarlane still untouched after 1 HOUR. Assigned to Ricardo. Phone: (706) 627-0395. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:26.260Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0116",
+    "leadName": "Raul Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6362a556aadeabbcc633e9651209b2ea",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Raul Perez has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 288-4942"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:26.482Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0116",
+    "leadName": "Raul Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMed7ac71cb075efc5dbc69c647a289eb7",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Raul Perez still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 288-4942. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:26.697Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0162",
+    "leadName": "Chelsea Greenlee",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM278320e2672e42e980b541cb32c01678",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Chelsea Greenlee has not been contacted yet (10 min). Assigned to Ricardo. Phone: (417) 529-4684"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:26.900Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0162",
+    "leadName": "Chelsea Greenlee",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM8140f40cd097a7889035a5d06aa98c61",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Chelsea Greenlee still untouched after 1 HOUR. Assigned to Ricardo. Phone: (417) 529-4684. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:27.102Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0141",
+    "leadName": "Meghan Myers",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM40dd08358219f7c9e24de6425ddd39a8",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Meghan Myers has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 288-8745"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:27.322Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0141",
+    "leadName": "Meghan Myers",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM43926097704dcbb299c1a5ac19b1cefe",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Meghan Myers still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 288-8745. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:27.550Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0127",
+    "leadName": "Mike Finley",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMafbcf88d0637393e8d71d0d5bcd5b151",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Mike Finley has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 551-3874"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:27.763Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0127",
+    "leadName": "Mike Finley",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM499b731d32d69276ca4aee8bbdf2c682",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Mike Finley still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 551-3874. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:27.995Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0080",
+    "leadName": "Janet Stone",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe50625fcb7d11d1071915f064114843d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Janet Stone has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 793-9067"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:28.207Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0080",
+    "leadName": "Janet Stone",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1fd62dfd6e43f0fe70a4a7b53fed8729",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Janet Stone still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 793-9067. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:28.435Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0171",
+    "leadName": "Eddie Villanueva",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2d34f5ca0d8a867f750a46ada7faac3e",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Eddie Villanueva has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 587-9365"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:28.649Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0171",
+    "leadName": "Eddie Villanueva",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMcc9f53bc874c788ffddf99216d57d788",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Eddie Villanueva still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 587-9365. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:28.853Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0134",
+    "leadName": "Sandra Razo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd6d87b5cd787a15b5de526c17a1af00a",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Sandra Razo has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 727-1644"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:29.087Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0134",
+    "leadName": "Sandra Razo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMbc2d05759146cf6ebeb8ad8c5d45064d",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Sandra Razo still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 727-1644. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:29.288Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0150",
+    "leadName": "Patrick Wliay",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2e5e6aa6b1d79c3a73b5a8d7abd0bfb2",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Patrick Wliay has not been contacted yet (10 min). Assigned to Ricardo. Phone: (717) 421-1983"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:29.507Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0150",
+    "leadName": "Patrick Wliay",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9d439908601201d96da0d87548dc77ac",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Patrick Wliay still untouched after 1 HOUR. Assigned to Ricardo. Phone: (717) 421-1983. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:29.722Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0153",
+    "leadName": "Chalice Logan",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe5e5c8c034294330ed16eb15e670f43d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Chalice Logan has not been contacted yet (10 min). Assigned to Anibal. Phone: (832) 291-4731"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:29.931Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0153",
+    "leadName": "Chalice Logan",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb2011a01371b19875e6dc817ed825129",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Chalice Logan still untouched after 1 HOUR. Assigned to Anibal. Phone: (832) 291-4731. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:30.143Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0178",
+    "leadName": "Antonio Vasquez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5a6572af742c319cf522ef1e1570e3a7",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Antonio Vasquez has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 815-2792"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:30.380Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0178",
+    "leadName": "Antonio Vasquez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM29827038e6641241ed3f15126f86db54",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Antonio Vasquez still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 815-2792. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:30.646Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0059",
+    "leadName": "Gilberto Ramirez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMc9c0b45e994f5136943388f359823a95",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Gilberto Ramirez has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 459-9223"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:30.843Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0059",
+    "leadName": "Gilberto Ramirez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9e17a4cb7cb790507fe8fdbc7830be9f",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Gilberto Ramirez still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 459-9223. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:31.048Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0165",
+    "leadName": "Vengie Martinez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM94395677ae1932b2f09c9c889c273884",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Vengie Martinez has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 740-0000"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:31.259Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0165",
+    "leadName": "Vengie Martinez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM4475ebed5f3c271503809b5bd16bd4dd",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Vengie Martinez still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 740-0000. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:31.468Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0175",
+    "leadName": "Margarita Ibarra",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2dd6e652d7ffab22e724595a9b31029c",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Margarita Ibarra has not been contacted yet (10 min). Assigned to Ricardo. Phone: (512) 552-9387"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:31.686Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0175",
+    "leadName": "Margarita Ibarra",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb0db32c191373f72448a02dcee58e48c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Margarita Ibarra still untouched after 1 HOUR. Assigned to Ricardo. Phone: (512) 552-9387. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:31.904Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0170",
+    "leadName": "Kimberly Tillman",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf85baa03341589da2d6a45441e82058a",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Kimberly Tillman has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 452-1996"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:32.139Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0170",
+    "leadName": "Kimberly Tillman",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfb0ee1cc3905901cbfaa9617dcedf833",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Kimberly Tillman still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 452-1996. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:32.345Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0122",
+    "leadName": "Keith Smallwood",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM0a45c9fc40b44f4ea68b6588ab4a2412",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Keith Smallwood has not been contacted yet (10 min). Assigned to Ricardo. Phone: (830) 360-0520"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:32.539Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0122",
+    "leadName": "Keith Smallwood",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM41632db708e84a79e942001e843e10df",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Keith Smallwood still untouched after 1 HOUR. Assigned to Ricardo. Phone: (830) 360-0520. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:32.757Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0042",
+    "leadName": "Elizabeth Reynolds",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa1e2f3dde9c6060fba1c4ece6437e065",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Elizabeth Reynolds has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 765-6583"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:32.979Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0042",
+    "leadName": "Elizabeth Reynolds",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMedb32f29211aaa5ed5f06514ec6b2c99",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Elizabeth Reynolds still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 765-6583. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:33.194Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0215",
+    "leadName": "Diane Cervenka",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5797cd8aece20d91c4a1b1a431169eca",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Diane Cervenka has not been contacted yet (10 min). Assigned to Ricardo. Phone: (713) 206-8956"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:33.399Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0215",
+    "leadName": "Diane Cervenka",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM210503ab518140618c8d080ee3060d6f",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Diane Cervenka still untouched after 1 HOUR. Assigned to Ricardo. Phone: (713) 206-8956. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:33.603Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0129",
+    "leadName": "Nicole Walters Dupriest",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd6fa7e407db84a81a46fda0c63b1b959",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Nicole Walters Dupriest has not been contacted yet (10 min). Assigned to Anibal. Phone: (314) 374-3287"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:33.815Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0129",
+    "leadName": "Nicole Walters Dupriest",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM3f965dbf3dd1d4802d6bcfb88f07f576",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Nicole Walters Dupriest still untouched after 1 HOUR. Assigned to Anibal. Phone: (314) 374-3287. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:34.016Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0184",
+    "leadName": "Marty Madsen",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd39efe73a238857709c2967b4ad5c3f4",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Marty Madsen has not been contacted yet (10 min). Assigned to Anibal. Phone: (513) 504-8680"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:34.227Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0184",
+    "leadName": "Marty Madsen",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1b86342bec27fd377d6faa3c7c64cf5a",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Marty Madsen still untouched after 1 HOUR. Assigned to Anibal. Phone: (513) 504-8680. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:34.440Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0151",
+    "leadName": "Bob White",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM3330e04f211b9c3952d8cbf453300467",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Bob White has not been contacted yet (10 min). Assigned to Anibal. Phone: (805) 878-5700"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:34.689Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0151",
+    "leadName": "Bob White",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM70157126b2b8c81c1bb79d76579c462c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Bob White still untouched after 1 HOUR. Assigned to Anibal. Phone: (805) 878-5700. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:34.905Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0029",
+    "leadName": "Terrence Short",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf6c1018635598cdfd3dd32119633e799",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Terrence Short has not been contacted yet (10 min). Assigned to Anibal. Phone: (713) 392-1743"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:35.120Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0029",
+    "leadName": "Terrence Short",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5538631ea2327fa96c5c6611bf2ac536",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Terrence Short still untouched after 1 HOUR. Assigned to Anibal. Phone: (713) 392-1743. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:35.339Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0232",
+    "leadName": "Tanneka Neal",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1cd2da3549dacf724afc75d195c1b266",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Tanneka Neal has not been contacted yet (10 min). Assigned to Ricardo. Phone: (214) 399-4506"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:35.543Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0232",
+    "leadName": "Tanneka Neal",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb881985792b3896182c8f846523417da",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Tanneka Neal still untouched after 1 HOUR. Assigned to Ricardo. Phone: (214) 399-4506. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:35.775Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 2 Questions Follow-Up SMS",
+    "ruleId": "new-rule-27",
+    "leadId": "GHL-0252",
+    "leadName": "Jose Lius Alvarez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMbf88c96867b4ab72394b0c3def555b3b",
+        "to": "(956) 475-8203",
+        "message": "Hey Jose Lius Alvarez, just checking in — did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! — Ricardo"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:35.991Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0074",
+    "leadName": "Cesar Cavazos",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM9dc5b42aa30220726e2878f11e624486",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Cesar Cavazos has not been contacted yet (10 min). Assigned to Anibal. Phone: (830) 335-9105"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:36.214Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0074",
+    "leadName": "Cesar Cavazos",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb68c29f2d118087320e483c7c4d58cef",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Cesar Cavazos still untouched after 1 HOUR. Assigned to Anibal. Phone: (830) 335-9105. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:36.427Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0039",
+    "leadName": "Randa Shawa",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa40a67812116e5a101c09e556ea2487d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Randa Shawa has not been contacted yet (10 min). Assigned to Anibal. Phone: (832) 917-4073"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:36.671Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0039",
+    "leadName": "Randa Shawa",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5f216e57e4fa2d38a782573be9931637",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Randa Shawa still untouched after 1 HOUR. Assigned to Anibal. Phone: (832) 917-4073. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:36.891Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 2 Questions Follow-Up SMS",
+    "ruleId": "new-rule-27",
+    "leadId": "GHL-0240",
+    "leadName": "Pierre",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMffe57596f0590bc001838d2e8a1ea644",
+        "to": "(504) 220-3953",
+        "message": "Hey Pierre, just checking in — did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! — Ricardo"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:37.130Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0079",
+    "leadName": "Pedro Mejia",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfe67fc4ca6cc049606b2603087bc7305",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Pedro Mejia has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 396-2452"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:37.356Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0079",
+    "leadName": "Pedro Mejia",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5c90ab24d42a83b38b34f2d22ed3d8c3",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Pedro Mejia still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 396-2452. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:37.551Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0071",
+    "leadName": "Nallely Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM20fcf5a764c34db98e4ce917d3e1ec8f",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Nallely Perez has not been contacted yet (10 min). Assigned to Ricardo. Phone: (915) 820-2255"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:37.756Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0071",
+    "leadName": "Nallely Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM79ad4e71130a2c743c12d3464d4a708c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Nallely Perez still untouched after 1 HOUR. Assigned to Ricardo. Phone: (915) 820-2255. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:37.960Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0060",
+    "leadName": "Lety Rodriguez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM60ebe36f85f7bec0e8765fd71bde0382",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Lety Rodriguez has not been contacted yet (10 min). Assigned to Anibal. Phone: (575) 308-9938"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:38.174Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0060",
+    "leadName": "Lety Rodriguez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM52b87a3e5dd7ff5965b9b0329b703148",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Lety Rodriguez still untouched after 1 HOUR. Assigned to Anibal. Phone: (575) 308-9938. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:38.388Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0155",
+    "leadName": "Victoria Vergara",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf7ddfa5086a590f8525fb7241c6bb564",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Victoria Vergara has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 548-0335"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:38.593Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0155",
+    "leadName": "Victoria Vergara",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM3b6ac7b013faae40acdeb5a9ea78d339",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Victoria Vergara still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 548-0335. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:38.805Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0108",
+    "leadName": "John Bonney",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd5ddbfaae7b5b711d321e93808aba518",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: John Bonney has not been contacted yet (10 min). Assigned to Anibal. Phone: (505) 503-3472"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:39.026Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0108",
+    "leadName": "John Bonney",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1c37914e1a639a1b823b64172346cb05",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: John Bonney still untouched after 1 HOUR. Assigned to Anibal. Phone: (505) 503-3472. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:39.259Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0076",
+    "leadName": "Kimberly London",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM363273ba9d22786c846a95d4421518ba",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Kimberly London has not been contacted yet (10 min). Assigned to Ricardo. Phone: (910) 823-6201"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:39.466Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0076",
+    "leadName": "Kimberly London",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb30da200d8e0f6b5b85cdbcf4df1f695",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Kimberly London still untouched after 1 HOUR. Assigned to Ricardo. Phone: (910) 823-6201. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:39.680Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0128",
+    "leadName": "Catherine O'connor Shaver",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM12ad66b17e561de101f7b648033db5db",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Catherine O'connor Shaver has not been contacted yet (10 min). Assigned to Ricardo. Phone: (830) 431-4208"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:39.881Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0128",
+    "leadName": "Catherine O'connor Shaver",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM0f04110a59fa6e7d79bcf8081abe71fd",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Catherine O'connor Shaver still untouched after 1 HOUR. Assigned to Ricardo. Phone: (830) 431-4208. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:40.093Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0144",
+    "leadName": "Jessica De Leon",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMf71359e1b876a9bbb9e827b0857eaee5",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Jessica De Leon has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 439-4994"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:40.295Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0144",
+    "leadName": "Jessica De Leon",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6daf63d59645624324717eaaa04c3c9e",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Jessica De Leon still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 439-4994. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:40.508Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0125",
+    "leadName": "Antoine Williams",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfd9f23ed338eeb8e8fde746c2a2b98fe",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Antoine Williams has not been contacted yet (10 min). Assigned to Ricardo. Phone: (757) 243-7939"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:40.715Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0125",
+    "leadName": "Antoine Williams",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM0f99413bbedf2db579aad72052737f08",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Antoine Williams still untouched after 1 HOUR. Assigned to Ricardo. Phone: (757) 243-7939. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:40.902Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0061",
+    "leadName": "Tony Washington",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM5fa2691eecd86e4fbed644ff191d5831",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Tony Washington has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 269-2837"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:41.118Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0061",
+    "leadName": "Tony Washington",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfecf344131d5a3cf4caa93230e9f1525",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Tony Washington still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 269-2837. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:41.320Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0161",
+    "leadName": "Darlene Thompson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6a826aefd3e9c1036453eb085dbbedfc",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Darlene Thompson has not been contacted yet (10 min). Assigned to Anibal. Phone: (713) 252-2128"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:41.527Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0161",
+    "leadName": "Darlene Thompson",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd5c8ff553f719b1a7c0f44d6b1e34e12",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Darlene Thompson still untouched after 1 HOUR. Assigned to Anibal. Phone: (713) 252-2128. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:41.742Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0169",
+    "leadName": "Marty Reyes",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM98068408a7a85dd9204f00fec1c7fc40",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Marty Reyes has not been contacted yet (10 min). Assigned to Ricardo. Phone: (512) 773-5848"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:41.935Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0169",
+    "leadName": "Marty Reyes",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMff196eb2ebf7b32d5bf797a8c5061496",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Marty Reyes still untouched after 1 HOUR. Assigned to Ricardo. Phone: (512) 773-5848. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:42.148Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0077",
+    "leadName": "Christopher Kent",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMce99e5915bdc547dcdbbcb3670cb3836",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Christopher Kent has not been contacted yet (10 min). Assigned to Anibal. Phone: (513) 284-0454"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:42.345Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0077",
+    "leadName": "Christopher Kent",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM74bb3cbca44199e52acaee511d4a3e8f",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Christopher Kent still untouched after 1 HOUR. Assigned to Anibal. Phone: (513) 284-0454. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:42.599Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0158",
+    "leadName": "Liz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMed767ef4d7e37b1b4465818d6958a464",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Liz has not been contacted yet (10 min). Assigned to Ricardo. Phone: (808) 369-5636"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:42.817Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0158",
+    "leadName": "Liz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM279e010dd6928a48dac8d7e56d60454b",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Liz still untouched after 1 HOUR. Assigned to Ricardo. Phone: (808) 369-5636. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:43.022Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0067",
+    "leadName": "Roger Heather Brandon",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM42cb058650c2ea6357b4b912891351da",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Roger Heather Brandon has not been contacted yet (10 min). Assigned to Ricardo. Phone: (210) 508-7818"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:43.222Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0067",
+    "leadName": "Roger Heather Brandon",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM307701672ae52f1ab39079f4aba5d3b8",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Roger Heather Brandon still untouched after 1 HOUR. Assigned to Ricardo. Phone: (210) 508-7818. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:43.455Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0028",
+    "leadName": "Aubrey Schuster",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM4f8fb41058e1093aa24eac07ef95bc28",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Aubrey Schuster has not been contacted yet (10 min). Assigned to Ricardo. Phone: (757) 613-4643"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:43.695Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0028",
+    "leadName": "Aubrey Schuster",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMac57ed28f9cdd9d5f2bc0388ee3996c8",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Aubrey Schuster still untouched after 1 HOUR. Assigned to Ricardo. Phone: (757) 613-4643. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:43.894Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0147",
+    "leadName": "Bryan Soto",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2d69cd4259d7eecfb38194bad3322758",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Bryan Soto has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 542-0387"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:44.104Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0147",
+    "leadName": "Bryan Soto",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM8b1e9a738f30033ef12bad1069392481",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Bryan Soto still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 542-0387. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:44.331Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0166",
+    "leadName": "Shanna Brantley",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2edb644b335be66585d4e56eb158c538",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Shanna Brantley has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 683-1234"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:44.563Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0166",
+    "leadName": "Shanna Brantley",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM75c5da5f0cd58cf628bc828981e34607",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Shanna Brantley still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 683-1234. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:44.819Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0117",
+    "leadName": "Michelle Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMa39be8ae5b20dedf7f4b29b1ac96f11d",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Michelle Perez has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 369-1217"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:45.035Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0117",
+    "leadName": "Michelle Perez",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM31c6cc9035da6becad5deffbf5441708",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Michelle Perez still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 369-1217. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:45.309Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0209",
+    "leadName": "Latonyia Mikell",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6e9f67f98ea2010c36c14a1c5686fc05",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Latonyia Mikell has not been contacted yet (10 min). Assigned to Ricardo. Phone: (843) 276-3969"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:45.536Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0209",
+    "leadName": "Latonyia Mikell",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMcab979fcbaf61a3c44cfcf0b2e35419c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Latonyia Mikell still untouched after 1 HOUR. Assigned to Ricardo. Phone: (843) 276-3969. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:45.741Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 2 Questions Follow-Up SMS",
+    "ruleId": "new-rule-27",
+    "leadId": "GHL-0145",
+    "leadName": "Alea Creighton Schuyler",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM24bdfec050e906308e7c3690d11e222b",
+        "to": "(619) 929-5103",
+        "message": "Hey Alea Creighton Schuyler, just checking in — did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! — Anibal"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:45.971Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0053",
+    "leadName": "Deon Hodo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM27694cf9ce26ca059a9e90a4d58ab766",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Deon Hodo has not been contacted yet (10 min). Assigned to Ricardo. Phone: (315) 489-5624"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:46.180Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0053",
+    "leadName": "Deon Hodo",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM55ac26adc68185d55fc5caae6d49b792",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Deon Hodo still untouched after 1 HOUR. Assigned to Ricardo. Phone: (315) 489-5624. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:46.403Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0195",
+    "leadName": "Pablo Ruiz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfb4f83674683ffe16556e9aa01a827cb",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Pablo Ruiz has not been contacted yet (10 min). Assigned to Anibal. Phone: (956) 432-5361"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:46.629Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0195",
+    "leadName": "Pablo Ruiz",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMd753a4a546c3131753d845c655333638",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Pablo Ruiz still untouched after 1 HOUR. Assigned to Anibal. Phone: (956) 432-5361. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:46.836Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0109",
+    "leadName": "Brandon Upshaw",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM77a0a99de5f1d931481f0a11f98be0ba",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Brandon Upshaw has not been contacted yet (10 min). Assigned to Ricardo. Phone: (512) 557-0349"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:47.058Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0109",
+    "leadName": "Brandon Upshaw",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM0f8d65523e496be526ce06f2360c7886",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Brandon Upshaw still untouched after 1 HOUR. Assigned to Ricardo. Phone: (512) 557-0349. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:47.255Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0121",
+    "leadName": "Farrell Fletcher",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMe3829abf5f30b53a2de63f61951d18c4",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Farrell Fletcher has not been contacted yet (10 min). Assigned to Anibal. Phone: (210) 617-8816"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:47.476Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0121",
+    "leadName": "Farrell Fletcher",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMdd0303057cde130d8d6b4cff8bb5c2a0",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Farrell Fletcher still untouched after 1 HOUR. Assigned to Anibal. Phone: (210) 617-8816. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:47.697Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0026",
+    "leadName": "Tim Perry",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMbe16c5e94e29fc5a0c8b86fed96e1e3e",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Tim Perry has not been contacted yet (10 min). Assigned to Anibal. Phone: (831) 207-3424"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:47.899Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0026",
+    "leadName": "Tim Perry",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM2f84243247dd611f043a745d4c8c630f",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Tim Perry still untouched after 1 HOUR. Assigned to Anibal. Phone: (831) 207-3424. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:48.122Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "GHL-0157",
+    "leadName": "Jeanette Davila",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb2433b715a87653f5aff8aff0c13d04b",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Jeanette Davila has not been contacted yet (10 min). Assigned to Anibal. Phone: (254) 371-5906"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:48.327Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "GHL-0157",
+    "leadName": "Jeanette Davila",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM22eb487cbb41c425ffd210aca18f5724",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Jeanette Davila still untouched after 1 HOUR. Assigned to Anibal. Phone: (254) 371-5906. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:48.532Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 2 Questions Follow-Up SMS",
+    "ruleId": "new-rule-27",
+    "leadId": "GHL-0241",
+    "leadName": "Bobbi Eugenia Deras Imboden",
+    "minutesInStage": 7045,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM66f25c4615d229bf68985301861c0495",
+        "to": "(915) 222-2668",
+        "message": "Hey Bobbi Eugenia Deras Imboden, just checking in — did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! — Anibal"
+      }
+    ],
+    "timestamp": "2026-03-25T12:25:48.769Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "ghl-1774357173859",
+    "leadName": "Test",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM777b1f6a1c1790f6486fafa9b0228cfb",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Test has not been contacted yet (10 min). Assigned to Ricardo. Phone: 2105551234"
+      }
+    ],
+    "timestamp": "2026-03-25T13:00:06.620Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "ghl-1774357173859",
+    "leadName": "Test",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMece4106b3a6d58e415408abca0970330",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Test still untouched after 1 HOUR. Assigned to Ricardo. Phone: 2105551234. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T13:00:06.888Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 5 Social Proof Email",
+    "ruleId": "new-rule-28",
+    "leadId": "GHL-0263",
+    "leadName": "Jesse Mercer",
+    "minutesInStage": 7200,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "droptinefencing@mail.com",
+        "subject": "See What Your Neighbors Are Building 🏊"
+      }
+    ],
+    "timestamp": "2026-03-25T15:00:06.957Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 5 Social Proof Email",
+    "ruleId": "new-rule-28",
+    "leadId": "GHL-0241",
+    "leadName": "Bobbi Eugenia Deras Imboden",
+    "minutesInStage": 7200,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "bobbideras3@gmail.com",
+        "subject": "See What Your Neighbors Are Building 🏊"
+      }
+    ],
+    "timestamp": "2026-03-25T15:00:07.056Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 5 Social Proof Email",
+    "ruleId": "new-rule-28",
+    "leadId": "GHL-0212",
+    "leadName": "Peter MULLER",
+    "minutesInStage": 7200,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "pdm285@gmail.com",
+        "subject": "See What Your Neighbors Are Building 🏊"
+      }
+    ],
+    "timestamp": "2026-03-25T15:00:07.163Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 5 Social Proof Email",
+    "ruleId": "new-rule-28",
+    "leadId": "GHL-0252",
+    "leadName": "Jose Lius Alvarez",
+    "minutesInStage": 7200,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "louisalvarez39@gmail.com",
+        "subject": "See What Your Neighbors Are Building 🏊"
+      }
+    ],
+    "timestamp": "2026-03-25T15:00:07.277Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 5 Social Proof Email",
+    "ruleId": "new-rule-28",
+    "leadId": "GHL-0240",
+    "leadName": "Pierre",
+    "minutesInStage": 7200,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "astpboucher@gmail.com",
+        "subject": "See What Your Neighbors Are Building 🏊"
+      }
+    ],
+    "timestamp": "2026-03-25T15:00:07.376Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Proposal Sent — Day 5 Social Proof Email",
+    "ruleId": "new-rule-28",
+    "leadId": "GHL-0145",
+    "leadName": "Alea Creighton Schuyler",
+    "minutesInStage": 7200,
+    "actionResults": [
+      {
+        "type": "email",
+        "success": true,
+        "to": "creighta@yahoo.com",
+        "subject": "See What Your Neighbors Are Building 🏊"
+      }
+    ],
+    "timestamp": "2026-03-25T15:00:07.485Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "ghl-1774365001609",
+    "leadName": "Pixel Test - Worthey",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM6efbba1f0f6c5cb82a01a529863b5be2",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Pixel Test - Worthey has not been contacted yet (10 min). Assigned to Richard. Phone: 22222222222"
+      }
+    ],
+    "timestamp": "2026-03-25T15:10:06.595Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "ghl-1774365001609",
+    "leadName": "Pixel Test - Worthey",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMabe374c112bfe0dc6fd6aed82980e6c0",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Pixel Test - Worthey still untouched after 1 HOUR. Assigned to Richard. Phone: 22222222222. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T15:10:06.887Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "ghl-1774365548120",
+    "leadName": "Service Test First Name",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMb0b1bf6053e411bff2f0b10bcfb686f0",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Service Test First Name has not been contacted yet (10 min). Assigned to Richard. Phone: +1 602 999 0011"
+      }
+    ],
+    "timestamp": "2026-03-25T15:20:06.558Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "ghl-1774365548120",
+    "leadName": "Service Test First Name",
+    "minutesInStage": 1440,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM98afc2bfe2f41200039a0d90037d53a5",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Service Test First Name still untouched after 1 HOUR. Assigned to Richard. Phone: +1 602 999 0011. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T15:20:06.806Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "ghl-1774381340660",
+    "leadName": "G",
+    "minutesInStage": 1442,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMcb7d68829b88f7957c34f39e8b550745",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: G has not been contacted yet (10 min). Assigned to Ricardo. Phone: +1 830 212 0577"
+      }
+    ],
+    "timestamp": "2026-03-25T19:45:07.139Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "ghl-1774381340660",
+    "leadName": "G",
+    "minutesInStage": 1442,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMeab036f0a9a3b4a1e918d1c7b1715381",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: G still untouched after 1 HOUR. Assigned to Ricardo. Phone: +1 830 212 0577. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T19:45:07.344Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Alert — 10 min (Tyler)",
+    "ruleId": "rule-07",
+    "leadId": "ghl-1774306755105",
+    "leadName": "Final CRM Test",
+    "minutesInStage": 2880,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SMfecd9da1d95f02a1da4dd86b8547a344",
+        "to": "+12105598725",
+        "message": "⚠️ ALERT: Final CRM Test has not been contacted yet (10 min). Assigned to Ricardo. Phone: 210-555-0099"
+      }
+    ],
+    "timestamp": "2026-03-25T23:00:07.016Z"
+  },
+  {
+    "action": "server_duration_check",
+    "ruleName": "Untouched Lead Escalation — 1 hour (Tyler)",
+    "ruleId": "rule-08",
+    "leadId": "ghl-1774306755105",
+    "leadName": "Final CRM Test",
+    "minutesInStage": 2880,
+    "actionResults": [
+      {
+        "type": "sms",
+        "success": true,
+        "sid": "SM1e440ac0cc80f39fc856cab794971a3c",
+        "to": "+12105598725",
+        "message": "🚨 ESCALATION: Final CRM Test still untouched after 1 HOUR. Assigned to Ricardo. Phone: 210-555-0099. This lead is going cold."
+      }
+    ],
+    "timestamp": "2026-03-25T23:00:07.265Z"
   }
 ]
