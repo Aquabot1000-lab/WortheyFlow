@@ -49,17 +49,42 @@
         const errEl = document.getElementById('login-error');
         errEl.classList.add('hidden');
         const url = getApiUrl();
+        const btn = document.querySelector('#login-form button[type="submit"]');
+        if (btn) { btn.disabled = true; btn.textContent = 'Signing in...'; }
         fetch(url + '/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
-        }).then(r => r.json()).then(d => {
-            if (d.error) { errEl.textContent = d.error; errEl.classList.remove('hidden'); return; }
+        }).then(r => {
+            if (!r.ok) throw new Error('Server error: ' + r.status);
+            return r.json();
+        }).then(d => {
+            if (d.error) { errEl.textContent = d.error; errEl.classList.remove('hidden'); if(btn){btn.disabled=false;btn.textContent='Sign In';} return; }
             setToken(d.token);
             setStoredUser(d.user);
             currentUser = d.user;
             bootApp();
-        }).catch(err => { errEl.textContent = 'Cannot reach server.'; errEl.classList.remove('hidden'); });
+        }).catch(err => {
+            console.error('Login fetch error:', err);
+            // Retry once after 1 second (Railway cold start)
+            setTimeout(() => {
+                fetch(url + '/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                }).then(r => r.json()).then(d => {
+                    if (d.error) { errEl.textContent = d.error; errEl.classList.remove('hidden'); if(btn){btn.disabled=false;btn.textContent='Sign In';} return; }
+                    setToken(d.token);
+                    setStoredUser(d.user);
+                    currentUser = d.user;
+                    bootApp();
+                }).catch(err2 => {
+                    errEl.textContent = 'Cannot reach server. Please check your connection and try again.';
+                    errEl.classList.remove('hidden');
+                    if(btn){btn.disabled=false;btn.textContent='Sign In';}
+                });
+            }, 1000);
+        });
     }
 
     function logout() {
