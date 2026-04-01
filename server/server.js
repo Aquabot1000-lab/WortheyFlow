@@ -245,11 +245,15 @@ async function sendEmail(to, subject, body, options = {}) {
         if (options.replyTo) {
             msg.replyTo = options.replyTo;
         }
-        // BCC: notifications + AquaBot for reply tracking
+        // BCC: Tyler + AquaBot for full visibility
         msg.bcc = [
-            { email: 'notifications@wortheyaquatics.com' },
+            { email: 'tyler@wortheyaquatics.com' },
             { email: 'aquabot1000@icloud.com' }
         ];
+        // Reply-to: route through detection if no specific replyTo set
+        if (!msg.replyTo) {
+            msg.replyTo = { email: 'tyler@wortheyaquatics.com', name: 'Tyler Worthey' };
+        }
         await sg.send(msg);
         console.log('[EMAIL SENT]', to, subject, options.replyTo ? `(reply-to: ${options.replyTo})` : '');
         return { success: true, to, subject };
