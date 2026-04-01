@@ -229,6 +229,7 @@
     let leafletMap = null;
     let leafletMarkers = [];
     let currentFilter = 'all';
+    let searchQuery = '';
     let reviewStart = null;
     let reviewEnd = null;
 
@@ -963,7 +964,15 @@
     // ========== LEAD INBOX ==========
     function renderInbox() {
         const el = document.getElementById('page-inbox');
-        el.innerHTML = getStageGuideBanner() + `
+        el.innerHTML = `
+            <div id="search-container" style="margin-bottom:12px;position:relative;z-index:50;">
+                <div style="position:relative;">
+                    <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;opacity:0.5;pointer-events:none;">🔍</span>
+                    <input type="text" id="global-search" placeholder="Search by name, phone, email, address, job type, salesperson..." 
+                        style="width:100%;box-sizing:border-box;padding:12px 16px 12px 44px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:#f1f5f9;font-size:15px;font-family:inherit;outline:none;transition:border 0.2s,box-shadow 0.2s;">
+                </div>
+            </div>
+        ` + getStageGuideBanner() + `
             <div class="filter-bar">
                 <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="WF.setFilter('all')">All Leads</button>
                 <button class="filter-btn ${currentFilter === 'today' ? 'active' : ''}" onclick="WF.setFilter('today')">Today's Follow-ups</button>
@@ -986,6 +995,15 @@
             </div>
         `;
         renderInboxRows();
+        // Attach search event listeners (more reliable than inline handlers)
+        const searchEl = document.getElementById('global-search');
+        if (searchEl) {
+            if (searchQuery) searchEl.value = searchQuery;
+            searchEl.addEventListener('input', function(e) { WF.handleSearch(e.target.value); });
+            searchEl.addEventListener('keydown', function(e) { if(e.key==='Escape'){this.value='';WF.handleSearch('');this.blur();} });
+            searchEl.addEventListener('focus', function() { this.style.borderColor='#0077B6';this.style.boxShadow='0 0 0 3px rgba(0,119,182,0.2)'; });
+            searchEl.addEventListener('blur', function() { this.style.borderColor='rgba(255,255,255,0.15)';this.style.boxShadow='none'; });
+        }
     }
 
     function getFilteredLeads() {
@@ -1023,7 +1041,17 @@
     function renderInboxRows() {
         const tbody = document.getElementById('inbox-body');
         if (!tbody) return;
-        const filtered = getFilteredLeads();
+        let filtered = getFilteredLeads();
+        // Apply search filter
+        if (searchQuery) {
+            filtered = filtered.filter(l => {
+                const haystack = [
+                    l.name, l.phone, l.email, l.address, l.city, l.zip,
+                    l.jobType, l.salesperson, l.stage, l.source, l.company, l.notes
+                ].filter(Boolean).join(' ').toLowerCase();
+                return haystack.includes(searchQuery);
+            });
+        }
         tbody.innerHTML = filtered.map(l => {
             const dis = daysInStage(l);
             const dc = daysColor(dis);
@@ -1173,6 +1201,18 @@
     function renderServiceInbox() {
         const el = document.getElementById('page-service-inbox');
         el.innerHTML = `
+            <div class="search-bar" style="margin-bottom:12px;">
+                <div style="position:relative;max-width:100%;">
+                    <span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:18px;opacity:0.5;">🔍</span>
+                    <input type="text" id="service-search" placeholder="Search service leads..." 
+                        style="width:100%;box-sizing:border-box;padding:12px 16px 12px 44px;border-radius:10px;border:2px solid #334155;background:#1e293b;color:#f1f5f9;font-size:15px;font-family:inherit;outline:none;transition:border 0.2s,box-shadow 0.2s;position:relative;z-index:10;"
+                        onfocus="this.style.borderColor='#0077B6';this.style.boxShadow='0 0 0 3px rgba(0,119,182,0.2)'" 
+                        onblur="this.style.borderColor='rgba(255,255,255,0.15)';this.style.boxShadow='none'"
+                        onclick="event.stopPropagation()"
+                        oninput="WF.handleSearch(this.value)"
+                        onkeydown="if(event.key==='Escape'){this.value='';WF.handleSearch('');this.blur();}">
+                </div>
+            </div>
             <div class="filter-bar">
                 <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="WF.setServiceFilter('all')">All</button>
                 <button class="filter-btn ${currentFilter === 'new' ? 'active' : ''}" onclick="WF.setServiceFilter('new')">New</button>
@@ -1210,7 +1250,16 @@
     function renderServiceInboxRows() {
         const tbody = document.getElementById('service-inbox-body');
         if (!tbody) return;
-        const filtered = getServiceFilteredLeads();
+        let filtered = getServiceFilteredLeads();
+        if (searchQuery) {
+            filtered = filtered.filter(l => {
+                const haystack = [
+                    l.name, l.phone, l.email, l.address, l.city, l.zip,
+                    l.jobType, l.salesperson, l.stage, l.source, l.company, l.notes
+                ].filter(Boolean).join(' ').toLowerCase();
+                return haystack.includes(searchQuery);
+            });
+        }
 
         // Sort by newest first
         filtered.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
@@ -3003,6 +3052,14 @@
     function setFilter(f) {
         currentFilter = f;
         renderInbox();
+        // Restore search query in search box if it exists
+        const searchBox = document.getElementById('global-search');
+        if (searchBox && searchQuery) searchBox.value = searchQuery;
+    }
+
+    function handleSearch(query) {
+        searchQuery = (query || '').toLowerCase().trim();
+        renderInboxRows();
     }
 
     function quickAdvance(id) {
@@ -3166,6 +3223,7 @@
         restoreLead, permanentlyDeleteLead, addActivityNote, saveFollowUp, clearFollowUp,
         selectActivityType, logActivity, quickAdvance,
         openSMSModal, closeSMSModal, sendSMS, openEmailModal, closeEmailModal, sendEmail,
+        handleSearch,
         setServiceFilter: (filter) => { currentFilter = filter; renderServiceInbox(); },
         showServiceStageMenu, quickAddNote
     };
