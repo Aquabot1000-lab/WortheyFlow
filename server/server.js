@@ -1382,6 +1382,8 @@ async function sendNewLeadSMS(lead, contactDir) {
 }
 
 async function scheduleUntouchedAlert(lead) {
+    const contactDir = loadContactDirectory();
+
     // Wait 10 minutes, then check if lead has been contacted
     setTimeout(async () => {
         try {
@@ -1393,10 +1395,9 @@ async function scheduleUntouchedAlert(lead) {
 
             if (error || !currentLead) {
                 console.log('[Untouched Alert] Lead not found:', lead.id);
-                return; // Lead was deleted
+                return;
             }
 
-            // Check if lead has been contacted (firstContactAt timestamp or activity)
             const hasActivity = currentLead.first_contact_at ||
                 (currentLead.activities && currentLead.activities.length > 0) ||
                 currentLead.stage !== 'New';
@@ -1406,9 +1407,9 @@ async function scheduleUntouchedAlert(lead) {
                 return;
             }
 
-            // Send alert to Tyler
+            // 1. Alert Tyler
             const tylerPhone = '+12105598725';
-            const message = `⚠️ UNTOUCHED LEAD ALERT!\n\n` +
+            const tylerMsg = `⚠️ UNTOUCHED LEAD (10 min)!\n\n` +
                 `Lead: ${lead.name}\n` +
                 `Assigned to: ${lead.salesperson}\n` +
                 `Phone: ${lead.phone || 'N/A'}\n` +
@@ -1417,12 +1418,30 @@ async function scheduleUntouchedAlert(lead) {
                 `This lead has gone 10+ minutes without contact.\n` +
                 `https://wortheyflow-production.up.railway.app`;
 
-            const result = await sendSMS(tylerPhone, message);
-            if (result.success) {
-                console.log('[Untouched Alert] ✅ Sent to Tyler for lead:', lead.name);
-            } else {
-                console.error('[Untouched Alert] ❌ Failed to send:', result.error);
+            const tylerResult = await sendSMS(tylerPhone, tylerMsg);
+            console.log(`[Untouched Alert] Tyler SMS: ${tylerResult.success ? '✅' : '❌'} for ${lead.name}`);
+
+            // 2. Reminder to salesperson
+            const sp = findContact(contactDir, lead.salesperson);
+            if (sp && sp.phone) {
+                const spMsg = `⏰ REMINDER: ${lead.name} (${lead.phone || 'no phone'}) was assigned to you 10 min ago and hasn't been contacted yet.\n\n` +
+                    `Call them NOW: ${lead.phone || 'check CRM'}\n` +
+                    `https://wortheyflow-production.up.railway.app`;
+                const spResult = await sendSMS(sp.phone, spMsg);
+                console.log(`[Untouched Alert] ${lead.salesperson} reminder SMS: ${spResult.success ? '✅' : '❌'}`);
             }
+
+            // Log it
+            appendLog({
+                action: 'untouched_alert_10min',
+                leadId: lead.id,
+                leadName: lead.name,
+                salesperson: lead.salesperson,
+                tylerSMS: tylerResult.success,
+                salespersonSMS: sp ? true : false,
+                timestamp: new Date().toISOString()
+            });
+
         } catch (err) {
             console.error('[Untouched Alert] Error:', err.message);
         }
