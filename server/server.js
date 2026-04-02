@@ -1451,7 +1451,15 @@ async function scheduleUntouchedAlert(lead) {
 // ========== RESPONSE TIME TRACKING API ==========
 
 // GET /api/response-metrics — dashboard metrics for lead response times
-app.get('/api/response-metrics', authMiddleware, async (req, res) => {
+app.get('/api/response-metrics', async (req, res) => {
+    // Allow auth via JWT or report secret (for crons)
+    const secret = req.query.secret || req.headers['x-report-secret'];
+    const expectedSecret = process.env.REPORT_SECRET || 'worthey2026';
+    const authHeader = req.headers.authorization;
+    if (secret !== expectedSecret && !authHeader) return res.status(401).json({ error: 'Unauthorized' });
+    if (authHeader && secret !== expectedSecret) {
+        try { jwt.verify(authHeader.slice(7), JWT_SECRET); } catch(e) { return res.status(401).json({ error: 'Invalid token' }); }
+    }
     try {
         const days = parseInt(req.query.days) || 30;
         const since = Date.now() - (days * 24 * 60 * 60 * 1000);
