@@ -1448,6 +1448,194 @@ async function scheduleUntouchedAlert(lead) {
     }, 10 * 60 * 1000); // 10 minutes
 }
 
+// ========== RESPONSE TIME TRACKING API ==========
+
+// GET /api/response-metrics — dashboard metrics for lead response times
+app.get('/api/response-metrics', authMiddleware, async (req, res) => {
+    try {
+        const days = parseInt(req.query.days) || 30;
+        const since = Date.now() - (days * 24 * 60 * 60 * 1000);
+
+        const { data: leads } = await supabase
+            .from('wortheyflow_leads')
+            .select('id, name, salesperson, stage, created_at, first_contact_at, source')
+            .gt('created_at', since)
+            .not('stage', 'in', '("Imported")');
+
+        if (!leads || leads.length === 0) {
+            return res.json({ totalLeads: 0, metrics: {}, salespersonMetrics: {}, criticalLeads: [] });
+        }
+
+        const now = Date.now();
+        const salespersonStats = {};
+        const criticalLeads = [];
+        let totalResponseMs = 0;
+        let respondedCount = 0;
+        let under5 = 0;
+        let under10 = 0;
+        let over10 = 0;
+
+        for (const lead of leads) {
+            const sp = lead.salesperson || 'Unassigned';
+            if (!salespersonStats[sp]) {
+                salespersonStats[sp] = { total: 0, responded: 0, totalResponseMs: 0, under5: 0, under10: 0, over10: 0, responseTimes: [] };
+            }
+            salespersonStats[sp].total++;
+
+            if (lead.first_contact_at && lead.created_at) {
+                const responseMs = lead.first_contact_at - lead.created_at;
+                const responseMins = responseMs / 60000;
+
+                salespersonStats[sp].responded++;
+                salespersonStats[sp].totalResponseMs += responseMs;
+                salespersonStats[sp].responseTimes.push(responseMins);
+
+                respondedCount++;
+                totalResponseMs += responseMs;
+
+                if (responseMins <= 5) { under5++; salespersonStats[sp].under5++; }
+                else if (responseMins <= 10) { under10++; salespersonStats[sp].under10++; }
+                else { over10++; salespersonStats[sp].over10++; }
+            } else {
+                // No first contact — check if it's been over 10 min
+                const ageMs = now - (lead.created_at || now);
+                if (ageMs > 10 * 60 * 1000 && lead.stage === 'New') {
+                    criticalLeads.push({
+                        id: lead.id,
+                        name: lead.name,
+                        salesperson: sp,
+                        source: lead.source,
+                        minutesWaiting: Math.round(ageMs / 60000),
+                        status: 'CRITICAL'
+                    });
+                    salespersonStats[sp].over10++;
+                    over10++;
+                }
+            }
+        }
+
+        // Build per-salesperson summary
+        const salespersonMetrics = {};
+        for (const [sp, stats] of Object.entries(salespersonStats)) {
+            const avgMs = stats.responded > 0 ? stats.totalResponseMs / stats.responded : null;
+            salespersonMetrics[sp] = {
+                totalLeads: stats.total,
+                responded: stats.responded,
+                avgResponseMin: avgMs ? Math.round(avgMs / 60000 * 10) / 10 : null,
+                pctUnder5: stats.total > 0 ? Math.round((stats.under5 / stats.total) * 100) : 0,
+                pctOver10: stats.total > 0 ? Math.round((stats.over10 / stats.total) * 100) : 0,
+                under5: stats.under5,
+                under10: stats.under10,
+                over10: stats.over10
+            };
+        }
+
+        res.json({
+            period: `${days} days`,
+            totalLeads: leads.length,
+            metrics: {
+                avgResponseMin: respondedCount > 0 ? Math.round(totalResponseMs / respondedCount / 60000 * 10) / 10 : null,
+                pctUnder5: leads.length > 0 ? Math.round((under5 / leads.length) * 100) : 0,
+                pctOver10: leads.length > 0 ? Math.round((over10 / leads.length) * 100) : 0,
+                responded: respondedCount,
+                notResponded: leads.length - respondedCount
+            },
+            salespersonMetrics,
+            criticalLeads: criticalLeads.sort((a, b) => b.minutesWaiting - a.minutesWaiting)
+        });
+    } catch (err) {
+        console.error('[Response Metrics] Error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+// GET /api/daily-report — daily lead response report (called by cron or on-demand)
+app.get('/api/daily-report', async (req, res) => {
+    try {
+        const secret = req.query.secret || req.headers['x-report-secret'];
+        const expectedSecret = process.env.REPORT_SECRET || 'worthey2026';
+        if (secret !== expectedSecret) return res.status(401).json({ error: 'Unauthorized' });
+
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const todayMs = todayStart.getTime();
+
+        const { data: leads } = await supabase
+            .from('wortheyflow_leads')
+            .select('id, name, salesperson, stage, created_at, first_contact_at, source, phone')
+            .gt('created_at', todayMs)
+            .not('stage', 'in', '("Imported")');
+
+        if (!leads || leads.length === 0) {
+            return res.json({ date: todayStart.toISOString().split('T')[0], leadsReceived: 0, report: 'No leads received today.' });
+        }
+
+        const now = Date.now();
+        const rows = [];
+        let criticalCount = 0;
+
+        for (const lead of leads) {
+            let responseMin = null;
+            let status = 'WAITING';
+
+            if (lead.first_contact_at && lead.created_at) {
+                responseMin = Math.round((lead.first_contact_at - lead.created_at) / 60000);
+                status = responseMin <= 5 ? '✅ FAST' : responseMin <= 10 ? '🟡 OK' : '🔴 SLOW';
+            } else {
+                const waitMin = Math.round((now - (lead.created_at || now)) / 60000);
+                if (waitMin > 10) {
+                    status = '🚨 CRITICAL';
+                    criticalCount++;
+                }
+            }
+
+            rows.push({
+                name: lead.name,
+                salesperson: lead.salesperson || 'Unassigned',
+                source: (lead.source || '').replace('GoHighLevel - ', ''),
+                responseMin,
+                status
+            });
+        }
+
+        // Build text report
+        let report = `📊 DAILY LEAD REPORT — ${todayStart.toISOString().split('T')[0]}\n\n`;
+        report += `Leads received: ${leads.length}\n`;
+        report += `Critical (10+ min no contact): ${criticalCount}\n\n`;
+
+        for (const row of rows) {
+            const time = row.responseMin !== null ? `${row.responseMin} min` : 'No contact';
+            report += `${row.status} ${row.name} → ${row.salesperson} | ${time} | ${row.source}\n`;
+        }
+
+        // Per-salesperson summary
+        const spSummary = {};
+        for (const row of rows) {
+            if (!spSummary[row.salesperson]) spSummary[row.salesperson] = { count: 0, times: [], critical: 0 };
+            spSummary[row.salesperson].count++;
+            if (row.responseMin !== null) spSummary[row.salesperson].times.push(row.responseMin);
+            if (row.status.includes('CRITICAL')) spSummary[row.salesperson].critical++;
+        }
+
+        report += `\n--- Per Salesperson ---\n`;
+        for (const [sp, s] of Object.entries(spSummary)) {
+            const avg = s.times.length > 0 ? Math.round(s.times.reduce((a, b) => a + b, 0) / s.times.length) : 'N/A';
+            report += `${sp}: ${s.count} leads | Avg: ${avg} min | Critical: ${s.critical}\n`;
+        }
+
+        res.json({
+            date: todayStart.toISOString().split('T')[0],
+            leadsReceived: leads.length,
+            criticalCount,
+            rows,
+            report
+        });
+    } catch (err) {
+        console.error('[Daily Report] Error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ========== START ==========
 
 // Serve the CRM frontend (after API routes)
@@ -1480,6 +1668,29 @@ app.put('/api/leads/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const leadUpdate = req.body;
+
+        // Auto-set firstContactAt when lead is touched for the first time
+        // Triggers: stage change from New, new activity logged, or explicit firstContactAt
+        if (!leadUpdate.firstContactAt) {
+            const { data: existing } = await supabase
+                .from('wortheyflow_leads')
+                .select('first_contact_at, stage, created_at')
+                .eq('id', id)
+                .single();
+
+            if (existing && !existing.first_contact_at) {
+                const stageChanged = leadUpdate.stage && leadUpdate.stage !== 'New' && existing.stage === 'New';
+                const hasNewActivity = leadUpdate.activities && leadUpdate.activities.length > (existing.activities || []).length;
+                const hasNote = leadUpdate.activityNotes && leadUpdate.activityNotes.length > 0;
+
+                if (stageChanged || hasNewActivity || hasNote) {
+                    leadUpdate.firstContactAt = Date.now();
+                    const responseMs = leadUpdate.firstContactAt - (existing.created_at || leadUpdate.firstContactAt);
+                    const responseMins = Math.round(responseMs / 60000);
+                    console.log(`[Response Time] ${id} → ${responseMins} min (${leadUpdate.salesperson || 'unknown'})`);
+                }
+            }
+        }
 
         // Convert to database format
         const dbUpdate = leadToDbRow(leadUpdate);
