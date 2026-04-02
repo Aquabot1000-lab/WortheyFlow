@@ -214,15 +214,23 @@ async function sendSMS(to, message) {
         return { success: true, dry: true, to, message };
     }
     try {
-        const result = await client.messages.create({
+        // Use Messaging Service SID for A2P/10DLC compliance
+        // Falls back to direct from number if no messaging service configured
+        const msgServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
+        const params = {
             body: message,
-            from: process.env.TWILIO_SMS_NUMBER || process.env.TWILIO_PHONE_NUMBER,
             to
-        });
+        };
+        if (msgServiceSid) {
+            params.messagingServiceSid = msgServiceSid;
+        } else {
+            params.from = process.env.TWILIO_SMS_NUMBER || process.env.TWILIO_PHONE_NUMBER;
+        }
+        const result = await client.messages.create(params);
         console.log('[SMS SENT]', to, result.sid);
         return { success: true, sid: result.sid, to, message };
     } catch (err) {
-        console.error('[SMS ERROR]', err.message);
+        console.error('[SMS ERROR]', to, err.message);
         return { success: false, error: err.message, to, message };
     }
 }
@@ -1314,7 +1322,7 @@ app.post('/api/booth-lead', async (req, res) => {
 
 async function sendNewLeadSMS(lead, contactDir) {
     try {
-        // Find salesperson phone number
+        // Find salesperson contact info
         const salesperson = contactDir.find(c =>
             c.name === lead.salesperson ||
             c.fullName === lead.salesperson ||
@@ -1331,15 +1339,42 @@ async function sendNewLeadSMS(lead, contactDir) {
             `Phone: ${lead.phone || 'N/A'}\n` +
             `Job: ${lead.jobType}\n` +
             `Source: ${lead.source}\n` +
-            `Value: $${lead.quoteAmount.toLocaleString()}\n\n` +
+            `Value: $${(lead.quoteAmount || 0).toLocaleString()}\n\n` +
             `👉 Log in to WortheyFlow to contact them NOW!\n` +
             `https://wortheyflow-production.up.railway.app`;
 
-        const result = await sendSMS(salesperson.phone, message);
-        if (result.success) {
+        const smsResult = await sendSMS(salesperson.phone, message);
+        if (smsResult.success && !smsResult.dry) {
             console.log(`[New Lead SMS] ✅ Sent to ${lead.salesperson} at ${salesperson.phone}`);
         } else {
-            console.error(`[New Lead SMS] ❌ Failed to send to ${lead.salesperson}:`, result.error);
+            console.error(`[New Lead SMS] ❌ SMS failed for ${lead.salesperson}: ${smsResult.error || 'dry run'}`);
+        }
+
+        // ALWAYS send email backup (SMS may be blocked by 10DLC/carrier)
+        if (salesperson.email) {
+            const emailResult = await sendEmail(
+                salesperson.email,
+                `🚨 New Lead: ${lead.name} — Call NOW!`,
+                `<div style="font-family:Arial,sans-serif;max-width:500px;">
+                    <h2 style="color:#d32f2f;">🚨 New Lead Assigned to You</h2>
+                    <table style="width:100%;border-collapse:collapse;">
+                        <tr><td style="padding:8px;font-weight:bold;">Name:</td><td style="padding:8px;">${lead.name}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Phone:</td><td style="padding:8px;"><a href="tel:${lead.phone}">${lead.phone || 'N/A'}</a></td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Email:</td><td style="padding:8px;">${lead.email || 'N/A'}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Job Type:</td><td style="padding:8px;">${lead.jobType}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Source:</td><td style="padding:8px;">${lead.source}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Value:</td><td style="padding:8px;">$${(lead.quoteAmount || 0).toLocaleString()}</td></tr>
+                    </table>
+                    <p style="margin-top:16px;"><strong>⏰ Call within 5 minutes!</strong></p>
+                    <a href="https://wortheyflow-production.up.railway.app" style="display:inline-block;padding:12px 24px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px;margin-top:8px;">Open WortheyFlow →</a>
+                </div>`,
+                { replyTo: 'tyler@wortheyaquatics.com' }
+            );
+            if (emailResult.success) {
+                console.log(`[New Lead Email] ✅ Backup email sent to ${salesperson.email}`);
+            } else {
+                console.error(`[New Lead Email] ❌ Email also failed for ${salesperson.email}: ${emailResult.error}`);
+            }
         }
     } catch (err) {
         console.error('[New Lead SMS] Error:', err.message);
