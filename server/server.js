@@ -1626,9 +1626,19 @@ app.get('/api/daily-report', async (req, res) => {
         }
 
         report += `\n--- Per Salesperson ---\n`;
+        const flaggedSalespeople = [];
         for (const [sp, s] of Object.entries(spSummary)) {
             const avg = s.times.length > 0 ? Math.round(s.times.reduce((a, b) => a + b, 0) / s.times.length) : 'N/A';
-            report += `${sp}: ${s.count} leads | Avg: ${avg} min | Critical: ${s.critical}\n`;
+            const flagged = s.critical >= 2;
+            if (flagged) flaggedSalespeople.push({ name: sp, critical: s.critical, total: s.count });
+            report += `${flagged ? '🚩 ' : ''}${sp}: ${s.count} leads | Avg: ${avg} min | Critical: ${s.critical}${flagged ? ' ← FLAGGED' : ''}\n`;
+        }
+
+        if (flaggedSalespeople.length > 0) {
+            report += `\n⚠️ FLAGGED SALESPEOPLE (2+ critical leads today):\n`;
+            for (const f of flaggedSalespeople) {
+                report += `🚩 ${f.name}: ${f.critical} critical out of ${f.total} leads\n`;
+            }
         }
 
         res.json({
