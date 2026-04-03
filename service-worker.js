@@ -1,5 +1,5 @@
-// AUTO-UPDATED: change this version on every deploy to bust the cache
-const CACHE_VERSION = '__DEPLOY_TS__';
+// Cache version — update on every deploy
+const CACHE_VERSION = '2026-04-02-v3';
 const CACHE_NAME = 'wortheyflow-' + CACHE_VERSION;
 
 self.addEventListener('install', e => {
