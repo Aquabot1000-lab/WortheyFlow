@@ -2009,6 +2009,60 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
+// ══════════════════════════════════════════════════════════
+// 🧪 TEMPORARY SMS TEST ROUTE — Tyler's phone only
+// Added 2026-04-03 for SMS validation before cutover
+// DELETE after testing is complete
+// ══════════════════════════════════════════════════════════
+app.post('/api/test-sms', async (req, res) => {
+    const TYLER_PHONE = '+12105598725';
+    const secret = req.query.secret || req.headers['x-webhook-secret'];
+    if (secret !== GHL_WEBHOOK_SECRET) {
+        return res.status(403).json({ error: 'Invalid secret' });
+    }
+
+    const { leadName, salesperson, phone, jobType } = req.body;
+    if (!leadName) return res.status(400).json({ error: 'leadName required' });
+
+    try {
+        const client = getTwilio();
+        if (!client) return res.json({ success: false, error: 'Twilio not configured' });
+
+        const msgServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
+        const message = `🧪 SMS TEST — New lead: ${leadName}\nJob: ${jobType || 'Pool Construction'}\nPhone: ${phone || 'N/A'}\nAssigned: ${salesperson || 'Unassigned'}\n\n— WortheyFlow CRM (test mode)`;
+
+        const params = {
+            body: message,
+            to: TYLER_PHONE
+        };
+        if (msgServiceSid) {
+            params.messagingServiceSid = msgServiceSid;
+        } else {
+            params.from = process.env.TWILIO_PHONE_NUMBER;
+        }
+
+        const result = await client.messages.create(params);
+        console.log(`[SMS-TEST] Sent to Tyler: ${result.sid}`);
+
+        // Dedup check — track in global set
+        if (!global._smsTestDedupSet) global._smsTestDedupSet = new Set();
+        const dedupKey = `sms-test:${leadName}:${Date.now()}`;
+        const wasDupe = global._smsTestDedupSet.has(dedupKey);
+        global._smsTestDedupSet.add(dedupKey);
+
+        res.json({
+            success: true,
+            sid: result.sid,
+            to: TYLER_PHONE,
+            duplicate: wasDupe,
+            message: message
+        });
+    } catch (err) {
+        console.error('[SMS-TEST] Error:', err.message);
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`WortheyFlow Automation Server running on port ${PORT}`);
     console.log(`Twilio: ${process.env.TWILIO_ACCOUNT_SID ? 'configured' : 'DRY RUN mode'}`);
