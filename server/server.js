@@ -527,6 +527,7 @@ app.post('/api/webhook/ghl', async (req, res) => {
     const data = req.body;
     console.log('[GHL WEBHOOK] Received:', JSON.stringify(data).slice(0, 500));
 
+    try {
     // Map GHL fields to WortheyFlow lead format
     const lead = {
         id: 'ghl-' + (data.contact_id || data.id || Date.now()),
@@ -534,7 +535,7 @@ app.post('/api/webhook/ghl', async (req, res) => {
         phone: data.phone || data.Phone || '',
         email: data.email || data.Email || '',
         emailHers: '',
-        source: 'GoHighLevel - ' + (data.tags || data.source || 'Quiz Funnel'),
+        source: 'GoHighLevel - ' + (Array.isArray(data.tags) ? data.tags.join(', ') : (data.tags || data.source || 'Quiz Funnel')),
         stage: 'New',
         salesperson: '', // Will be auto-assigned by CRM
         jobType: detectJobType(data),
@@ -626,10 +627,15 @@ app.post('/api/webhook/ghl', async (req, res) => {
 
     console.log('[GHL WEBHOOK] Lead created:', lead.id, lead.name, '→', lead.salesperson);
     res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
+    } catch (webhookErr) {
+        console.error('[GHL WEBHOOK] Unhandled error:', webhookErr.message, webhookErr.stack);
+        res.status(500).json({ error: 'Internal webhook error', detail: webhookErr.message });
+    }
 });
 
 function detectJobType(data) {
-    const tags = (data.tags || '').toLowerCase();
+    const rawTags = Array.isArray(data.tags) ? data.tags.join(' ') : (data.tags || '');
+    const tags = rawTags.toLowerCase();
     const source = (data.source || '').toLowerCase();
     const notes = (data.notes || '').toLowerCase();
     const all = tags + ' ' + source + ' ' + notes;
@@ -642,7 +648,7 @@ function detectJobType(data) {
 
 function buildGHLNotes(data) {
     const parts = ['Source: GoHighLevel Quiz Funnel'];
-    if (data.tags) parts.push('Tags: ' + data.tags);
+    if (data.tags) parts.push('Tags: ' + (Array.isArray(data.tags) ? data.tags.join(', ') : data.tags));
     if (data.source) parts.push('Source: ' + data.source);
     // Capture any custom fields / quiz answers
     const skip = ['first_name','last_name','full_name','name','phone','Phone','email','Email','contact_id','id','address1','address','city','state','postal_code','zip','tags','source','country'];
