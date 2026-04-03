@@ -208,6 +208,34 @@ function getSendGrid() {
 }
 
 async function sendSMS(to, message) {
+    // 🚨 GLOBAL SMS KILL SWITCH — set by Tyler 2026-04-03
+    // All outbound SMS disabled. Email fallback active.
+    console.log('[SMS BLOCKED] Kill switch active. Would have sent to', to, ':', message);
+    
+    // EMAIL FALLBACK: Look up email for this phone number and send there instead
+    try {
+        const contactDir = loadContactDirectory();
+        const normalTo = (to || '').replace(/\D/g, '').slice(-10);
+        const contact = contactDir.find(c => (c.phone || '').replace(/\D/g, '').slice(-10) === normalTo);
+        const fallbackEmail = contact ? contact.email : 'tyler@wortheyaquatics.com';
+        const contactName = contact ? (contact.fullName || contact.name) : 'Unknown';
+        
+        await sendEmail(fallbackEmail, 
+            `📱 SMS Alert (redirected) — ${contactName}`,
+            `<div style="font-family:sans-serif;padding:16px;">
+                <p style="color:#f59e0b;font-weight:bold;">⚠️ SMS is temporarily disabled. This alert was redirected to email.</p>
+                <p><strong>Original SMS to:</strong> ${to} (${contactName})</p>
+                <hr style="border:1px solid #334155;margin:12px 0;">
+                <p style="font-size:16px;">${message.replace(/\n/g, '<br>')}</p>
+            </div>`
+        );
+        console.log(`[SMS→EMAIL FALLBACK] Sent to ${fallbackEmail} for ${to}`);
+    } catch(e) {
+        console.error('[SMS→EMAIL FALLBACK FAILED]', e.message);
+    }
+    
+    return { success: true, blocked: true, fallback: 'email', to, message };
+
     const client = getTwilio();
     if (!client) {
         console.log('[DRY RUN] SMS to', to, ':', message);
@@ -1978,25 +2006,22 @@ app.post('/api/sms/inbound', async (req, res) => {
       if (sp) salespersonPhone = sp.phone;
     }
     
-    // Forward to Tyler always
-    const twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-    const fromNum = process.env.TWILIO_PHONE || '+18302716166';
-    
-    await twilio.messages.create({
-      body: fwdMsg,
-      from: fromNum,
-      to: tyler.phone || '+12105598725'
-    });
-    console.log(`  ✅ Forwarded to Tyler`);
-    
-    // Forward to assigned salesperson (if different from Tyler)
-    if (salespersonPhone && salespersonPhone !== tyler.phone) {
-      await twilio.messages.create({
-        body: fwdMsg,
-        from: fromNum,
-        to: salespersonPhone
-      });
-      console.log(`  ✅ Forwarded to ${salesperson} at ${salespersonPhone}`);
+    // 🚨 SMS KILL SWITCH — SMS forwarding disabled 2026-04-03
+    // FALLBACK: Forward inbound lead replies via EMAIL instead
+    console.log(`  [SMS BLOCKED] Forwarding via email instead: ${fwdMsg}`);
+    const emailFwdSubject = `💬 Lead Reply: ${leadName} (${From})`;
+    const emailFwdBody = `<h3>Inbound SMS from Lead</h3>
+      <p><strong>From:</strong> ${leadName} (${From})</p>
+      <p><strong>Message:</strong> "${Body}"</p>
+      <p><strong>Assigned to:</strong> ${salesperson}</p>
+      <p><em>SMS forwarding is currently disabled. This email is the fallback.</em></p>`;
+    await sendEmail('tyler@wortheyaquatics.com', emailFwdSubject, emailFwdBody);
+    console.log(`  ✅ Inbound reply forwarded to Tyler via email`);
+    // Also email the salesperson if different
+    const sp = contactDir.find(c => c.name.toLowerCase().includes(salesperson.toLowerCase()));
+    if (sp && sp.email && sp.email !== 'tyler@wortheyaquatics.com') {
+      await sendEmail(sp.email, emailFwdSubject, emailFwdBody);
+      console.log(`  ✅ Inbound reply forwarded to ${sp.name} via email`);
     }
     
     // Log it
