@@ -320,7 +320,7 @@ async function sendEmail(to, subject, body, options = {}) {
     ];
     const isTeamEmail = TEAM_EMAILS.some(e => to.toLowerCase() === e.toLowerCase());
     if (!isTeamEmail) {
-        console.log('[SAFE MODE] BLOCKED customer email to', to, ':', subject);
+        console.log('[EMAIL BLOCKED] Customer email to', to, ':', subject);
         return { success: true, blocked: true, reason: 'customer-email-blocked', to, subject };
     }
 
@@ -328,7 +328,7 @@ async function sendEmail(to, subject, body, options = {}) {
     const dedupKey = (options._leadId || 'nolead') + ':' + to;
     if (!global._emailDedupSet) global._emailDedupSet = new Set();
     if (global._emailDedupSet.has(dedupKey)) {
-        console.log('[SAFE MODE] DEDUP blocked duplicate email to', to, 'for lead', options._leadId);
+        console.log('[EMAIL DEDUP] Blocked duplicate to', to, 'for lead', options._leadId);
         return { success: true, blocked: true, reason: 'dedup', to, subject };
     }
     global._emailDedupSet.add(dedupKey);
@@ -336,40 +336,57 @@ async function sendEmail(to, subject, body, options = {}) {
         global._emailDedupTimer = setInterval(() => { global._emailDedupSet = new Set(); }, 3600000);
     }
 
-    console.log('[SAFE MODE] ALLOWED team email to', to, ':', subject);
-
     const sg = getSendGrid();
     if (!sg) {
-        console.log('[DRY RUN] Email to', to, ':', subject);
+        console.log('[EMAIL DRY RUN] No SendGrid key →', to, ':', subject);
         return { success: true, dry: true, to, subject };
     }
+
+    const msg = {
+        to,
+        from: process.env.SENDGRID_FROM_EMAIL || 'notifications@wortheyaquatics.com',
+        subject,
+        html: body,
+        text: body.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+    };
+    if (options.replyTo) {
+        msg.replyTo = options.replyTo;
+    } else {
+        msg.replyTo = { email: 'tyler@wortheyaquatics.com', name: 'Tyler Worthey' };
+    }
+
+    // Attempt 1
+    const startTime = Date.now();
     try {
-        const msg = {
-            to,
-            from: process.env.SENDGRID_FROM_EMAIL || 'notifications@wortheyaquatics.com',
-            subject,
-            html: body,
-            text: body.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
-        };
-        // Reply-To: route replies to the assigned salesperson
-        if (options.replyTo) {
-            msg.replyTo = options.replyTo;
+        const [response] = await sg.send(msg);
+        const elapsed = Date.now() - startTime;
+        console.log(`[EMAIL ✅] ${to} | "${subject}" | ${elapsed}ms | status=${response.statusCode}`);
+        return { success: true, to, subject, elapsed, statusCode: response.statusCode };
+    } catch (err1) {
+        console.error(`[EMAIL ❌ ATTEMPT 1] ${to} | "${subject}" | ${err1.message}`);
+        
+        // Retry once after 2 seconds
+        await new Promise(r => setTimeout(r, 2000));
+        try {
+            const [response] = await sg.send(msg);
+            const elapsed = Date.now() - startTime;
+            console.log(`[EMAIL ✅ RETRY] ${to} | "${subject}" | ${elapsed}ms | status=${response.statusCode}`);
+            return { success: true, to, subject, elapsed, retry: true, statusCode: response.statusCode };
+        } catch (err2) {
+            const elapsed = Date.now() - startTime;
+            console.error(`[EMAIL ❌ FAILED] ${to} | "${subject}" | ${elapsed}ms | ${err2.message}`);
+            
+            // Telegram fallback alert
+            try {
+                if (typeof sendTelegramAlert === 'function') {
+                    sendTelegramAlert(`📧❌ <b>EMAIL DELIVERY FAILED</b>\n\n<b>To:</b> ${to}\n<b>Subject:</b> ${subject}\n<b>Error:</b> ${err2.message}\n\n⚠️ Both attempts failed. Manual follow-up needed.`);
+                }
+            } catch (tgErr) {
+                console.error('[EMAIL FALLBACK] Telegram alert also failed:', tgErr.message);
+            }
+            
+            return { success: false, error: err2.message, to, subject, elapsed };
         }
-        // BCC disabled in Phase 1 — Tyler gets dedicated email per lead
-        // msg.bcc = [
-        //     { email: 'tyler@wortheyaquatics.com' },
-        //     { email: 'aquabot1000@icloud.com' }
-        // ];
-        // Reply-to: route through detection if no specific replyTo set
-        if (!msg.replyTo) {
-            msg.replyTo = { email: 'tyler@wortheyaquatics.com', name: 'Tyler Worthey' };
-        }
-        await sg.send(msg);
-        console.log('[EMAIL SENT]', to, subject, options.replyTo ? `(reply-to: ${options.replyTo})` : '');
-        return { success: true, to, subject };
-    } catch (err) {
-        console.error('[EMAIL ERROR]', err.message);
-        return { success: false, error: err.message, to, subject };
     }
 }
 
