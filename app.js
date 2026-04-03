@@ -805,32 +805,26 @@
         ` : '';
 
         // Critical leads banner — top of dashboard, impossible to miss
-        const criticalBanner = criticalLeads.length > 0 ? `
-            <div class="critical-leads-banner" style="background:linear-gradient(135deg,#d32f2f,#b71c1c);border-radius:12px;padding:20px;margin-bottom:20px;color:#fff;box-shadow:0 4px 20px rgba(211,47,47,0.3);">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
-                    <h3 style="margin:0;font-size:18px;">🚨 CRITICAL LEADS — ${criticalLeads.length} Untouched 10+ min</h3>
-                    <span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">NEEDS ACTION NOW</span>
-                </div>
-                ${criticalLeads.map(l => {
-                    const ageMin = Math.floor((Date.now() - l.createdAt) / 60000);
-                    const ageStr = ageMin >= 1440 ? Math.floor(ageMin / 1440) + 'd ' + (ageMin % 1440 >= 60 ? Math.floor((ageMin % 1440) / 60) + 'h' : '') : ageMin >= 60 ? Math.floor(ageMin / 60) + 'h ' + (ageMin % 60) + 'm' : ageMin + 'm';
-                    const phone = l.phone || '';
-                    const cleanPhone = phone.replace(/\D/g, '');
-                    return \`<div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">
-                        <div>
-                            <strong style="font-size:15px;">\${esc(l.name)}</strong>
-                            <span style="opacity:0.8;margin-left:8px;">→ \${l.salesperson || 'Unassigned'}</span>
-                            <span style="background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;margin-left:8px;">\${ageStr} waiting</span>
-                        </div>
-                        <div style="display:flex;gap:8px;">
-                            \${cleanPhone ? \`<a href="tel:+\${cleanPhone.length === 10 ? '1' + cleanPhone : cleanPhone}" style="background:#fff;color:#d32f2f;padding:6px 14px;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px;" title="Call \${esc(l.name)}">📞 Call</a>\` : ''}
-                            \${cleanPhone ? \`<a href="sms:+\${cleanPhone.length === 10 ? '1' + cleanPhone : cleanPhone}" style="background:#fff;color:#1976d2;padding:6px 14px;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px;" title="Text \${esc(l.name)}">💬 Text</a>\` : ''}
-                            <button onclick="WF.markContacted('\${l.id}')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">✅ Contacted</button>
-                        </div>
-                    </div>\`;
-                }).join('')}
-            </div>
-        ` : '';
+        function renderCriticalLead(l) {
+            const ageMin = Math.floor((Date.now() - l.createdAt) / 60000);
+            const ageStr = ageMin >= 1440 ? Math.floor(ageMin / 1440) + 'd' : ageMin >= 60 ? Math.floor(ageMin / 60) + 'h ' + (ageMin % 60) + 'm' : ageMin + 'm';
+            const phone = l.phone || '';
+            const cleanPhone = phone.replace(/\D/g, '');
+            const phoneNum = cleanPhone.length === 10 ? '1' + cleanPhone : cleanPhone;
+            const callBtn = cleanPhone ? '<a href="tel:+' + phoneNum + '" style="background:#fff;color:#d32f2f;padding:6px 14px;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px;">📞 Call</a>' : '';
+            const textBtn = cleanPhone ? '<a href="sms:+' + phoneNum + '" style="background:#fff;color:#1976d2;padding:6px 14px;border-radius:6px;text-decoration:none;font-weight:600;font-size:13px;">💬 Text</a>' : '';
+            const contactBtn = '<button onclick="WF.markContacted(\'' + l.id + '\')" style="background:rgba(255,255,255,0.2);color:#fff;border:1px solid rgba(255,255,255,0.4);padding:6px 14px;border-radius:6px;cursor:pointer;font-weight:600;font-size:13px;">✅ Contacted</button>';
+            return '<div style="background:rgba(255,255,255,0.1);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;">' +
+                '<div><strong style="font-size:15px;">' + esc(l.name) + '</strong>' +
+                '<span style="opacity:0.8;margin-left:8px;">→ ' + (l.salesperson || 'Unassigned') + '</span>' +
+                '<span style="background:rgba(255,255,255,0.25);padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700;margin-left:8px;">' + ageStr + ' waiting</span></div>' +
+                '<div style="display:flex;gap:8px;">' + callBtn + textBtn + contactBtn + '</div></div>';
+        }
+        const criticalBanner = criticalLeads.length > 0 ? '<div style="background:linear-gradient(135deg,#d32f2f,#b71c1c);border-radius:12px;padding:20px;margin-bottom:20px;color:#fff;box-shadow:0 4px 20px rgba(211,47,47,0.3);">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">' +
+            '<h3 style="margin:0;font-size:18px;">🚨 CRITICAL LEADS — ' + criticalLeads.length + ' Untouched 10+ min</h3>' +
+            '<span style="background:rgba(255,255,255,0.2);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;">NEEDS ACTION NOW</span></div>' +
+            criticalLeads.map(renderCriticalLead).join('') + '</div>' : '';
 
         el.innerHTML = `
             ${criticalBanner}
@@ -2650,14 +2644,12 @@
                             <h4 style="font-size:13px;color:var(--gray-400);margin-bottom:8px;">Lead → Outcome Funnel</h4>
                             ${funnel.map(f => {
                                 const w = Math.max((f.count / maxFunnel) * 100, f.count > 0 ? 8 : 2);
-                                return \`<div style="display:flex;align-items:center;margin-bottom:4px;">
-                                    <span style="width:85px;font-size:12px;color:var(--gray-300);">\${f.label}</span>
-                                    <div style="flex:1;height:22px;background:var(--navy-light);border-radius:4px;overflow:hidden;">
-                                        <div style="width:\${w}%;height:100%;background:\${f.color};border-radius:4px;display:flex;align-items:center;justify-content:center;">
-                                            <span style="font-size:11px;font-weight:700;color:#fff;\${f.count === 0 ? 'opacity:0.5' : ''}">\${f.count}</span>
-                                        </div>
-                                    </div>
-                                </div>\`;
+                                return '<div style="display:flex;align-items:center;margin-bottom:4px;">' +
+                                    '<span style="width:85px;font-size:12px;color:var(--gray-300);">' + f.label + '</span>' +
+                                    '<div style="flex:1;height:22px;background:var(--navy-light);border-radius:4px;overflow:hidden;">' +
+                                    '<div style="width:' + w + '%;height:100%;background:' + f.color + ';border-radius:4px;display:flex;align-items:center;justify-content:center;">' +
+                                    '<span style="font-size:11px;font-weight:700;color:#fff;' + (f.count === 0 ? 'opacity:0.5' : '') + '">' + f.count + '</span>' +
+                                    '</div></div></div>';
                             }).join('')}
                         </div>
                         <div style="flex:1;">
@@ -3410,38 +3402,38 @@
                 const o10Color = m.pctOver10 <= 10 ? '#4caf50' : m.pctOver10 <= 30 ? '#ff9800' : '#f44336';
                 const flagged = m.over10 >= 2;
 
-                html += \`<tr style="border-bottom:1px solid var(--gray-700);\${flagged ? 'background:rgba(244,67,54,0.1);' : ''}">
-                    <td style="padding:8px;font-size:16px;text-align:center;">\${medal}</td>
-                    <td style="padding:8px;font-weight:600;">\${name}\${flagged ? ' <span style="color:#f44336;font-size:11px;">⚠️ 2+ CRITICAL</span>' : ''}</td>
-                    <td style="padding:8px;text-align:center;color:\${avgColor};font-weight:700;">\${avgStr}</td>
-                    <td style="padding:8px;text-align:center;"><span style="color:\${u5Color};font-weight:600;">\${m.pctUnder5}%</span></td>
-                    <td style="padding:8px;text-align:center;"><span style="color:\${o10Color};font-weight:600;">\${m.pctOver10}%</span></td>
-                    <td style="padding:8px;text-align:center;">\${m.totalLeads}</td>
-                </tr>\`;
+                html += `<tr style="border-bottom:1px solid var(--gray-700);${flagged ? 'background:rgba(244,67,54,0.1);' : ''}">
+                    <td style="padding:8px;font-size:16px;text-align:center;">${medal}</td>
+                    <td style="padding:8px;font-weight:600;">${name}${flagged ? ' <span style="color:#f44336;font-size:11px;">⚠️ 2+ CRITICAL</span>' : ''}</td>
+                    <td style="padding:8px;text-align:center;color:${avgColor};font-weight:700;">${avgStr}</td>
+                    <td style="padding:8px;text-align:center;"><span style="color:${u5Color};font-weight:600;">${m.pctUnder5}%</span></td>
+                    <td style="padding:8px;text-align:center;"><span style="color:${o10Color};font-weight:600;">${m.pctOver10}%</span></td>
+                    <td style="padding:8px;text-align:center;">${m.totalLeads}</td>
+                </tr>`;
             });
 
             html += '</tbody></table>';
 
             // Overall stats
             if (data.metrics) {
-                html += \`<div style="display:flex;gap:16px;margin-top:16px;padding-top:12px;border-top:1px solid var(--gray-700);">
+                html += `<div style="display:flex;gap:16px;margin-top:16px;padding-top:12px;border-top:1px solid var(--gray-700);">
                     <div style="flex:1;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:\${data.metrics.avgResponseMin && data.metrics.avgResponseMin <= 5 ? '#4caf50' : '#ff9800'}">\${data.metrics.avgResponseMin || 'N/A'}<span style="font-size:12px;font-weight:400;"> min</span></div>
+                        <div style="font-size:24px;font-weight:700;color:${data.metrics.avgResponseMin && data.metrics.avgResponseMin <= 5 ? '#4caf50' : '#ff9800'}">${data.metrics.avgResponseMin || 'N/A'}<span style="font-size:12px;font-weight:400;"> min</span></div>
                         <div style="font-size:11px;color:var(--gray-400);">Team Avg</div>
                     </div>
                     <div style="flex:1;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:#4caf50">\${data.metrics.pctUnder5}%</div>
+                        <div style="font-size:24px;font-weight:700;color:#4caf50">${data.metrics.pctUnder5}%</div>
                         <div style="font-size:11px;color:var(--gray-400);">Under 5 min</div>
                     </div>
                     <div style="flex:1;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;color:\${data.metrics.pctOver10 > 20 ? '#f44336' : '#4caf50'}">\${data.metrics.pctOver10}%</div>
+                        <div style="font-size:24px;font-weight:700;color:${data.metrics.pctOver10 > 20 ? '#f44336' : '#4caf50'}">${data.metrics.pctOver10}%</div>
                         <div style="font-size:11px;color:var(--gray-400);">Over 10 min</div>
                     </div>
                     <div style="flex:1;text-align:center;">
-                        <div style="font-size:24px;font-weight:700;">\${data.criticalLeads.length}</div>
+                        <div style="font-size:24px;font-weight:700;">${data.criticalLeads.length}</div>
                         <div style="font-size:11px;color:var(--gray-400);">Critical Now</div>
                     </div>
-                </div>\`;
+                </div>`;
             }
 
             el.innerHTML = html;
