@@ -14,6 +14,7 @@ app.use(express.json({ limit: '10mb' }));
 
 const PORT = process.env.PORT || 3001;
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
+const APP_URL = process.env.APP_URL || 'https://wortheyflow-production.up.railway.app';
 const AUTOMATIONS_FILE = path.join(__dirname, 'automations.json');
 const LOG_FILE = path.join(__dirname, 'notification-log.json');
 const USERS_FILE = path.join(__dirname, 'users.json');
@@ -1409,7 +1410,7 @@ async function sendNewLeadSMS(lead, contactDir) {
             `Source: ${lead.source}\n` +
             `Value: $${(lead.quoteAmount || 0).toLocaleString()}\n\n` +
             `👉 Log in to WortheyFlow to contact them NOW!\n` +
-            `https://wortheyflow-production.up.railway.app`;
+            `${APP_URL}`;
 
         const smsResult = await sendSMS(salesperson.phone, message);
         if (smsResult.success && !smsResult.dry) {
@@ -1434,7 +1435,7 @@ async function sendNewLeadSMS(lead, contactDir) {
                         <tr><td style="padding:8px;font-weight:bold;">Value:</td><td style="padding:8px;">$${(lead.quoteAmount || 0).toLocaleString()}</td></tr>
                     </table>
                     <p style="margin-top:16px;"><strong>⏰ Call within 5 minutes!</strong></p>
-                    <a href="https://wortheyflow-production.up.railway.app" style="display:inline-block;padding:12px 24px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px;margin-top:8px;">Open WortheyFlow →</a>
+                    <a href="${APP_URL}" style="display:inline-block;padding:12px 24px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px;margin-top:8px;">Open WortheyFlow →</a>
                 </div>`,
                 { replyTo: 'tyler@wortheyaquatics.com' }
             );
@@ -1484,7 +1485,7 @@ async function scheduleUntouchedAlert(lead) {
                 `Job: ${lead.jobType}\n` +
                 `Source: ${lead.source}\n\n` +
                 `This lead has gone 10+ minutes without contact.\n` +
-                `https://wortheyflow-production.up.railway.app`;
+                `${APP_URL}`;
 
             const tylerResult = await sendSMS(tylerPhone, tylerMsg);
             console.log(`[Untouched Alert] Tyler SMS: ${tylerResult.success ? '✅' : '❌'} for ${lead.name}`);
@@ -1494,7 +1495,7 @@ async function scheduleUntouchedAlert(lead) {
             if (sp && sp.phone) {
                 const spMsg = `⏰ REMINDER: ${lead.name} (${lead.phone || 'no phone'}) was assigned to you 10 min ago and hasn't been contacted yet.\n\n` +
                     `Call them NOW: ${lead.phone || 'check CRM'}\n` +
-                    `https://wortheyflow-production.up.railway.app`;
+                    `${APP_URL}`;
                 const spResult = await sendSMS(sp.phone, spMsg);
                 console.log(`[Untouched Alert] ${lead.salesperson} reminder SMS: ${spResult.success ? '✅' : '❌'}`);
             }
