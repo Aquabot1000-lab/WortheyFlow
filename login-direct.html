@@ -1,26 +1,131 @@
 <!DOCTYPE html>
 <html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>WortheyFlow — Direct Login</title>
-<style>body{font-family:Inter,sans-serif;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
-.card{background:#1e293b;padding:32px;border-radius:12px;width:340px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
-h2{margin:0 0 20px;text-align:center}input{width:100%;padding:12px;border:1px solid #334155;background:#0f172a;color:#fff;border-radius:8px;margin-bottom:12px;font-size:16px;box-sizing:border-box}
+<style>
+*{box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:#0f172a;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0;padding:16px}
+.card{background:#1e293b;padding:32px;border-radius:12px;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.4)}
+h2{margin:0 0 8px;text-align:center;font-size:22px}
+.sub{text-align:center;color:#94a3b8;font-size:13px;margin-bottom:20px}
+input{width:100%;padding:14px;border:1px solid #334155;background:#0f172a;color:#fff;border-radius:8px;margin-bottom:12px;font-size:16px}
 button{width:100%;padding:14px;background:#2563eb;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:600;cursor:pointer}
-button:hover{background:#1d4ed8}.err{color:#ef4444;font-size:14px;margin-bottom:12px;display:none}.ok{color:#22c55e;font-size:14px;text-align:center;margin-top:12px}</style>
+button:disabled{opacity:0.5}
+.err{color:#ef4444;font-size:14px;margin-bottom:12px;display:none;background:rgba(239,68,68,0.1);padding:10px;border-radius:6px}
+.status{color:#22c55e;font-size:13px;text-align:center;margin-bottom:16px}
+.log{color:#64748b;font-size:11px;margin-top:16px;max-height:150px;overflow:auto;font-family:monospace;line-height:1.6}
+</style></head><body>
+<div class="card">
+<h2>🏊 WortheyFlow</h2>
+<p class="sub">Direct Login — Cache Bypass</p>
+<div class="status" id="status">Clearing cache...</div>
+<form id="frm">
+<input id="e" type="email" placeholder="Email" value="tyler@wortheyaquatics.com" required>
+<input id="p" type="password" placeholder="Password" value="tyler" required>
+<div id="err" class="err"></div>
+<button type="submit" id="btn">Sign In</button>
+</form>
+<div class="log" id="log"></div>
+</div>
 <script>
-// Unregister ALL service workers first
-if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>{r.forEach(sw=>sw.unregister());console.log('Cleared',r.length,'service workers')})}
-// Clear all caches
-if('caches' in window){caches.keys().then(k=>{k.forEach(n=>caches.delete(n));console.log('Cleared',k.length,'caches')})}
-function doLogin(){
-var email=document.getElementById('e').value,pw=document.getElementById('p').value,err=document.getElementById('err');
-err.style.display='none';
-fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,password:pw})})
-.then(function(r){return r.json()}).then(function(d){
-if(d.token){localStorage.setItem('wf_token',d.token);localStorage.setItem('wf_user',JSON.stringify(d.user));window.location.href='/?t='+Date.now()}
-else{err.textContent=d.error||'Login failed';err.style.display='block'}
-}).catch(function(e){err.textContent='Cannot reach server: '+e.message;err.style.display='block'});return false}
-</script></head><body><div class="card"><h2>🏊 WortheyFlow Login</h2>
-<div class="ok">✅ Service worker cleared. Cache cleared.</div>
-<form onsubmit="return doLogin()"><input id="e" type="email" placeholder="Email" value="tyler@wortheyaquatics.com" required>
-<input id="p" type="password" placeholder="Password" required><div id="err" class="err"></div>
-<button type="submit">Sign In</button></form></div></body></html>
+var log = document.getElementById('log');
+var status = document.getElementById('status');
+function addLog(msg) { log.innerHTML += msg + '<br>'; console.log(msg); }
+
+// Step 1: Nuke service workers
+var swCleared = 0;
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(function(regs) {
+        addLog('Found ' + regs.length + ' service worker(s)');
+        regs.forEach(function(r) { r.unregister(); swCleared++; });
+        addLog('Unregistered ' + swCleared + ' service worker(s)');
+    }).catch(function(e) { addLog('SW error: ' + e.message); });
+} else {
+    addLog('No service worker support');
+}
+
+// Step 2: Nuke all caches
+if ('caches' in window) {
+    caches.keys().then(function(keys) {
+        addLog('Found ' + keys.length + ' cache(s)');
+        return Promise.all(keys.map(function(k) { return caches.delete(k); }));
+    }).then(function() {
+        addLog('All caches deleted');
+    }).catch(function(e) { addLog('Cache error: ' + e.message); });
+} else {
+    addLog('No cache API');
+}
+
+// Step 3: Clear localStorage except what we're about to set
+try {
+    var keysToRemove = [];
+    for (var i = 0; i < localStorage.length; i++) {
+        var key = localStorage.key(i);
+        if (key && key.indexOf('wf_') === 0) keysToRemove.push(key);
+    }
+    keysToRemove.forEach(function(k) { localStorage.removeItem(k); });
+    addLog('Cleared ' + keysToRemove.length + ' localStorage entries');
+} catch(e) { addLog('localStorage error: ' + e.message); }
+
+// Step 4: Test server connectivity
+var apiBase = window.location.origin;
+addLog('Testing API at: ' + apiBase);
+
+fetch(apiBase + '/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: 'ping', password: 'ping' })
+}).then(function(r) {
+    addLog('Server responded: HTTP ' + r.status);
+    status.textContent = '✅ Server reachable. Ready to login.';
+    status.style.color = '#22c55e';
+}).catch(function(e) {
+    addLog('Server unreachable: ' + e.message);
+    status.textContent = '❌ Cannot reach server: ' + e.message;
+    status.style.color = '#ef4444';
+});
+
+// Login handler
+document.getElementById('frm').onsubmit = function(ev) {
+    ev.preventDefault();
+    var email = document.getElementById('e').value;
+    var pw = document.getElementById('p').value;
+    var err = document.getElementById('err');
+    var btn = document.getElementById('btn');
+    err.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Signing in...';
+    addLog('Attempting login...');
+
+    fetch(apiBase + '/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: pw })
+    }).then(function(r) {
+        addLog('Login response: HTTP ' + r.status);
+        return r.json();
+    }).then(function(d) {
+        if (d.token) {
+            addLog('✅ Login success! Token received.');
+            localStorage.setItem('wf_token', d.token);
+            localStorage.setItem('wf_user', JSON.stringify(d.user));
+            status.textContent = '✅ Login success! Redirecting...';
+            // Redirect with cache bust
+            window.location.href = '/?nocache=' + Date.now();
+        } else {
+            addLog('Login failed: ' + (d.error || 'unknown'));
+            err.textContent = d.error || 'Login failed';
+            err.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Sign In';
+        }
+    }).catch(function(e) {
+        addLog('Fetch error: ' + e.message);
+        err.textContent = 'Cannot reach server: ' + e.message;
+        err.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+    });
+    return false;
+};
+</script>
+</body></html>
