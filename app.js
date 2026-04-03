@@ -2544,8 +2544,58 @@
         el.classList.add('active');
         document.getElementById('page-title').textContent = 'Salesman Scorecard';
 
+        // Speed → Close Rate correlation (all salespeople combined)
+        const allWithRT = leads.filter(l => l.firstContactAt && (l.stage === 'Signed' || l.stage === 'Lost'));
+        const buckets = { under5: { won: 0, total: 0, rev: 0 }, mid: { won: 0, total: 0, rev: 0 }, over10: { won: 0, total: 0, rev: 0 } };
+        allWithRT.forEach(l => {
+            const rt = responseTimeMin(l);
+            if (rt === null) return;
+            const bucket = rt <= 5 ? 'under5' : rt <= 10 ? 'mid' : 'over10';
+            buckets[bucket].total++;
+            if (l.stage === 'Signed') { buckets[bucket].won++; buckets[bucket].rev += (l.quoteAmount || 0); }
+        });
+
+        // Estimate missed revenue from slow response
+        const fastCR = buckets.under5.total > 0 ? buckets.under5.won / buckets.under5.total : 0;
+        const slowLeads = buckets.over10.total;
+        const slowWon = buckets.over10.won;
+        const avgDeal = allWithRT.filter(l => l.stage === 'Signed' && l.quoteAmount > 0).reduce((s, l) => s + l.quoteAmount, 0) / (allWithRT.filter(l => l.stage === 'Signed').length || 1);
+        const couldHaveWon = Math.round(slowLeads * fastCR) - slowWon;
+        const missedRevenue = Math.max(0, couldHaveWon) * avgDeal;
+
+        const speedInsightHTML = allWithRT.length > 3 ? `
+            <div class="card" style="margin-bottom:20px;border:2px solid var(--blue);">
+                <div class="card-header"><h3>⚡ Speed → Revenue Correlation</h3></div>
+                <div style="display:flex;gap:0;margin:12px 0;">
+                    <div style="flex:1;text-align:center;padding:16px;background:rgba(76,175,80,0.1);border-radius:8px 0 0 8px;">
+                        <div style="font-size:11px;font-weight:600;color:var(--gray-400);margin-bottom:4px;">UNDER 5 MIN</div>
+                        <div style="font-size:28px;font-weight:800;color:#4caf50;">${buckets.under5.total > 0 ? Math.round(buckets.under5.won / buckets.under5.total * 100) : 0}%</div>
+                        <div style="font-size:12px;color:var(--gray-400);">close rate (${buckets.under5.won}/${buckets.under5.total})</div>
+                        <div style="font-size:14px;font-weight:600;color:#4caf50;margin-top:4px;">${fmt(buckets.under5.rev)}</div>
+                    </div>
+                    <div style="flex:1;text-align:center;padding:16px;background:rgba(255,152,0,0.1);">
+                        <div style="font-size:11px;font-weight:600;color:var(--gray-400);margin-bottom:4px;">5–10 MIN</div>
+                        <div style="font-size:28px;font-weight:800;color:#ff9800;">${buckets.mid.total > 0 ? Math.round(buckets.mid.won / buckets.mid.total * 100) : 0}%</div>
+                        <div style="font-size:12px;color:var(--gray-400);">close rate (${buckets.mid.won}/${buckets.mid.total})</div>
+                        <div style="font-size:14px;font-weight:600;color:#ff9800;margin-top:4px;">${fmt(buckets.mid.rev)}</div>
+                    </div>
+                    <div style="flex:1;text-align:center;padding:16px;background:rgba(244,67,54,0.1);border-radius:0 8px 8px 0;">
+                        <div style="font-size:11px;font-weight:600;color:var(--gray-400);margin-bottom:4px;">OVER 10 MIN</div>
+                        <div style="font-size:28px;font-weight:800;color:#f44336;">${buckets.over10.total > 0 ? Math.round(buckets.over10.won / buckets.over10.total * 100) : 0}%</div>
+                        <div style="font-size:12px;color:var(--gray-400);">close rate (${buckets.over10.won}/${buckets.over10.total})</div>
+                        <div style="font-size:14px;font-weight:600;color:#f44336;margin-top:4px;">${fmt(buckets.over10.rev)}</div>
+                    </div>
+                </div>
+                ${missedRevenue > 0 ? `<div style="background:rgba(244,67,54,0.1);border:1px solid rgba(244,67,54,0.3);border-radius:8px;padding:12px 16px;margin-top:8px;">
+                    <span style="font-size:14px;">💸 Estimated missed revenue from slow response: <strong style="color:#f44336;font-size:18px;">${fmt(missedRevenue)}</strong></span>
+                    <span style="font-size:12px;color:var(--gray-400);margin-left:8px;">(${couldHaveWon} more deals at fast-response close rate)</span>
+                </div>` : ''}
+            </div>
+        ` : '';
+
         el.innerHTML = `
             <button class="btn btn-sm btn-secondary" onclick="WF.navigateTo('dashboard')" style="margin-bottom:16px">← Back to Dashboard</button>
+            ${speedInsightHTML}
             ${SALESPEOPLE.map(sp => {
                 const sLeads = leads.filter(l => l.salesperson === sp);
                 const contacted = sLeads.filter(l => l.firstContactAt).length;
@@ -2559,18 +2609,77 @@
                 const sStalled = pipeline.filter(l => daysInStage(l) > 14);
                 const rts = sLeads.filter(l => l.firstContactAt).map(l => responseTimeMin(l)).filter(x => x !== null);
                 const avgRT = rts.length > 0 ? rts.reduce((a, b) => a + b, 0) / rts.length : null;
+
+                // Funnel stages
+                const funnel = [
+                    { label: 'Assigned', count: sLeads.length, color: '#64b5f6' },
+                    { label: 'Contacted', count: contacted, color: '#4fc3f7' },
+                    { label: 'Consultation', count: sLeads.filter(l => STAGES.indexOf(l.stage) >= STAGES.indexOf('Consultation')).length, color: '#81c784' },
+                    { label: 'Proposal', count: sLeads.filter(l => STAGES.indexOf(l.stage) >= STAGES.indexOf('Proposal Sent')).length, color: '#ffb74d' },
+                    { label: 'Won', count: sWon, color: '#4caf50' },
+                    { label: 'Lost', count: sLost, color: '#ef5350' }
+                ];
+                const maxFunnel = Math.max(funnel[0].count, 1);
+
+                // Per-salesperson speed buckets
+                const spBuckets = { u5: { won: 0, tot: 0 }, m: { won: 0, tot: 0 }, o: { won: 0, tot: 0 } };
+                sLeads.filter(l => l.firstContactAt && (l.stage === 'Signed' || l.stage === 'Lost')).forEach(l => {
+                    const rt = responseTimeMin(l);
+                    if (rt === null) return;
+                    const b = rt <= 5 ? 'u5' : rt <= 10 ? 'm' : 'o';
+                    spBuckets[b].tot++;
+                    if (l.stage === 'Signed') spBuckets[b].won++;
+                });
+
                 return `
-                <div class="card">
+                <div class="card" style="margin-bottom:16px;">
                     <h3 style="margin-bottom:12px">👤 ${esc(sp)}</h3>
-                    <div class="kpi-grid" style="margin-bottom:0">
+                    <div class="kpi-grid" style="margin-bottom:16px">
                         <div class="kpi-card blue"><div class="kpi-label">Leads Assigned</div><div class="kpi-value">${sLeads.length}</div></div>
-                        <div class="kpi-card ${contactPct < 0.5 ? 'red' : 'green'}"><div class="kpi-label">Contacted %</div><div class="kpi-value ${contactPct < 0.5 ? 'weakness' : ''}">${pct(contactPct)}</div></div>
+                        <div class="kpi-card ${contactPct < 0.5 ? 'red' : 'green'}"><div class="kpi-label">Contact Rate</div><div class="kpi-value ${contactPct < 0.5 ? 'weakness' : ''}">${pct(contactPct)}</div></div>
                         <div class="kpi-card ${sCR < 0.2 && (sWon + sLost) > 0 ? 'red' : 'green'}"><div class="kpi-label">Close Rate</div><div class="kpi-value ${sCR < 0.2 && (sWon + sLost) > 0 ? 'weakness' : ''}">${pct(sCR)}</div></div>
                         <div class="kpi-card green"><div class="kpi-label">Revenue Closed</div><div class="kpi-value">${fmt(sRev)}</div></div>
                         <div class="kpi-card blue"><div class="kpi-label">Avg Deal Size</div><div class="kpi-value">${fmt(sAvg)}</div></div>
-                        <div class="kpi-card ${avgRT !== null && avgRT > 30 ? 'red' : 'blue'}"><div class="kpi-label">Avg Response Time</div><div class="kpi-value ${avgRT !== null && avgRT > 30 ? 'weakness' : ''}">${avgRT !== null ? avgRT.toFixed(0) + 'm' : 'N/A'}</div></div>
-                        <div class="kpi-card blue"><div class="kpi-label">Deals in Pipeline</div><div class="kpi-value">${pipeline.length}</div></div>
-                        <div class="kpi-card ${sStalled.length > 0 ? 'red' : 'green'}"><div class="kpi-label">Stalled Deals</div><div class="kpi-value ${sStalled.length > 0 ? 'weakness' : ''}">${sStalled.length}</div></div>
+                        <div class="kpi-card ${avgRT !== null && avgRT > 10 ? 'red' : avgRT !== null && avgRT > 5 ? 'yellow' : 'blue'}"><div class="kpi-label">Avg Response</div><div class="kpi-value ${avgRT !== null && avgRT > 10 ? 'weakness' : ''}">${avgRT !== null ? avgRT.toFixed(0) + 'm' : 'N/A'}</div></div>
+                        <div class="kpi-card blue"><div class="kpi-label">In Pipeline</div><div class="kpi-value">${pipeline.length}</div></div>
+                        <div class="kpi-card ${sStalled.length > 0 ? 'red' : 'green'}"><div class="kpi-label">Stalled</div><div class="kpi-value ${sStalled.length > 0 ? 'weakness' : ''}">${sStalled.length}</div></div>
+                    </div>
+
+                    <div style="display:flex;gap:20px;">
+                        <div style="flex:1;">
+                            <h4 style="font-size:13px;color:var(--gray-400);margin-bottom:8px;">Lead → Outcome Funnel</h4>
+                            ${funnel.map(f => {
+                                const w = Math.max((f.count / maxFunnel) * 100, f.count > 0 ? 8 : 2);
+                                return \`<div style="display:flex;align-items:center;margin-bottom:4px;">
+                                    <span style="width:85px;font-size:12px;color:var(--gray-300);">\${f.label}</span>
+                                    <div style="flex:1;height:22px;background:var(--navy-light);border-radius:4px;overflow:hidden;">
+                                        <div style="width:\${w}%;height:100%;background:\${f.color};border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                                            <span style="font-size:11px;font-weight:700;color:#fff;\${f.count === 0 ? 'opacity:0.5' : ''}">\${f.count}</span>
+                                        </div>
+                                    </div>
+                                </div>\`;
+                            }).join('')}
+                        </div>
+                        <div style="flex:1;">
+                            <h4 style="font-size:13px;color:var(--gray-400);margin-bottom:8px;">Speed → Close Rate</h4>
+                            <div style="display:flex;gap:8px;">
+                                <div style="flex:1;text-align:center;padding:10px;background:rgba(76,175,80,0.1);border-radius:6px;">
+                                    <div style="font-size:10px;color:var(--gray-400);">&lt;5m</div>
+                                    <div style="font-size:20px;font-weight:800;color:#4caf50;">${spBuckets.u5.tot > 0 ? Math.round(spBuckets.u5.won / spBuckets.u5.tot * 100) + '%' : '—'}</div>
+                                    <div style="font-size:10px;color:var(--gray-400);">${spBuckets.u5.won}/${spBuckets.u5.tot}</div>
+                                </div>
+                                <div style="flex:1;text-align:center;padding:10px;background:rgba(255,152,0,0.1);border-radius:6px;">
+                                    <div style="font-size:10px;color:var(--gray-400);">5-10m</div>
+                                    <div style="font-size:20px;font-weight:800;color:#ff9800;">${spBuckets.m.tot > 0 ? Math.round(spBuckets.m.won / spBuckets.m.tot * 100) + '%' : '—'}</div>
+                                    <div style="font-size:10px;color:var(--gray-400);">${spBuckets.m.won}/${spBuckets.m.tot}</div>
+                                </div>
+                                <div style="flex:1;text-align:center;padding:10px;background:rgba(244,67,54,0.1);border-radius:6px;">
+                                    <div style="font-size:10px;color:var(--gray-400);">&gt;10m</div>
+                                    <div style="font-size:20px;font-weight:800;color:#f44336;">${spBuckets.o.tot > 0 ? Math.round(spBuckets.o.won / spBuckets.o.tot * 100) + '%' : '—'}</div>
+                                    <div style="font-size:10px;color:var(--gray-400);">${spBuckets.o.won}/${spBuckets.o.tot}</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>`;
             }).join('')}

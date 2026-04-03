@@ -1654,6 +1654,127 @@ app.get('/api/daily-report', async (req, res) => {
     }
 });
 
+// GET /api/weekly-report — weekly sales performance report
+app.get('/api/weekly-report', async (req, res) => {
+    try {
+        const secret = req.query.secret || req.headers['x-report-secret'];
+        if (secret !== (process.env.REPORT_SECRET || 'worthey2026')) return res.status(401).json({ error: 'Unauthorized' });
+
+        const days = parseInt(req.query.days) || 7;
+        const since = Date.now() - (days * 24 * 60 * 60 * 1000);
+
+        const { data: leads } = await supabase
+            .from('wortheyflow_leads')
+            .select('*')
+            .gt('created_at', since)
+            .not('stage', 'in', '("Imported")');
+
+        if (!leads || leads.length === 0) {
+            return res.json({ period: `${days} days`, totalLeads: 0, report: 'No leads this period.' });
+        }
+
+        const spStats = {};
+        const speedBuckets = { under5: { won: 0, total: 0, rev: 0 }, mid: { won: 0, total: 0, rev: 0 }, over10: { won: 0, total: 0, rev: 0 } };
+
+        for (const l of leads) {
+            const sp = l.salesperson || 'Unassigned';
+            if (!spStats[sp]) spStats[sp] = {
+                assigned: 0, contacted: 0, consultation: 0, proposalSent: 0, won: 0, lost: 0,
+                revenue: 0, responseTimes: [], critical: 0
+            };
+            const s = spStats[sp];
+            s.assigned++;
+
+            if (l.first_contact_at) {
+                s.contacted++;
+                const rtMin = (l.first_contact_at - l.created_at) / 60000;
+                s.responseTimes.push(rtMin);
+                if (rtMin > 10) s.critical++;
+            }
+
+            const stage = l.stage || '';
+            const STAGES_ORDER = ['New', 'Contacted', 'Consultation', 'Proposal Sent', 'Negotiating', 'Signed', 'Lost'];
+            const idx = STAGES_ORDER.indexOf(stage);
+            if (idx >= 2) s.consultation++;
+            if (idx >= 3) s.proposalSent++;
+            if (stage === 'Signed') { s.won++; s.revenue += (l.quote_amount || 0); }
+            if (stage === 'Lost') s.lost++;
+
+            // Speed buckets for closed leads
+            if (l.first_contact_at && (stage === 'Signed' || stage === 'Lost')) {
+                const rtMin = (l.first_contact_at - l.created_at) / 60000;
+                const bucket = rtMin <= 5 ? 'under5' : rtMin <= 10 ? 'mid' : 'over10';
+                speedBuckets[bucket].total++;
+                if (stage === 'Signed') { speedBuckets[bucket].won++; speedBuckets[bucket].rev += (l.quote_amount || 0); }
+            }
+        }
+
+        // Find top/bottom performers
+        const ranked = Object.entries(spStats)
+            .filter(([name]) => name !== 'Unassigned')
+            .map(([name, s]) => {
+                const avgRT = s.responseTimes.length > 0 ? s.responseTimes.reduce((a, b) => a + b, 0) / s.responseTimes.length : null;
+                const contactRate = s.assigned > 0 ? s.contacted / s.assigned : 0;
+                const closeRate = (s.won + s.lost) > 0 ? s.won / (s.won + s.lost) : 0;
+                const avgDeal = s.won > 0 ? s.revenue / s.won : 0;
+                return { name, ...s, avgRT, contactRate, closeRate, avgDeal };
+            })
+            .sort((a, b) => b.revenue - a.revenue);
+
+        const top = ranked[0];
+        const bottom = ranked[ranked.length - 1];
+
+        // Missed revenue calculation
+        const fastCR = speedBuckets.under5.total > 0 ? speedBuckets.under5.won / speedBuckets.under5.total : 0;
+        const allWon = leads.filter(l => l.stage === 'Signed' && l.quote_amount > 0);
+        const avgDealAll = allWon.length > 0 ? allWon.reduce((s, l) => s + l.quote_amount, 0) / allWon.length : 0;
+        const couldHaveWon = Math.max(0, Math.round(speedBuckets.over10.total * fastCR) - speedBuckets.over10.won);
+        const missedRevenue = couldHaveWon * avgDealAll;
+
+        // Build report text
+        let report = `📊 WEEKLY SALES PERFORMANCE REPORT\n`;
+        report += `Period: Last ${days} days\n`;
+        report += `Total leads: ${leads.length}\n\n`;
+
+        report += `--- PER SALESPERSON ---\n`;
+        for (const r of ranked) {
+            report += `\n👤 ${r.name}\n`;
+            report += `  Assigned: ${r.assigned} | Contacted: ${r.contacted} (${Math.round(r.contactRate * 100)}%)\n`;
+            report += `  Consultation: ${r.consultation} | Proposals: ${r.proposalSent}\n`;
+            report += `  Won: ${r.won} | Lost: ${r.lost} | Close Rate: ${Math.round(r.closeRate * 100)}%\n`;
+            report += `  Revenue: $${r.revenue.toLocaleString()} | Avg Deal: $${Math.round(r.avgDeal).toLocaleString()}\n`;
+            report += `  Avg Response: ${r.avgRT !== null ? Math.round(r.avgRT) + ' min' : 'N/A'} | Critical (10+ min): ${r.critical}\n`;
+        }
+
+        report += `\n--- SPEED → CLOSE RATE ---\n`;
+        report += `Under 5 min: ${speedBuckets.under5.total > 0 ? Math.round(speedBuckets.under5.won / speedBuckets.under5.total * 100) : 0}% close rate (${speedBuckets.under5.won}/${speedBuckets.under5.total}) — $${speedBuckets.under5.rev.toLocaleString()}\n`;
+        report += `5-10 min: ${speedBuckets.mid.total > 0 ? Math.round(speedBuckets.mid.won / speedBuckets.mid.total * 100) : 0}% close rate (${speedBuckets.mid.won}/${speedBuckets.mid.total}) — $${speedBuckets.mid.rev.toLocaleString()}\n`;
+        report += `Over 10 min: ${speedBuckets.over10.total > 0 ? Math.round(speedBuckets.over10.won / speedBuckets.over10.total * 100) : 0}% close rate (${speedBuckets.over10.won}/${speedBuckets.over10.total}) — $${speedBuckets.over10.rev.toLocaleString()}\n`;
+
+        if (missedRevenue > 0) {
+            report += `\n💸 Estimated missed revenue from slow response: $${Math.round(missedRevenue).toLocaleString()}\n`;
+            report += `   (${couldHaveWon} more deals if all leads answered in under 5 min)\n`;
+        }
+
+        if (top) report += `\n🏆 TOP PERFORMER: ${top.name} — $${top.revenue.toLocaleString()} revenue, ${Math.round(top.closeRate * 100)}% close rate\n`;
+        if (bottom && ranked.length > 1) report += `⚠️ NEEDS IMPROVEMENT: ${bottom.name} — $${bottom.revenue.toLocaleString()} revenue, ${Math.round(bottom.closeRate * 100)}% close rate\n`;
+
+        res.json({
+            period: `${days} days`,
+            totalLeads: leads.length,
+            ranked,
+            speedBuckets,
+            missedRevenue: Math.round(missedRevenue),
+            topPerformer: top ? top.name : null,
+            bottomPerformer: bottom && ranked.length > 1 ? bottom.name : null,
+            report
+        });
+    } catch (err) {
+        console.error('[Weekly Report] Error:', err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // ========== START ==========
 
 // Serve the CRM frontend (after API routes)
