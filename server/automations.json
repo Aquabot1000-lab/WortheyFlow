@@ -2,7 +2,7 @@
   {
     "id": "rule-01",
     "name": "New Construction Lead \u2014 Auto-Text to Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "lead_created"
     },
@@ -24,7 +24,7 @@
   {
     "id": "rule-02",
     "name": "New Construction Lead \u2014 Auto-Email to Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "lead_created"
     },
@@ -69,7 +69,7 @@
   {
     "id": "rule-04",
     "name": "New Service Lead \u2014 Auto-Text to Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "lead_created"
     },
@@ -91,7 +91,7 @@
   {
     "id": "rule-05",
     "name": "New Service Lead \u2014 Auto-Email to Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "lead_created"
     },
@@ -136,7 +136,7 @@
   {
     "id": "rule-07",
     "name": "Untouched Lead Alert \u2014 10 min (Tyler)",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "New",
@@ -154,7 +154,7 @@
   {
     "id": "rule-08",
     "name": "Untouched Lead Escalation \u2014 1 hour (Tyler)",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "New",
@@ -355,7 +355,7 @@
   {
     "id": "auto-004",
     "name": "Stage Change Notification",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_change",
       "stage": "any"
@@ -373,7 +373,7 @@
   {
     "id": "auto-005",
     "name": "Stalled Deal Alert (14 days)",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "any",
@@ -392,7 +392,7 @@
   {
     "id": "auto-006",
     "name": "Deal Signed \ud83c\udf89",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Signed"
@@ -410,7 +410,7 @@
   {
     "id": "auto-007",
     "name": "Deal Lost",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Lost"

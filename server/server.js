@@ -209,13 +209,11 @@ function getSendGrid() {
 }
 
 async function sendSMS(to, message) {
-    // 🚨 GLOBAL NOTIFICATION KILL SWITCH — set by Tyler 2026-04-03 1:15 PM
-    // ALL outbound comms disabled: SMS OFF, email fallback OFF.
-    // Only lead capture + DB writes + internal logging remain active.
-    console.log('[ALL COMMS BLOCKED] Kill switch active. Would have sent to', to, ':', message);
-    return { success: true, blocked: true, to, message };
+    // 🚨 SAFE MODE V2 — SMS globally OFF, email fallback for TEAM ONLY
+    // set by Tyler 2026-04-03 1:16 PM
+    console.log('[SAFE MODE] SMS blocked to', to);
 
-    // EMAIL FALLBACK (disabled — re-enable when Tyler approves)
+    // Email fallback ONLY for team members (salesperson + Tyler alerts)
     try {
         const contactDir = loadContactDirectory();
         const normalTo = (to || '').replace(/\D/g, '').slice(-10);
@@ -307,10 +305,36 @@ async function sendSMS(to, message) {
 }
 
 async function sendEmail(to, subject, body, options = {}) {
-    // 🚨 GLOBAL EMAIL KILL SWITCH — set by Tyler 2026-04-03 1:15 PM
-    // ALL outbound email disabled. Only lead capture + DB writes + logging active.
-    console.log('[EMAIL BLOCKED] Kill switch active. Would have sent to', to, ':', subject);
-    return { success: true, blocked: true, to, subject };
+    // 🚨 SAFE MODE V2 — set by Tyler 2026-04-03 1:16 PM
+    // ONLY internal team alerts allowed. NO customer-facing emails.
+    const TEAM_EMAILS = [
+        'tyler@wortheyaquatics.com',
+        'anibal@wortheyaquatics.com',
+        'ricardo@wortheyaquatics.com',
+        'richardc@wortheyaquatics.com',
+        'paul@wortheyaquatics.com',
+        'valerie@wortheyaquatics.com',
+        'aquabot1000@icloud.com'
+    ];
+    const isTeamEmail = TEAM_EMAILS.some(e => to.toLowerCase() === e.toLowerCase());
+    if (!isTeamEmail) {
+        console.log('[SAFE MODE] BLOCKED customer email to', to, ':', subject);
+        return { success: true, blocked: true, reason: 'customer-email-blocked', to, subject };
+    }
+
+    // DEDUP: only 1 notification per lead per recipient
+    const dedupKey = (options._leadId || 'nolead') + ':' + to;
+    if (!global._emailDedupSet) global._emailDedupSet = new Set();
+    if (global._emailDedupSet.has(dedupKey)) {
+        console.log('[SAFE MODE] DEDUP blocked duplicate email to', to, 'for lead', options._leadId);
+        return { success: true, blocked: true, reason: 'dedup', to, subject };
+    }
+    global._emailDedupSet.add(dedupKey);
+    if (!global._emailDedupTimer) {
+        global._emailDedupTimer = setInterval(() => { global._emailDedupSet = new Set(); }, 3600000);
+    }
+
+    console.log('[SAFE MODE] ALLOWED team email to', to, ':', subject);
 
     const sg = getSendGrid();
     if (!sg) {
@@ -629,8 +653,8 @@ app.post('/api/webhook/ghl', async (req, res) => {
     // 🆕 INSTANT SMS ALERT: Notify assigned salesperson immediately
     sendNewLeadSMS(lead, contactDir);
 
-    // 🆕 SET 10-MINUTE UNTOUCHED ALERT: Check if lead goes untouched
-    scheduleUntouchedAlert(lead);
+    // 🚨 SAFE MODE V2: 10-min untouched alert DISABLED
+    // scheduleUntouchedAlert(lead);
 
     console.log('[GHL WEBHOOK] Lead created:', lead.id, lead.name, '→', lead.salesperson);
     res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
@@ -1390,7 +1414,8 @@ app.post('/api/booth-lead', async (req, res) => {
         sendNewLeadSMS(lead, contactDir);
 
         // 🆕 SET 10-MINUTE UNTOUCHED ALERT: Check if lead goes untouched
-        scheduleUntouchedAlert(lead);
+        // 🚨 SAFE MODE V2: untouched alert DISABLED
+        // scheduleUntouchedAlert(lead);
 
         console.log('[BOOTH] Lead created:', lead.id, lead.name, '→', lead.salesperson);
         res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
@@ -1432,34 +1457,65 @@ async function sendNewLeadSMS(lead, contactDir) {
             console.error(`[New Lead SMS] ❌ SMS failed for ${lead.salesperson}: ${smsResult.error || 'dry run'}`);
         }
 
-        // ALWAYS send email backup (SMS may be blocked by 10DLC/carrier)
-        if (salesperson.email) {
-            const emailResult = await sendEmail(
-                salesperson.email,
-                `🚨 New Lead: ${lead.name} — Call NOW!`,
-                `<div style="font-family:Arial,sans-serif;max-width:500px;">
+        // SAFE MODE V2: Direct email alerts to salesperson + Tyler (with dedup)
+        const leadAlertHtml = `<div style="font-family:Arial,sans-serif;max-width:500px;">
                     <h2 style="color:#d32f2f;">🚨 New Lead Assigned to You</h2>
                     <table style="width:100%;border-collapse:collapse;">
                         <tr><td style="padding:8px;font-weight:bold;">Name:</td><td style="padding:8px;">${lead.name}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Phone:</td><td style="padding:8px;"><a href="tel:${lead.phone}">${lead.phone || 'N/A'}</a></td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Phone:</td><td style="padding:8px;"><a href="tel:${(lead.phone || '').replace(/\D/g,'')}">${lead.phone || 'N/A'}</a></td></tr>
                         <tr><td style="padding:8px;font-weight:bold;">Email:</td><td style="padding:8px;">${lead.email || 'N/A'}</td></tr>
                         <tr><td style="padding:8px;font-weight:bold;">Job Type:</td><td style="padding:8px;">${lead.jobType}</td></tr>
                         <tr><td style="padding:8px;font-weight:bold;">Source:</td><td style="padding:8px;">${lead.source}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Value:</td><td style="padding:8px;">$${(lead.quoteAmount || 0).toLocaleString()}</td></tr>
+                        <tr><td style="padding:8px;font-weight:bold;">Address:</td><td style="padding:8px;">${lead.address || 'N/A'}, ${lead.city || ''} ${lead.state || ''}</td></tr>
                     </table>
                     <p style="margin-top:16px;"><strong>⏰ Call within 5 minutes!</strong></p>
+                    ${lead.phone ? `<a href="tel:${lead.phone.replace(/\D/g,'')}" style="display:inline-block;padding:14px 28px;background:#16a34a;color:#fff;text-decoration:none;border-radius:8px;font-size:18px;font-weight:bold;margin:8px 0;">📞 CALL NOW: ${lead.phone}</a><br>` : ''}
                     <a href="${APP_URL}" style="display:inline-block;padding:12px 24px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px;margin-top:8px;">Open WortheyFlow →</a>
-                </div>`,
-                { replyTo: 'tyler@wortheyaquatics.com' }
+                </div>`;
+
+        // 1. Email salesperson
+        if (salesperson.email) {
+            const spResult = await sendEmail(
+                salesperson.email,
+                `🚨 NEW LEAD: ${lead.name} — Call NOW!`,
+                leadAlertHtml,
+                { replyTo: 'tyler@wortheyaquatics.com', _leadId: lead.id }
             );
-            if (emailResult.success) {
-                console.log(`[New Lead Email] ✅ Backup email sent to ${salesperson.email}`);
-            } else {
-                console.error(`[New Lead Email] ❌ Email also failed for ${salesperson.email}: ${emailResult.error}`);
+            console.log(`[SAFE MODE] Salesperson email (${salesperson.email}): ${spResult.blocked ? 'BLOCKED' : (spResult.success ? '✅' : '❌ ' + spResult.error)}`);
+            
+            // BACKUP: If email fails, log alert for Tyler
+            if (!spResult.success && !spResult.blocked) {
+                console.error(`[SAFE MODE] ⚠️ EMAIL FAILED for ${salesperson.email} — Tyler backup triggered`);
+                appendLog({ action: 'email_failure_backup', leadId: lead.id, leadName: lead.name, failedTo: salesperson.email, error: spResult.error });
             }
         }
+
+        // 2. ALWAYS email Tyler
+        const tylerResult = await sendEmail(
+            'tyler@wortheyaquatics.com',
+            `🚨 NEW LEAD: ${lead.name} → ${lead.salesperson}`,
+            leadAlertHtml,
+            { _leadId: lead.id }
+        );
+        console.log(`[SAFE MODE] Tyler email: ${tylerResult.blocked ? 'BLOCKED(dedup)' : (tylerResult.success ? '✅' : '❌ ' + tylerResult.error)}`);
+
+        // LOG: 1 line per lead
+        appendLog({
+            action: 'safe_mode_new_lead_alert',
+            leadId: lead.id,
+            leadName: lead.name,
+            salesperson: lead.salesperson,
+            salespersonEmail: salesperson.email || 'none',
+            tylerNotified: true,
+            timestamp: new Date().toISOString()
+        });
+
     } catch (err) {
-        console.error('[New Lead SMS] Error:', err.message);
+        console.error('[New Lead Alert] Error:', err.message);
+        // BACKUP: Log failure so nothing is silently lost
+        try {
+            appendLog({ action: 'new_lead_alert_error', leadId: lead.id, leadName: lead.name, error: err.message });
+        } catch(e) {}
     }
 }
 
