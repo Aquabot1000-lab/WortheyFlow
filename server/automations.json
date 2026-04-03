@@ -172,7 +172,7 @@
   {
     "id": "rule-09",
     "name": "No Answer Day 1 Drip \u2014 Construction Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -191,12 +191,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, this is {{lead.salesperson}} from Worthey Aquatics. I tried reaching you about your new pool project \u2014 would love to connect when you have a moment. Feel free to call or text me back at this number!"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "rule-10",
     "name": "No Answer Day 3 Drip \u2014 Construction Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -215,12 +217,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}, just following up on your pool inquiry. We have availability for consultations this week and would love to get you on the schedule. Any time work for a quick call?"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "rule-11",
     "name": "No Answer Day 7 Drip \u2014 Construction Lead (SMS)",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -239,12 +243,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, wanted to reach out one more time about your pool project. We're heading into the busy season and spots for spring/summer builds are filling up. If you're still interested, I'm here to help \u2014 just reply or call anytime. \u2014 {{lead.salesperson}}, Worthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "rule-12",
     "name": "No Answer Day 7 Drip \u2014 Construction Lead (Email)",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -264,12 +270,14 @@
         "subject": "Still thinking about that pool? Let's talk.",
         "body": "Hi {{lead.name}},\n\nI wanted to follow up one more time regarding your pool project inquiry. I know life gets busy, and I want to make sure you have everything you need to make a decision.\n\nWhether you're still in the early planning stages or ready to move forward, I'm happy to answer any questions, walk through design ideas, or set up a no-pressure consultation at your convenience.\n\nWe're heading into the busy season, and availability for spring/summer builds is starting to fill up. If timing is a factor, now is a great time to get on the schedule.\n\nFeel free to reply to this email, call, or text me anytime.\n\nLooking forward to hearing from you!\n\nBest regards,\n{{lead.salesperson_fullName}}\n{{lead.salesperson_title}}\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "rule-13",
     "name": "No Answer Day 1 Drip \u2014 Service Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -288,12 +296,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, this is Richard from Worthey Aquatics. I tried reaching you about your pool service needs \u2014 would love to connect when you have a moment. Feel free to call or text me back at this number!"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "rule-14",
     "name": "No Answer Day 3 Drip \u2014 Service Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -312,12 +322,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}, just following up on your pool service inquiry. We have availability this week and would love to get your pool taken care of. Any time work for a quick call?"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "rule-15",
     "name": "No Answer Day 7 Drip \u2014 Service Lead",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Contacted",
@@ -336,7 +348,9 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, wanted to reach out one more time about your pool service needs. Whether it's maintenance, repairs, or equipment \u2014 we're here to help whenever you're ready. Just reply or call anytime. \u2014 Richard Castille, Worthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "auto-004",
@@ -414,7 +428,7 @@
   {
     "id": "new-rule-20",
     "name": "Consultation Scheduled \u2014 Confirmation SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Consultation Scheduled"
@@ -426,12 +440,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}! \ud83c\udf89 Great news \u2014 your consultation with {{lead.salesperson}} at Worthey Aquatics is confirmed. We'll be in touch with the exact date and time. Looking forward to meeting you and talking about your dream pool!"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-21",
     "name": "Consultation Scheduled \u2014 Confirmation Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Consultation Scheduled"
@@ -444,12 +460,14 @@
         "subject": "Your Pool Consultation is Confirmed! \ud83c\udfca",
         "body": "Hi {{lead.name}},\n\nExciting news \u2014 your pool consultation with {{lead.salesperson_fullName}} is confirmed!\n\nHere's what to expect:\n\n\u2022 We'll walk your yard together and discuss your vision\n\u2022 You'll get expert advice on pool placement, design options, and features\n\u2022 We'll talk through budget ranges so there are no surprises\n\u2022 The whole visit takes about 45-60 minutes\n\nA few things that help us give you the best experience:\n\u2705 Think about what you want \u2014 lap pool, freeform, spa, tanning ledge?\n\u2705 Know your approximate budget range\n\u2705 Have any inspiration photos ready (Pinterest, magazines, etc.)\n\u2705 Make sure we can access your full backyard\n\nWe've built hundreds of pools across South Central Texas and we're excited to help you create something amazing.\n\nSee you soon!\n\n{{lead.salesperson_fullName}}\nPool Consultant\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-22",
     "name": "Consultation \u2014 24 Hour Reminder SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "appointment_reminder",
       "minutesBefore": 1440
@@ -461,12 +479,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, just a friendly reminder \u2014 your pool consultation with {{lead.salesperson}} from Worthey Aquatics is tomorrow! Make sure your backyard is accessible and have any design ideas handy. See you then! \ud83d\udc4b"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-23",
     "name": "Consultation \u2014 1 Hour Reminder SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "appointment_reminder",
       "minutesBefore": 60
@@ -478,12 +498,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}, {{lead.salesperson}} from Worthey Aquatics is heading your way! We'll be there in about an hour. If anything changed, just text or call us back at this number."
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-24",
     "name": "Consultation Completed \u2014 Thank You SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Consultation Scheduled"
@@ -495,12 +517,14 @@
         "to": "{{lead.phone}}",
         "message": "{{lead.name}}, thanks for meeting with us today! It was great seeing your space and talking through ideas. {{lead.salesperson}} is putting together your custom proposal now \u2014 you'll have it soon. Excited about this project! \ud83c\udfca"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-25",
     "name": "Consultation Completed \u2014 Recap Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Consultation Scheduled"
@@ -513,12 +537,14 @@
         "subject": "Great Meeting You, {{lead.name}}! Here's What's Next",
         "body": "Hi {{lead.name}},\n\nThanks for taking the time to meet with us today! We really enjoyed seeing your backyard and talking through your pool vision.\n\nHere's what happens next:\n\n1\ufe0f\u20e3 Your custom proposal \u2014 {{lead.salesperson_fullName}} is putting together a detailed design and quote tailored to your space and budget. Expect it within 3-5 business days.\n\n2\ufe0f\u20e3 Design review \u2014 Once you receive the proposal, we'll schedule a call or meeting to walk through every detail together.\n\n3\ufe0f\u20e3 Your decision \u2014 No pressure, no rush. We want you to feel 100% confident.\n\nIn the meantime, feel free to check out some of our recent builds at wortheyaquatics.com or reach out with any questions.\n\nWe're excited about what we discussed today!\n\nBest,\n{{lead.salesperson_fullName}}\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-26",
     "name": "Proposal Sent \u2014 Notification SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Proposal Sent"
@@ -530,12 +556,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}! Your custom pool proposal from Worthey Aquatics just hit your inbox \ud83d\udce9 Take a look when you get a chance and let me know if you have any questions. \u2014 {{lead.salesperson}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-27",
     "name": "Proposal Sent \u2014 Day 2 Questions Follow-Up SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Proposal Sent",
@@ -548,12 +576,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}, just checking in \u2014 did you get a chance to look over your pool proposal? Happy to jump on a quick call to walk through it together or answer any questions. No pressure at all! \u2014 {{lead.salesperson}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-28",
     "name": "Proposal Sent \u2014 Day 5 Social Proof Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Proposal Sent",
@@ -567,12 +597,14 @@
         "subject": "See What Your Neighbors Are Building \ud83c\udfca",
         "body": "Hi {{lead.name}},\n\nWhile you're thinking through your pool project, we wanted to share some recent builds from right here in South Central Texas.\n\nOur clients consistently tell us two things:\n\n\u2b50 \"Worthey made the whole process easy and stress-free\"\n\u2b50 \"The final result was even better than we imagined\"\n\nWe've built everything from sleek modern pools to family-friendly designs and custom spas \u2014 all within a couple hours of our home base. Every project gets the same attention to detail.\n\nCheck out our work at wortheyaquatics.com \u2014 and when you're ready to talk through your proposal, {{lead.salesperson_fullName}} is just a call away.\n\nBest,\nWorthey Aquatics\n(210) 760-7236"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-29",
     "name": "Proposal Sent \u2014 Day 7 Urgency SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Proposal Sent",
@@ -585,12 +617,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, quick heads up \u2014 our spring/summer build schedule is filling up fast. If you're thinking about moving forward, now's the time to lock in your spot. Happy to chat whenever works for you! \u2014 {{lead.salesperson}}, Worthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-30",
     "name": "Proposal Sent \u2014 Day 14 Final Follow-Up Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Proposal Sent",
@@ -604,12 +638,14 @@
         "subject": "Still Thinking About Your Pool, {{lead.name}}?",
         "body": "Hi {{lead.name}},\n\nI wanted to follow up one last time on your pool proposal. I know it's a big decision, and we want you to feel completely comfortable.\n\nIf anything's holding you back \u2014 budget, timeline, design questions \u2014 I'd love to chat. Sometimes a quick 10-minute call clears everything up.\n\nA few things to keep in mind:\n\u2022 We offer flexible financing options\n\u2022 Our build schedule for this season is filling up\n\u2022 We stand behind every project with our quality guarantee\n\nIf the timing isn't right, no worries at all. We'll be here whenever you're ready.\n\nJust reply to this email or give me a call anytime.\n\n{{lead.salesperson_fullName}}\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-31",
     "name": "Negotiation \u2014 Value Justification Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Negotiation"
@@ -622,12 +658,14 @@
         "subject": "Why San Antonio Homeowners Trust Worthey Aquatics",
         "body": "Hi {{lead.name}},\n\nWe know choosing a pool builder is a big decision, and we want you to feel confident choosing Worthey Aquatics.\n\nHere's what sets us apart:\n\n\ud83d\udd27 Licensed & insured \u2014 fully bonded, every project\n\ud83d\udccb Transparent pricing \u2014 no hidden costs, no surprise change orders\n\u23f0 On-time builds \u2014 we respect your timeline and keep you updated weekly\n\ud83c\udfc6 Local reputation \u2014 we live and work in South Central Texas. Our name is on every pool.\n\nA pool is a 20+ year investment. We build pools that last.\n\nLet's find the right fit for your budget and vision. Call or text {{lead.salesperson_fullName}} anytime.\n\nWorthey Aquatics\n(210) 760-7236\nwortheyaquatics.com"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-32",
     "name": "Negotiation \u2014 Day 7 Check-In SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Negotiation",
@@ -640,12 +678,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}, just wanted to check in on your pool project. Any questions I can help with? We're flexible on making this work for you. \u2014 {{lead.salesperson}}, Worthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-33",
     "name": "Signed \u2014 Congrats SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Signed"
@@ -657,12 +697,14 @@
         "to": "{{lead.phone}}",
         "message": "\ud83c\udf89 {{lead.name}}, welcome to the Worthey Aquatics family! We're so excited to build your dream pool. You'll be hearing from us soon with next steps and your project timeline. Let's go! \ud83c\udfca"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-34",
     "name": "Signed \u2014 Welcome Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_enter",
       "stage": "Signed"
@@ -675,12 +717,14 @@
         "subject": "Welcome to the Worthey Family! \ud83c\udf89 Your Pool Journey Starts Now",
         "body": "Hi {{lead.name}},\n\nCongratulations! We're thrilled you chose Worthey Aquatics for your pool project. This is going to be amazing.\n\nDuring your build, you can expect:\n\u2022 Weekly progress updates from your project manager, Paul Espurova\n\u2022 Direct access to our team for any questions\n\u2022 A clean, organized job site\n\u2022 Paul will reach out soon with your timeline and next steps\n\nWe treat every backyard like it's our own. Your family is going to love this pool.\n\nIf you have any questions before we get started, don't hesitate to reach out.\n\nLet's build something incredible!\n\nThe Worthey Aquatics Team\n(210) 760-7236\nwortheyaquatics.com"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-35",
     "name": "Signed \u2014 Meet Your Project Manager Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Signed",
@@ -694,12 +738,14 @@
         "subject": "Meet Your Project Manager \u2014 {{lead.name}}",
         "body": "Hi {{lead.name}},\n\nNow that we're getting started, I wanted to introduce you to your point of contact throughout the build process.\n\nYour project manager, Paul Espurova, will be reaching out in the next few days to:\n\n\u2022 Walk through your final design details\n\u2022 Confirm your build timeline\n\u2022 Set expectations for each construction phase\n\u2022 Give you their direct contact info\n\nFrom permits to the final fill-up, they'll keep you informed every step of the way.\n\nThis is the exciting part \u2014 your dream pool is becoming real!\n\nWorthey Aquatics\n(210) 760-7236"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-36",
     "name": "Post-Build \u2014 Day 7 Satisfaction Check SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Completed",
@@ -712,12 +758,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}! It's been about a week since we wrapped up your pool. How's everything? \ud83c\udfca Water clear, equipment running smooth? If anything needs attention, just text us back. We're always here for you! \u2014 Worthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-37",
     "name": "Post-Build \u2014 Day 14 Review Request Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Completed",
@@ -731,12 +779,14 @@
         "subject": "Loving Your New Pool? We'd Love to Hear About It!",
         "body": "Hi {{lead.name}},\n\nWe hope you and your family are enjoying the new pool! There's nothing better than that first few weeks.\n\nIf you're happy with how everything turned out, we'd really appreciate a quick Google review. It helps other families in the area find us and makes a huge difference for our small business.\n\n\ud83d\udc49 Leave a review: [Google Review Link]\n\nIt only takes 60 seconds and means the world to our team.\n\nAlso \u2014 if you know anyone else thinking about a pool, we'd love the referral! We offer $100 off your next service for every friend you send our way.\n\nThanks for trusting us with your backyard!\n\nWorthey Aquatics\n(210) 760-7236"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-38",
     "name": "Post-Build \u2014 Day 30 Maintenance Tips Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Completed",
@@ -750,12 +800,14 @@
         "subject": "Pool Owner Pro Tips \u2014 Keep Your Pool Perfect \ud83d\udca7",
         "body": "Hi {{lead.name}},\n\nCongrats on your first month as a pool owner! Here are some quick tips to keep everything running beautifully:\n\n\ud83d\udca7 Check chlorine and pH weekly (or let us do it!)\n\ud83c\udf42 Skim and clean the filter basket regularly\n\ud83d\udd27 Run your pump 8-12 hours daily in summer\n\ud83c\udf21\ufe0f Watch for algae in the Texas heat \u2014 brush walls weekly\n\u26a1 Schedule annual equipment checkups\n\nDon't want to deal with any of that? Our weekly maintenance service starts at just $240/month. We handle chemicals, cleaning, equipment checks \u2014 everything.\n\n\ud83d\udc49 Want to add weekly service? Just reply to this email or call us.\n\nYour pool is an investment \u2014 let's keep it looking amazing.\n\nWorthey Aquatics\n(210) 760-7236"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-39",
     "name": "Post-Build \u2014 Day 90 Check-In Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Completed",
@@ -769,12 +821,14 @@
         "subject": "How's the Pool Life Treating You, {{lead.name}}?",
         "body": "Hi {{lead.name}},\n\nIt's been about 3 months since we finished your pool \u2014 how's everything going?\n\nThis is a great time for a quick checkup:\n\u2705 Equipment running smoothly?\n\u2705 Water staying clear and balanced?\n\u2705 Any concerns with the equipment or finish?\n\nWe offer a complimentary 90-day inspection for all our builds. If you'd like us to swing by and make sure everything is in top shape, just reply or call.\n\nAlso, with the season changing, now's a great time to think about:\n\u2022 Weekly maintenance service\n\u2022 Pool heater installation (extend your swim season!)\n\u2022 LED lighting upgrades\n\u2022 Automation systems\n\nWe're always here for our Worthey family.\n\nWorthey Aquatics\n(210) 760-7236"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-40",
     "name": "Lost Deal \u2014 Day 30 Winback SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Lost",
@@ -787,12 +841,14 @@
         "to": "{{lead.phone}}",
         "message": "Hi {{lead.name}}, it's {{lead.salesperson}} from Worthey Aquatics. Just wanted to check in \u2014 still thinking about that pool? If anything's changed or you have new questions, I'm here. No pressure, just a friendly check-in! \ud83d\udc4b"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-41",
     "name": "Lost Deal \u2014 Day 60 Seasonal Offer Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Lost",
@@ -806,12 +862,14 @@
         "subject": "A Little Something to Sweeten the Deal, {{lead.name}}",
         "body": "Hi {{lead.name}},\n\nWe know the timing wasn't right before, and that's totally okay. We wanted to reach out because we're running a seasonal promotion right now.\n\nWe're currently offering:\n\ud83d\udcb0 Up to 5-10% discounts on new builds\n\ud83d\udcb5 Flexible financing options with low monthly payments\n\ud83d\udcc5 Priority scheduling \u2014 skip the waitlist\n\nTexas summers are no joke, and there's nothing better than having your own backyard oasis.\n\nIf you'd like to revisit your pool project, we'd love to put together an updated proposal. No obligation \u2014 just a conversation.\n\nReply to this email or give us a call anytime.\n\n{{lead.salesperson_fullName}}\nWorthey Aquatics\n{{lead.salesperson_phone_display}}"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-42",
     "name": "Lost Deal \u2014 Day 90 Door Open Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Lost",
@@ -825,12 +883,14 @@
         "subject": "The Door's Always Open, {{lead.name}}",
         "body": "Hi {{lead.name}},\n\nJust a quick note to let you know \u2014 whenever you're ready to talk about a pool again, we're here.\n\nNo hard sell, no pressure. Plans change, budgets shift, timing gets better. When the moment is right, we'd love to be your builder.\n\nJust reply to this email or give us a call. We'll pick up right where we left off.\n\nWishing you and your family all the best!\n\n{{lead.salesperson_fullName}}\nWorthey Aquatics\n(210) 760-7236"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-43",
     "name": "Nurture \u2014 Monthly Email Touchpoint",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Nurture",
@@ -844,12 +904,14 @@
         "subject": "What's New at Worthey Aquatics \ud83c\udfca",
         "body": "Hi {{lead.name}},\n\nHere's what's been happening at Worthey Aquatics:\n\n\ud83c\udfd7\ufe0f Recent Build Spotlight \u2014 Check out our latest project, a stunning freeform pool with a raised spa in the Hill Country.\n\n\ud83d\udca1 Pool Tip of the Month \u2014 Texas summers mean your pool works overtime. Running your pump during off-peak hours (before 2 PM or after 7 PM) saves energy and money.\n\n\ud83d\udcc5 Seasonal Note \u2014 Now is the perfect time to start planning if you want to be swimming by summer. Our design-to-build timeline is typically 10-14 weeks.\n\nWhenever you're ready to talk about your pool project, we're here. Just reply or call us at (210) 760-7236.\n\nHappy swimming!\nWorthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-44",
     "name": "Nurture \u2014 Quarterly SMS Nudge",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Nurture",
@@ -862,12 +924,14 @@
         "to": "{{lead.phone}}",
         "message": "Hey {{lead.name}}! Still dreaming about that backyard pool? \ud83c\udfca We've got some amazing builds coming out of the ground right now in SA. Whenever you're ready to revisit, we're just a text away! \u2014 Worthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-45",
     "name": "Existing Customer \u2014 Annual Pool Checkup Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Customer",
@@ -882,12 +946,14 @@
         "subject": "Time for Your Annual Pool Health Checkup! \ud83d\udd27",
         "body": "Hi {{lead.name}},\n\nCan you believe it's been almost a year? Time flies when you're enjoying your pool!\n\nJust like your car needs regular service, your pool equipment benefits from an annual checkup. Our technicians will inspect:\n\n\ud83d\udd27 Pump and motor performance\n\ud83d\udca7 Filter condition and pressure\n\u26a1 Electrical connections and timers\n\ud83c\udf21\ufe0f Heater efficiency (if applicable)\n\ud83c\udfca Surface and tile condition\n\nAn annual checkup catches small issues before they become expensive repairs. Most visits take about an hour.\n\n\ud83d\udcde Schedule your checkup: (210) 760-7236\nOr just reply to this email.\n\nThanks for being part of the Worthey family!\n\nWorthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-46",
     "name": "Existing Customer \u2014 Spring Opening Service Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "stage_duration",
       "stage": "Customer",
@@ -902,12 +968,14 @@
         "subject": "Spring Is Here \u2014 Let's Get Your Pool Summer-Ready! \u2600\ufe0f",
         "body": "Hi {{lead.name}},\n\nSpring is here and pool season is right around the corner! Let's make sure your pool is ready to go.\n\nOur Spring Opening Service includes:\n\u2705 Full chemical balance and shock treatment\n\u2705 Filter clean and equipment inspection\n\u2705 Surface brushing and vacuum\n\u2705 Check all returns, skimmers, and drains\n\u2705 Automation system check (if applicable)\n\nDon't wait until it's 100\u00b0 and everyone's calling \u2014 book now and skip the rush.\n\n\ud83d\udcde Call (210) 760-7236 or reply to schedule.\n\nLet's make this your best pool season yet!\n\nWorthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-47",
     "name": "Existing Customer \u2014 Equipment Upgrade Reminder Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "equipment_age",
       "yearsThreshold": 7
@@ -920,12 +988,14 @@
         "subject": "Is Your Pool Equipment Due for an Upgrade?",
         "body": "Hi {{lead.name}},\n\nPool equipment typically lasts 7-10 years, and yours may be getting close. Aging equipment doesn't just risk breakdowns \u2014 it costs you more in energy every month.\n\nModern upgrades that pay for themselves:\n\n\u26a1 Variable-speed pumps \u2014 save $50-100/month on electricity\n\ud83c\udf21\ufe0f Heat pumps \u2014 3x more efficient than gas heaters\n\ud83d\udca1 LED lighting \u2014 80% less energy, lasts 10x longer\n\ud83e\udd16 Smart automation \u2014 control everything from your phone\n\nWe offer free equipment assessments \u2014 we'll tell you honestly what needs replacing now vs. what can wait.\n\n\ud83d\udcde Schedule your free assessment: (210) 760-7236\n\nDon't wait for a breakdown in July!\n\nWorthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-48",
     "name": "Referral Request \u2014 Post-Review SMS",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "post_review",
       "stage": "Customer"
@@ -937,12 +1007,14 @@
         "to": "{{lead.phone}}",
         "message": "{{lead.name}}, thank you SO much for the amazing review! \ud83d\ude4f It means the world to our team. Quick question \u2014 know anyone else thinking about a pool? We're offering $100 off your next service for every referral. Just have them mention your name!"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   },
   {
     "id": "new-rule-49",
     "name": "Referral Request \u2014 Post-Review Email",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "post_review",
       "stage": "Customer"
@@ -955,6 +1027,8 @@
         "subject": "Thank You! Here's $100 for Spreading the Word \ud83c\udf89",
         "body": "Hi {{lead.name}},\n\nWe saw your review and it absolutely made our day. Thank you for taking the time \u2014 it really helps other families in the area find us.\n\nAs a thank you, we'd love to offer you our referral reward:\n\n\ud83c\udf81 $100 off your next service for every friend or neighbor you refer who books a consultation.\n\nNo limit \u2014 refer 5 friends, get $500 in credits. It's that simple.\n\nJust have them mention your name when they call, or forward them this email with our number: (210) 760-7236.\n\nThanks for being part of the Worthey family!\n\nWorthey Aquatics"
       }
-    ]
+    ],
+    "_disabled_by": "aquabot-2026-04-02-audit",
+    "_disabled_reason": "Tyler ordered: no unapproved emails. Needs branded template redesign."
   }
 ]
