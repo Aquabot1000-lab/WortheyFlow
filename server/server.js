@@ -209,11 +209,13 @@ function getSendGrid() {
 }
 
 async function sendSMS(to, message) {
-    // 🚨 GLOBAL SMS KILL SWITCH — set by Tyler 2026-04-03
-    // All outbound SMS disabled. Email fallback active.
-    console.log('[SMS BLOCKED] Kill switch active. Would have sent to', to, ':', message);
-    
-    // EMAIL FALLBACK: High-priority alerts with click-to-call
+    // 🚨 GLOBAL NOTIFICATION KILL SWITCH — set by Tyler 2026-04-03 1:15 PM
+    // ALL outbound comms disabled: SMS OFF, email fallback OFF.
+    // Only lead capture + DB writes + internal logging remain active.
+    console.log('[ALL COMMS BLOCKED] Kill switch active. Would have sent to', to, ':', message);
+    return { success: true, blocked: true, to, message };
+
+    // EMAIL FALLBACK (disabled — re-enable when Tyler approves)
     try {
         const contactDir = loadContactDirectory();
         const normalTo = (to || '').replace(/\D/g, '').slice(-10);
@@ -305,6 +307,11 @@ async function sendSMS(to, message) {
 }
 
 async function sendEmail(to, subject, body, options = {}) {
+    // 🚨 GLOBAL EMAIL KILL SWITCH — set by Tyler 2026-04-03 1:15 PM
+    // ALL outbound email disabled. Only lead capture + DB writes + logging active.
+    console.log('[EMAIL BLOCKED] Kill switch active. Would have sent to', to, ':', subject);
+    return { success: true, blocked: true, to, subject };
+
     const sg = getSendGrid();
     if (!sg) {
         console.log('[DRY RUN] Email to', to, ':', subject);
