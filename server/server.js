@@ -212,7 +212,7 @@ async function sendSMS(to, message) {
     // All outbound SMS disabled. Email fallback active.
     console.log('[SMS BLOCKED] Kill switch active. Would have sent to', to, ':', message);
     
-    // EMAIL FALLBACK: Look up email for this phone number and send there instead
+    // EMAIL FALLBACK: High-priority alerts with click-to-call
     try {
         const contactDir = loadContactDirectory();
         const normalTo = (to || '').replace(/\D/g, '').slice(-10);
@@ -220,16 +220,56 @@ async function sendSMS(to, message) {
         const fallbackEmail = contact ? contact.email : 'tyler@wortheyaquatics.com';
         const contactName = contact ? (contact.fullName || contact.name) : 'Unknown';
         
-        await sendEmail(fallbackEmail, 
-            `📱 SMS Alert (redirected) — ${contactName}`,
-            `<div style="font-family:sans-serif;padding:16px;">
-                <p style="color:#f59e0b;font-weight:bold;">⚠️ SMS is temporarily disabled. This alert was redirected to email.</p>
-                <p><strong>Original SMS to:</strong> ${to} (${contactName})</p>
-                <hr style="border:1px solid #334155;margin:12px 0;">
-                <p style="font-size:16px;">${message.replace(/\n/g, '<br>')}</p>
-            </div>`
-        );
-        console.log(`[SMS→EMAIL FALLBACK] Sent to ${fallbackEmail} for ${to}`);
+        // Detect alert type for priority subject line
+        const isUntouched10 = message.includes('not been contacted yet') || message.includes('10 min');
+        const isEscalation = message.includes('ESCALATION') || message.includes('1 HOUR') || message.includes('going cold');
+        const isNewLead = message.includes('NEW LEAD') || message.includes('New lead') || message.includes('new construction') || message.includes('new service');
+        
+        // Extract phone number from message for click-to-call
+        const phoneMatch = message.match(/Phone:\s*([\d\-\(\)\s\+]+)/i);
+        const leadPhone = phoneMatch ? phoneMatch[1].trim() : null;
+        const callLink = leadPhone ? `<a href="tel:${leadPhone.replace(/\D/g,'')}" style="display:inline-block;background:#16a34a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:18px;font-weight:bold;margin:12px 0;">📞 CALL NOW: ${leadPhone}</a>` : '';
+        
+        let subject, headerColor, headerText;
+        if (isUntouched10) {
+            subject = '🚨 URGENT — LEAD NOT CONTACTED (10 MIN)';
+            headerColor = '#dc2626';
+            headerText = '⏰ THIS LEAD HAS BEEN WAITING 10 MINUTES';
+        } else if (isEscalation) {
+            subject = '🔥 ESCALATION — LEAD UNTOUCHED 1+ HOUR';
+            headerColor = '#991b1b';
+            headerText = '🔥 LEAD GOING COLD — IMMEDIATE ACTION REQUIRED';
+        } else if (isNewLead) {
+            subject = '🚨 NEW LEAD — CALL NOW';
+            headerColor = '#2563eb';
+            headerText = '🆕 NEW LEAD JUST CAME IN';
+        } else {
+            subject = `🚨 WA ALERT — ${contactName}`;
+            headerColor = '#f59e0b';
+            headerText = 'WORTHEYFLOW ALERT';
+        }
+        
+        const emailBody = `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;">
+            <div style="background:${headerColor};color:#fff;padding:16px 20px;border-radius:8px 8px 0 0;text-align:center;">
+                <h2 style="margin:0;font-size:20px;">${headerText}</h2>
+            </div>
+            <div style="background:#1e293b;color:#e2e8f0;padding:20px;border-radius:0 0 8px 8px;">
+                <p style="font-size:16px;line-height:1.6;white-space:pre-line;">${message.replace(/\n/g, '<br>')}</p>
+                ${callLink ? `<div style="text-align:center;margin:16px 0;">${callLink}</div>` : ''}
+                <hr style="border:1px solid #334155;margin:16px 0;">
+                <p style="color:#94a3b8;font-size:12px;">SMS alerts temporarily redirected to email. Sent via WortheyFlow CRM.</p>
+            </div>
+        </div>`;
+        
+        // Send to the target contact
+        await sendEmail(fallbackEmail, subject, emailBody);
+        console.log(`[SMS→EMAIL FALLBACK] Sent to ${fallbackEmail} for ${to} | Subject: ${subject}`);
+        
+        // ALWAYS also send to Tyler for visibility
+        if (fallbackEmail !== 'tyler@wortheyaquatics.com') {
+            await sendEmail('tyler@wortheyaquatics.com', subject, emailBody);
+            console.log(`[SMS→EMAIL FALLBACK] CC to Tyler`);
+        }
     } catch(e) {
         console.error('[SMS→EMAIL FALLBACK FAILED]', e.message);
     }
@@ -2006,18 +2046,28 @@ app.post('/api/sms/inbound', async (req, res) => {
       if (sp) salespersonPhone = sp.phone;
     }
     
-    // 🚨 SMS KILL SWITCH — SMS forwarding disabled 2026-04-03
-    // FALLBACK: Forward inbound lead replies via EMAIL instead
+    // 🚨 SMS KILL SWITCH — Forward lead replies via high-priority email
     console.log(`  [SMS BLOCKED] Forwarding via email instead: ${fwdMsg}`);
-    const emailFwdSubject = `💬 Lead Reply: ${leadName} (${From})`;
-    const emailFwdBody = `<h3>Inbound SMS from Lead</h3>
-      <p><strong>From:</strong> ${leadName} (${From})</p>
-      <p><strong>Message:</strong> "${Body}"</p>
-      <p><strong>Assigned to:</strong> ${salesperson}</p>
-      <p><em>SMS forwarding is currently disabled. This email is the fallback.</em></p>`;
+    const callLink = `<a href="tel:${From.replace(/\D/g,'')}" style="display:inline-block;background:#16a34a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:18px;font-weight:bold;margin:12px 0;">📞 CALL BACK: ${From}</a>`;
+    const emailFwdSubject = `💬 LEAD REPLIED — ${leadName} — CALL BACK NOW`;
+    const emailFwdBody = `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;">
+      <div style="background:#2563eb;color:#fff;padding:16px 20px;border-radius:8px 8px 0 0;text-align:center;">
+        <h2 style="margin:0;font-size:20px;">💬 LEAD REPLIED VIA TEXT</h2>
+      </div>
+      <div style="background:#1e293b;color:#e2e8f0;padding:20px;border-radius:0 0 8px 8px;">
+        <p><strong>From:</strong> ${leadName} (${From})</p>
+        <p><strong>Message:</strong></p>
+        <div style="background:#0f172a;padding:12px;border-radius:6px;border-left:4px solid #3b82f6;margin:8px 0;">
+          <p style="font-size:16px;margin:0;">"${Body}"</p>
+        </div>
+        <p><strong>Assigned to:</strong> ${salesperson}</p>
+        <div style="text-align:center;margin:16px 0;">${callLink}</div>
+        <hr style="border:1px solid #334155;margin:16px 0;">
+        <p style="color:#94a3b8;font-size:12px;">SMS forwarding temporarily redirected to email.</p>
+      </div>
+    </div>`;
     await sendEmail('tyler@wortheyaquatics.com', emailFwdSubject, emailFwdBody);
     console.log(`  ✅ Inbound reply forwarded to Tyler via email`);
-    // Also email the salesperson if different
     const sp = contactDir.find(c => c.name.toLowerCase().includes(salesperson.toLowerCase()));
     if (sp && sp.email && sp.email !== 'tyler@wortheyaquatics.com') {
       await sendEmail(sp.email, emailFwdSubject, emailFwdBody);
