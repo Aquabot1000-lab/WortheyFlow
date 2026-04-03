@@ -47,7 +47,7 @@
   {
     "id": "rule-03",
     "name": "New Construction Lead \u2014 Alert SMS to Salesperson",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "lead_created"
     },
@@ -114,7 +114,7 @@
   {
     "id": "rule-06",
     "name": "New Service Lead \u2014 Alert SMS to Richard",
-    "enabled": true,
+    "enabled": false,
     "trigger": {
       "type": "lead_created"
     },

@@ -209,11 +209,13 @@ function getSendGrid() {
 }
 
 async function sendSMS(to, message) {
-    // 🚨 SAFE MODE V2 — SMS globally OFF, email fallback for TEAM ONLY
-    // set by Tyler 2026-04-03 1:16 PM
-    console.log('[SAFE MODE] SMS blocked to', to);
+    // 🚨 PHASE 1 — ALL SMS OFF, NO fallback (email handled separately)
+    // set by Tyler 2026-04-03
+    console.log('[PHASE1] SMS OFF — blocked to', to);
+    return { success: true, blocked: true, to, message };
 
-    // Email fallback ONLY for team members (salesperson + Tyler alerts)
+    // ---- DISABLED: email fallback removed to prevent duplicate sends ----
+    // Email alerts are now handled ONLY by sendNewLeadSMS (Phase 1)
     try {
         const contactDir = loadContactDirectory();
         const normalTo = (to || '').replace(/\D/g, '').slice(-10);
@@ -353,11 +355,11 @@ async function sendEmail(to, subject, body, options = {}) {
         if (options.replyTo) {
             msg.replyTo = options.replyTo;
         }
-        // BCC: Tyler + AquaBot for full visibility
-        msg.bcc = [
-            { email: 'tyler@wortheyaquatics.com' },
-            { email: 'aquabot1000@icloud.com' }
-        ];
+        // BCC disabled in Phase 1 — Tyler gets dedicated email per lead
+        // msg.bcc = [
+        //     { email: 'tyler@wortheyaquatics.com' },
+        //     { email: 'aquabot1000@icloud.com' }
+        // ];
         // Reply-to: route through detection if no specific replyTo set
         if (!msg.replyTo) {
             msg.replyTo = { email: 'tyler@wortheyaquatics.com', name: 'Tyler Worthey' };
@@ -1427,95 +1429,69 @@ app.post('/api/booth-lead', async (req, res) => {
 
 // ========== NEW LEAD SMS ALERTS ==========
 
+// ========== PHASE 1: INTERNAL LEAD ALERTS ONLY ==========
+// Rules: email only, 1 per recipient, no retries, no escalations, no customer emails
+// Approved by Tyler 2026-04-03
 async function sendNewLeadSMS(lead, contactDir) {
+    const sent = { salesperson: null, tyler: null };
     try {
-        // Find salesperson contact info
+        // Find salesperson
         const salesperson = contactDir.find(c =>
             c.name === lead.salesperson ||
             c.fullName === lead.salesperson ||
-            c.name.toLowerCase() === lead.salesperson.toLowerCase()
+            (c.name || '').toLowerCase() === (lead.salesperson || '').toLowerCase()
         );
 
-        if (!salesperson || !salesperson.phone) {
-            console.log('[New Lead SMS] No phone for salesperson:', lead.salesperson);
-            return;
-        }
-
-        const message = `🚨 NEW LEAD ASSIGNED TO YOU!\n\n` +
-            `Name: ${lead.name}\n` +
-            `Phone: ${lead.phone || 'N/A'}\n` +
-            `Job: ${lead.jobType}\n` +
-            `Source: ${lead.source}\n` +
-            `Value: $${(lead.quoteAmount || 0).toLocaleString()}\n\n` +
-            `👉 Log in to WortheyFlow to contact them NOW!\n` +
-            `${APP_URL}`;
-
-        const smsResult = await sendSMS(salesperson.phone, message);
-        if (smsResult.success && !smsResult.dry) {
-            console.log(`[New Lead SMS] ✅ Sent to ${lead.salesperson} at ${salesperson.phone}`);
-        } else {
-            console.error(`[New Lead SMS] ❌ SMS failed for ${lead.salesperson}: ${smsResult.error || 'dry run'}`);
-        }
-
-        // SAFE MODE V2: Direct email alerts to salesperson + Tyler (with dedup)
         const leadAlertHtml = `<div style="font-family:Arial,sans-serif;max-width:500px;">
-                    <h2 style="color:#d32f2f;">🚨 New Lead Assigned to You</h2>
-                    <table style="width:100%;border-collapse:collapse;">
-                        <tr><td style="padding:8px;font-weight:bold;">Name:</td><td style="padding:8px;">${lead.name}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Phone:</td><td style="padding:8px;"><a href="tel:${(lead.phone || '').replace(/\D/g,'')}">${lead.phone || 'N/A'}</a></td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Email:</td><td style="padding:8px;">${lead.email || 'N/A'}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Job Type:</td><td style="padding:8px;">${lead.jobType}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Source:</td><td style="padding:8px;">${lead.source}</td></tr>
-                        <tr><td style="padding:8px;font-weight:bold;">Address:</td><td style="padding:8px;">${lead.address || 'N/A'}, ${lead.city || ''} ${lead.state || ''}</td></tr>
-                    </table>
-                    <p style="margin-top:16px;"><strong>⏰ Call within 5 minutes!</strong></p>
-                    ${lead.phone ? `<a href="tel:${lead.phone.replace(/\D/g,'')}" style="display:inline-block;padding:14px 28px;background:#16a34a;color:#fff;text-decoration:none;border-radius:8px;font-size:18px;font-weight:bold;margin:8px 0;">📞 CALL NOW: ${lead.phone}</a><br>` : ''}
-                    <a href="${APP_URL}" style="display:inline-block;padding:12px 24px;background:#1976d2;color:#fff;text-decoration:none;border-radius:6px;margin-top:8px;">Open WortheyFlow →</a>
-                </div>`;
+            <h2 style="color:#1976d2;">🚨 New Lead: ${lead.name}</h2>
+            <table style="width:100%;border-collapse:collapse;">
+                <tr><td style="padding:6px 8px;font-weight:bold;">Name:</td><td style="padding:6px 8px;">${lead.name}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Phone:</td><td style="padding:6px 8px;"><a href="tel:${(lead.phone || '').replace(/\D/g,'')}">${lead.phone || 'N/A'}</a></td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Email:</td><td style="padding:6px 8px;">${lead.email || 'N/A'}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Job Type:</td><td style="padding:6px 8px;">${lead.jobType}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Source:</td><td style="padding:6px 8px;">${lead.source}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Salesperson:</td><td style="padding:6px 8px;">${lead.salesperson}</td></tr>
+            </table>
+            ${lead.phone ? `<p style="margin-top:12px;"><a href="tel:${lead.phone.replace(/\D/g,'')}" style="display:inline-block;padding:12px 24px;background:#16a34a;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">📞 Call ${lead.phone}</a></p>` : ''}
+            <p style="color:#666;font-size:12px;margin-top:12px;">WortheyFlow CRM — Phase 1 Alert</p>
+        </div>`;
 
-        // 1. Email salesperson
-        if (salesperson.email) {
-            const spResult = await sendEmail(
+        // 1. Email salesperson (exactly 1)
+        if (salesperson && salesperson.email) {
+            sent.salesperson = await sendEmail(
                 salesperson.email,
-                `🚨 NEW LEAD: ${lead.name} — Call NOW!`,
+                `New Lead: ${lead.name} — ${lead.jobType}`,
                 leadAlertHtml,
                 { replyTo: 'tyler@wortheyaquatics.com', _leadId: lead.id }
             );
-            console.log(`[SAFE MODE] Salesperson email (${salesperson.email}): ${spResult.blocked ? 'BLOCKED' : (spResult.success ? '✅' : '❌ ' + spResult.error)}`);
-            
-            // BACKUP: If email fails, log alert for Tyler
-            if (!spResult.success && !spResult.blocked) {
-                console.error(`[SAFE MODE] ⚠️ EMAIL FAILED for ${salesperson.email} — Tyler backup triggered`);
-                appendLog({ action: 'email_failure_backup', leadId: lead.id, leadName: lead.name, failedTo: salesperson.email, error: spResult.error });
-            }
+            console.log(`[PHASE1] Salesperson ${salesperson.email}: ${sent.salesperson.blocked ? 'BLOCKED' : (sent.salesperson.success ? 'SENT' : 'FAILED')}`);
+        } else {
+            console.log(`[PHASE1] No salesperson email found for: ${lead.salesperson}`);
         }
 
-        // 2. ALWAYS email Tyler
-        const tylerResult = await sendEmail(
+        // 2. Email Tyler (exactly 1)
+        sent.tyler = await sendEmail(
             'tyler@wortheyaquatics.com',
-            `🚨 NEW LEAD: ${lead.name} → ${lead.salesperson}`,
+            `New Lead: ${lead.name} → ${lead.salesperson}`,
             leadAlertHtml,
             { _leadId: lead.id }
         );
-        console.log(`[SAFE MODE] Tyler email: ${tylerResult.blocked ? 'BLOCKED(dedup)' : (tylerResult.success ? '✅' : '❌ ' + tylerResult.error)}`);
+        console.log(`[PHASE1] Tyler: ${sent.tyler.blocked ? 'BLOCKED(dedup)' : (sent.tyler.success ? 'SENT' : 'FAILED')}`);
 
-        // LOG: 1 line per lead
+        // Log (1 line per lead)
         appendLog({
-            action: 'safe_mode_new_lead_alert',
+            action: 'phase1_lead_alert',
             leadId: lead.id,
             leadName: lead.name,
             salesperson: lead.salesperson,
-            salespersonEmail: salesperson.email || 'none',
-            tylerNotified: true,
-            timestamp: new Date().toISOString()
+            salespersonEmail: salesperson ? salesperson.email : 'none',
+            salespersonResult: sent.salesperson ? (sent.salesperson.blocked ? 'dedup' : (sent.salesperson.success ? 'sent' : 'failed')) : 'no_email',
+            tylerResult: sent.tyler ? (sent.tyler.blocked ? 'dedup' : (sent.tyler.success ? 'sent' : 'failed')) : 'failed'
         });
 
     } catch (err) {
-        console.error('[New Lead Alert] Error:', err.message);
-        // BACKUP: Log failure so nothing is silently lost
-        try {
-            appendLog({ action: 'new_lead_alert_error', leadId: lead.id, leadName: lead.name, error: err.message });
-        } catch(e) {}
+        console.error('[PHASE1] Error:', err.message);
+        appendLog({ action: 'phase1_error', leadId: lead.id, leadName: lead.name, error: err.message });
     }
 }
 
@@ -2038,9 +2014,13 @@ app.listen(PORT, '0.0.0.0', () => {
     console.log(`Twilio: ${process.env.TWILIO_ACCOUNT_SID ? 'configured' : 'DRY RUN mode'}`);
     console.log(`SendGrid: ${process.env.SENDGRID_API_KEY ? 'configured' : 'DRY RUN mode'}`);
 
-    // ── Server-side duration check (runs every 5 minutes) ──
-    // This ensures drip automations fire even when nobody has the CRM open
+    // ── Server-side duration check — DISABLED in Phase 1 ──
+    // All automation rules disabled. Only Phase 1 lead alerts active.
+    // Re-enable when Tyler approves Phase 2+
+    console.log('[PHASE1] Duration check DISABLED — no automation rules active');
+    const _PHASE1_SKIP_DURATION = true;
     setInterval(async () => {
+        if (_PHASE1_SKIP_DURATION) return;
         try {
             // Fetch all leads from Supabase
             const { data: leadsDb } = await supabase
