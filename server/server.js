@@ -2336,7 +2336,7 @@ app.post('/api/sms/inbound', async (req, res) => {
 // ========== EMAIL QUEUE (APPROVAL-GATED) ==========
 let emailQueue = [];
 
-app.post('/api/email-queue', authenticateToken, (req, res) => {
+app.post('/api/email-queue', authMiddleware, (req, res) => {
     const { to, subject, body, leadId, leadName, priority, company } = req.body;
     if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body required' });
     const item = {
@@ -2351,13 +2351,13 @@ app.post('/api/email-queue', authenticateToken, (req, res) => {
     res.json(item);
 });
 
-app.get('/api/email-queue', authenticateToken, (req, res) => {
+app.get('/api/email-queue', authMiddleware, (req, res) => {
     const status = req.query.status;
     const filtered = status ? emailQueue.filter(e => e.status === status) : emailQueue;
     res.json(filtered);
 });
 
-app.post('/api/email-queue/:id/approve', authenticateToken, async (req, res) => {
+app.post('/api/email-queue/:id/approve', authMiddleware, async (req, res) => {
     const item = emailQueue.find(e => e.id === req.params.id);
     if (!item) return res.status(404).json({ error: 'Not found' });
     item.status = 'approved';
@@ -2371,7 +2371,7 @@ app.post('/api/email-queue/:id/approve', authenticateToken, async (req, res) => 
     res.json(item);
 });
 
-app.post('/api/email-queue/:id/reject', authenticateToken, (req, res) => {
+app.post('/api/email-queue/:id/reject', authMiddleware, (req, res) => {
     const item = emailQueue.find(e => e.id === req.params.id);
     if (!item) return res.status(404).json({ error: 'Not found' });
     item.status = 'rejected';
@@ -2382,7 +2382,7 @@ app.post('/api/email-queue/:id/reject', authenticateToken, (req, res) => {
 });
 
 // ========== AUTOMATION STATUS ENDPOINT ==========
-app.get('/api/automations/status', authenticateToken, (req, res) => {
+app.get('/api/automations/status', authMiddleware, (req, res) => {
     const rules = loadAutomations();
     res.json({
         globalKillSwitch: !AUTOMATIONS_ENABLED,
