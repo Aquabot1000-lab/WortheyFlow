@@ -1194,6 +1194,45 @@ app.get('/api/activity/:leadId', authMiddleware, (req, res) => {
     }
 });
 
+// POST manual activity (call, text, note)
+app.post('/api/activity/:leadId', authMiddleware, async (req, res) => {
+    try {
+        const { leadId } = req.params;
+        const { type, note, direction } = req.body; // type: call|text|email|note
+        if (!type || !note) return res.status(400).json({ error: 'type and note required' });
+        
+        const activity = {
+            type,
+            note,
+            direction: direction || 'outbound',
+            timestamp: Date.now(),
+            by: req.user?.name || 'Unknown',
+            automated: false
+        };
+        
+        // Update leads.json
+        const LEADS_FILE = path.join(__dirname, 'leads.json');
+        let leads = [];
+        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
+        const lead = leads.find(l => l.id === leadId);
+        if (!lead) return res.status(404).json({ error: 'Lead not found' });
+        if (!Array.isArray(lead.activities)) lead.activities = [];
+        lead.activities.push(activity);
+        lead.updatedAt = Date.now();
+        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
+        
+        // Sync to Supabase
+        await supabase.from('wortheyflow_leads')
+            .update({ activities: lead.activities, updated_at: new Date().toISOString() })
+            .eq('id', leadId);
+        
+        res.json({ success: true, activity });
+    } catch (err) {
+        console.error('[Activity POST] Error:', err);
+        res.status(500).json({ error: 'Failed to log activity' });
+    }
+});
+
 // Get all leads (for webhook sync)
 app.get('/api/leads', authMiddleware, async (req, res) => {
     try {
@@ -1824,11 +1863,11 @@ app.get('/api/weekly-report', async (req, res) => {
             }
 
             const stage = l.stage || '';
-            const STAGES_ORDER = ['New', 'Contacted', 'Consultation', 'Proposal Sent', 'Negotiating', 'Signed', 'Lost'];
+            const STAGES_ORDER = ['New', 'Contacted', 'Consultation Scheduled', 'Proposal Sent', 'Negotiating', 'Won', 'Signed', 'Lost'];
             const idx = STAGES_ORDER.indexOf(stage);
             if (idx >= 2) s.consultation++;
             if (idx >= 3) s.proposalSent++;
-            if (stage === 'Signed') { s.won++; s.revenue += (l.quote_amount || 0); }
+            if (stage === 'Won' || stage === 'Signed') { s.won++; s.revenue += (l.quote_amount || 0); }
             if (stage === 'Lost') s.lost++;
 
             // Speed buckets for closed leads
