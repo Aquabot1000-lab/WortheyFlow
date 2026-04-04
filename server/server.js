@@ -2133,6 +2133,77 @@ app.get('/service-worker.js', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'service-worker.js'));
 });
 
+// ========== EMAIL QUEUE (APPROVAL-GATED) — must be before static middleware ==========
+let emailQueue = [];
+
+app.post('/api/email-queue', authMiddleware, (req, res) => {
+    const { to, subject, body, leadId, leadName, priority, company } = req.body;
+    if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body required' });
+    const item = {
+        id: 'eq-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+        to, subject, body, leadId, leadName, priority: priority || 'normal',
+        company: company || 'WA',
+        status: 'pending',
+        createdAt: new Date().toISOString(),
+        approvedBy: null, approvedAt: null, sentAt: null
+    };
+    emailQueue.push(item);
+    res.json(item);
+});
+
+app.get('/api/email-queue', authMiddleware, (req, res) => {
+    const status = req.query.status;
+    const filtered = status ? emailQueue.filter(e => e.status === status) : emailQueue;
+    res.json(filtered);
+});
+
+app.post('/api/email-queue/:id/approve', authMiddleware, async (req, res) => {
+    const item = emailQueue.find(e => e.id === req.params.id);
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    item.status = 'approved';
+    item.approvedBy = req.user.name;
+    item.approvedAt = new Date().toISOString();
+    const result = await sendEmail(item.to, item.subject, item.body, { _approved: true });
+    item.status = 'sent';
+    item.sentAt = new Date().toISOString();
+    item.sendResult = result;
+    res.json(item);
+});
+
+app.post('/api/email-queue/:id/reject', authMiddleware, (req, res) => {
+    const item = emailQueue.find(e => e.id === req.params.id);
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    item.status = 'rejected';
+    item.rejectedBy = req.user.name;
+    item.rejectedAt = new Date().toISOString();
+    item.rejectReason = req.body.reason || '';
+    res.json(item);
+});
+
+app.get('/api/automations/status', authMiddleware, (req, res) => {
+    const rules = loadAutomations();
+    res.json({
+        globalKillSwitch: !AUTOMATIONS_ENABLED,
+        automationsEnabled: AUTOMATIONS_ENABLED,
+        smsBlocked: true,
+        customerEmailBlocked: true,
+        totalRules: rules.length,
+        enabledRules: rules.filter(r => r.enabled).length,
+        disabledRules: rules.filter(r => !r.enabled).length,
+        safeguards: {
+            maxTouchesPerSequence: MAX_TOUCHES_PER_SEQUENCE,
+            minCooldownHours: MIN_TOUCH_COOLDOWN_MS / 3600000,
+            skipStages: SKIP_AUTOMATION_STAGES,
+            testLeadFilter: true,
+            deduplication: true
+        }
+    });
+});
+
+app.get('/admin/emails', (req, res) => {
+    res.send(`<!DOCTYPE html>\n<html><head><title>WortheyFlow — Email Approvals</title>\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<style>\n  body { font-family: Inter, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }\n  h1 { color: #3b82f6; } .card { background: #1e293b; padding: 16px; border-radius: 8px; margin: 12px 0; }\n  .pending { border-left: 4px solid #f59e0b; } .approved { border-left: 4px solid #22c55e; } .rejected { border-left: 4px solid #ef4444; }\n  button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 4px; }\n  .btn-approve { background: #22c55e; color: white; } .btn-reject { background: #ef4444; color: white; }\n  .meta { color: #94a3b8; font-size: 13px; } pre { background: #0f172a; padding: 12px; border-radius: 6px; white-space: pre-wrap; font-size: 13px; }\n  #status { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 16px; }\n  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }\n  .badge-on { background: #22c55e; color: white; } .badge-off { background: #ef4444; color: white; }\n</style></head><body>\n<h1>📧 Email Approval Queue</h1>\n<div id="status">Loading...</div>\n<div id="queue">Loading...</div>\n<script>\nconst TOKEN = localStorage.getItem('token');\nif (!TOKEN) { document.body.innerHTML = '<h2>Login at <a href="/">WortheyFlow</a> first, then come back.</h2>'; }\nelse {\n  async function load() {\n    const [qRes, sRes] = await Promise.all([fetch('/api/email-queue', { headers: { Authorization: 'Bearer ' + TOKEN } }), fetch('/api/automations/status', { headers: { Authorization: 'Bearer ' + TOKEN } })]);\n    const queue = await qRes.json(); const status = await sRes.json();\n    document.getElementById('status').innerHTML = '<b>System:</b> ' + (status.globalKillSwitch ? '<span class="badge badge-off">KILL SWITCH ON</span>' : '<span class="badge badge-on">ACTIVE</span>') + ' | SMS: <span class="badge badge-off">BLOCKED</span> | Email: <span class="badge badge-off">BLOCKED</span> | Rules: ' + status.enabledRules + '/' + status.totalRules;\n    const pending = queue.filter(e => e.status === 'pending'); const others = queue.filter(e => e.status !== 'pending');\n    let html = '<h3>Pending (' + pending.length + ')</h3>';\n    for (const e of pending) { html += '<div class="card pending"><b>' + e.subject + '</b><br><span class="meta">To: ' + e.to + ' | ' + (e.leadName||'') + ' | ' + e.priority + '</span><pre>' + (e.body||'').slice(0,500) + '</pre><button class="btn-approve" onclick="approve(\''+e.id+'\')">✅ Approve</button><button class="btn-reject" onclick="reject(\''+e.id+'\')">❌ Reject</button></div>'; }\n    html += '<h3>History (' + others.length + ')</h3>';\n    for (const e of others.slice(-20).reverse()) { html += '<div class="card ' + e.status + '"><b>' + e.subject + '</b> <span class="badge badge-' + (e.status==='sent'?'on':'off') + '">' + e.status.toUpperCase() + '</span><br><span class="meta">' + (e.approvedBy||e.rejectedBy||'') + ' | ' + (e.sentAt||e.rejectedAt||'') + '</span></div>'; }\n    document.getElementById('queue').innerHTML = html;\n  }\n  async function approve(id) { await fetch('/api/email-queue/' + id + '/approve', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' } }); load(); }\n  async function reject(id) { await fetch('/api/email-queue/' + id + '/reject', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({ reason: prompt('Reason?') || '' }) }); load(); }\n  load(); setInterval(load, 15000);\n}\n</script></body></html>`);
+});
+
 app.use(express.static(path.join(__dirname, '..')));
 
 // Serve MC pages directly, fallback to index.html for SPA routes
@@ -2333,138 +2404,6 @@ app.post('/api/sms/inbound', async (req, res) => {
     res.send('<Response></Response>');
   }
 });
-// ========== EMAIL QUEUE (APPROVAL-GATED) ==========
-let emailQueue = [];
-
-app.post('/api/email-queue', authMiddleware, (req, res) => {
-    const { to, subject, body, leadId, leadName, priority, company } = req.body;
-    if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body required' });
-    const item = {
-        id: 'eq-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
-        to, subject, body, leadId, leadName, priority: priority || 'normal',
-        company: company || 'WA',
-        status: 'pending', // pending | approved | rejected | sent
-        createdAt: new Date().toISOString(),
-        approvedBy: null, approvedAt: null, sentAt: null
-    };
-    emailQueue.push(item);
-    res.json(item);
-});
-
-app.get('/api/email-queue', authMiddleware, (req, res) => {
-    const status = req.query.status;
-    const filtered = status ? emailQueue.filter(e => e.status === status) : emailQueue;
-    res.json(filtered);
-});
-
-app.post('/api/email-queue/:id/approve', authMiddleware, async (req, res) => {
-    const item = emailQueue.find(e => e.id === req.params.id);
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    item.status = 'approved';
-    item.approvedBy = req.user.name;
-    item.approvedAt = new Date().toISOString();
-    // Send immediately on approval
-    const result = await sendEmail(item.to, item.subject, item.body, { _approved: true });
-    item.status = 'sent';
-    item.sentAt = new Date().toISOString();
-    item.sendResult = result;
-    res.json(item);
-});
-
-app.post('/api/email-queue/:id/reject', authMiddleware, (req, res) => {
-    const item = emailQueue.find(e => e.id === req.params.id);
-    if (!item) return res.status(404).json({ error: 'Not found' });
-    item.status = 'rejected';
-    item.rejectedBy = req.user.name;
-    item.rejectedAt = new Date().toISOString();
-    item.rejectReason = req.body.reason || '';
-    res.json(item);
-});
-
-// ========== AUTOMATION STATUS ENDPOINT ==========
-app.get('/api/automations/status', authMiddleware, (req, res) => {
-    const rules = loadAutomations();
-    res.json({
-        globalKillSwitch: !AUTOMATIONS_ENABLED,
-        automationsEnabled: AUTOMATIONS_ENABLED,
-        smsBlocked: true,  // Phase 1 hard block
-        customerEmailBlocked: true, // Safe mode V2
-        totalRules: rules.length,
-        enabledRules: rules.filter(r => r.enabled).length,
-        disabledRules: rules.filter(r => !r.enabled).length,
-        safeguards: {
-            maxTouchesPerSequence: MAX_TOUCHES_PER_SEQUENCE,
-            minCooldownHours: MIN_TOUCH_COOLDOWN_MS / 3600000,
-            skipStages: SKIP_AUTOMATION_STAGES,
-            testLeadFilter: true,
-            deduplication: true
-        }
-    });
-});
-
-// ========== ADMIN EMAIL APPROVAL PAGE ==========
-app.get('/admin/emails', (req, res) => {
-    res.send(`<!DOCTYPE html>
-<html><head><title>WortheyFlow — Email Approvals</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-  body { font-family: Inter, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }
-  h1 { color: #3b82f6; } .card { background: #1e293b; padding: 16px; border-radius: 8px; margin: 12px 0; }
-  .pending { border-left: 4px solid #f59e0b; } .approved { border-left: 4px solid #22c55e; } .rejected { border-left: 4px solid #ef4444; }
-  button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 4px; }
-  .btn-approve { background: #22c55e; color: white; } .btn-reject { background: #ef4444; color: white; }
-  .meta { color: #94a3b8; font-size: 13px; } pre { background: #0f172a; padding: 12px; border-radius: 6px; white-space: pre-wrap; font-size: 13px; }
-  #status { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-  .badge-on { background: #22c55e; color: white; } .badge-off { background: #ef4444; color: white; }
-</style></head><body>
-<h1>📧 Email Approval Queue</h1>
-<div id="status">Loading automation status...</div>
-<div id="queue">Loading...</div>
-<script>
-const TOKEN = localStorage.getItem('token');
-if (!TOKEN) { document.body.innerHTML = '<h2>Login at <a href="/">WortheyFlow</a> first, then come back.</h2>'; }
-else {
-  async function load() {
-    const [qRes, sRes] = await Promise.all([
-      fetch('/api/email-queue', { headers: { Authorization: 'Bearer ' + TOKEN } }),
-      fetch('/api/automations/status', { headers: { Authorization: 'Bearer ' + TOKEN } })
-    ]);
-    const queue = await qRes.json();
-    const status = await sRes.json();
-    document.getElementById('status').innerHTML = 
-      '<b>Automation System:</b> ' +
-      (status.globalKillSwitch ? '<span class="badge badge-off">KILL SWITCH ON</span>' : '<span class="badge badge-on">ACTIVE</span>') +
-      ' | SMS: <span class="badge badge-off">BLOCKED</span>' +
-      ' | Customer Email: <span class="badge badge-off">BLOCKED</span>' +
-      ' | Rules: ' + status.enabledRules + '/' + status.totalRules + ' enabled' +
-      ' | Max touches: ' + status.safeguards.maxTouchesPerSequence +
-      ' | Cooldown: ' + status.safeguards.minCooldownHours + 'h';
-    const pending = queue.filter(e => e.status === 'pending');
-    const others = queue.filter(e => e.status !== 'pending');
-    let html = '<h3>Pending (' + pending.length + ')</h3>';
-    for (const e of pending) {
-      html += '<div class="card pending"><b>' + e.subject + '</b><br><span class="meta">To: ' + e.to + ' | ' + (e.leadName||'') + ' | ' + e.priority + ' | ' + e.createdAt + '</span><pre>' + (e.body||'').slice(0,500) + '</pre>' +
-        '<button class="btn-approve" onclick="approve(\'' + e.id + '\')">✅ Approve & Send</button>' +
-        '<button class="btn-reject" onclick="reject(\'' + e.id + '\')">❌ Reject</button></div>';
-    }
-    html += '<h3>History (' + others.length + ')</h3>';
-    for (const e of others.slice(-20).reverse()) {
-      html += '<div class="card ' + e.status + '"><b>' + e.subject + '</b> <span class="badge badge-' + (e.status==='sent'?'on':'off') + '">' + e.status.toUpperCase() + '</span><br><span class="meta">To: ' + e.to + ' | ' + (e.approvedBy||e.rejectedBy||'') + ' | ' + (e.sentAt||e.rejectedAt||'') + '</span></div>';
-    }
-    document.getElementById('queue').innerHTML = html;
-  }
-  async function approve(id) {
-    await fetch('/api/email-queue/' + id + '/approve', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' } });
-    load();
-  }
-  async function reject(id) {
-    await fetch('/api/email-queue/' + id + '/reject', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({ reason: prompt('Reason?') || '' }) });
-    load();
-  }
-  load(); setInterval(load, 15000);
-}
-</script></body></html>`);
-});
-
+// (email queue + admin routes moved before static middleware — DELETED DUPLICATES BELOW)
+// --- OLD DUPLICATE ROUTES REMOVED ---
 // deploy 1774058894
