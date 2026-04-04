@@ -19,6 +19,53 @@ const AUTOMATIONS_FILE = path.join(__dirname, 'automations.json');
 const LOG_FILE = path.join(__dirname, 'notification-log.json');
 const USERS_FILE = path.join(__dirname, 'users.json');
 
+// ========== GLOBAL AUTOMATION KILL SWITCH ==========
+// Set to false to disable ALL automated outbound (SMS, email, alerts)
+// This is checked at the execution level, not the rule level
+const AUTOMATIONS_ENABLED = false;
+
+// ========== AUTOMATION SAFEGUARDS ==========
+const MAX_TOUCHES_PER_SEQUENCE = 5;
+const MIN_TOUCH_COOLDOWN_MS = 24 * 60 * 60 * 1000; // 24 hours
+const SKIP_AUTOMATION_STAGES = ['DQ Service', 'DQ Bad Number', 'DQ Budget', 'DQ DNC', 'DNS', 'Lost', 'Signed', 'Completed'];
+const TEST_LEAD_PATTERNS = /test|pixel|sample|demo|fake/i;
+
+function automationBlocked(context) {
+    if (!AUTOMATIONS_ENABLED) return { blocked: true, reason: 'GLOBAL KILL SWITCH — AUTOMATIONS_ENABLED=false' };
+    return { blocked: false };
+}
+
+// Dedup: max 1 send per rule+lead+stage combo
+const _touchLog = new Map(); // key: `${ruleId}:${leadId}:${stage}` → { count, lastSentAt }
+
+function touchCheck(ruleId, leadId, stage) {
+    const key = `${ruleId}:${leadId}:${stage}`;
+    const entry = _touchLog.get(key) || { count: 0, lastSentAt: 0 };
+    
+    if (entry.count >= MAX_TOUCHES_PER_SEQUENCE) {
+        return { blocked: true, reason: `Max touches (${MAX_TOUCHES_PER_SEQUENCE}) reached for rule ${ruleId} on lead ${leadId}` };
+    }
+    if (Date.now() - entry.lastSentAt < MIN_TOUCH_COOLDOWN_MS) {
+        return { blocked: true, reason: `Cooldown — last touch ${Math.round((Date.now() - entry.lastSentAt) / 3600000)}h ago (min 24h)` };
+    }
+    return { blocked: false };
+}
+
+function recordTouch(ruleId, leadId, stage) {
+    const key = `${ruleId}:${leadId}:${stage}`;
+    const entry = _touchLog.get(key) || { count: 0, lastSentAt: 0 };
+    entry.count++;
+    entry.lastSentAt = Date.now();
+    _touchLog.set(key, entry);
+}
+
+function shouldBlockLead(lead) {
+    if (SKIP_AUTOMATION_STAGES.includes(lead.stage)) return { blocked: true, reason: `Terminal/DQ stage: ${lead.stage}` };
+    if (TEST_LEAD_PATTERNS.test(lead.name || '')) return { blocked: true, reason: `Test lead: ${lead.name}` };
+    if (lead.salesperson && lead.salesperson !== 'Unassigned' && lead.stage === 'New') return { blocked: true, reason: 'Already assigned' };
+    return { blocked: false };
+}
+
 // ========== SUPABASE CLIENT ==========
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ylxreuqvofgbpsatfsvr.supabase.co';
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseHJldXF2b2ZnYnBzYXRmc3ZyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTg1NzE4MCwiZXhwIjoyMDg3NDMzMTgwfQ.DxTv7ZC0oNRHBBS0Jxquh1M0wsGV8fQ005Q9S2iILdE';
@@ -1012,8 +1059,22 @@ app.post('/api/notify', async (req, res) => {
 
 // Trigger automation evaluation
 app.post('/api/automations/trigger', async (req, res) => {
+    // GLOBAL KILL SWITCH CHECK
+    const killCheck = automationBlocked('trigger');
+    if (killCheck.blocked) {
+        console.log(`[AUTO-BLOCKED] ${killCheck.reason}`);
+        return res.json({ triggered: 0, blocked: true, reason: killCheck.reason });
+    }
+
     const { event, lead, contactDirectory } = req.body;
     if (!event || !lead) return res.status(400).json({ error: 'Missing event or lead data' });
+
+    // Lead-level safety check
+    const leadCheck = shouldBlockLead(lead);
+    if (leadCheck.blocked) {
+        console.log(`[AUTO-BLOCKED] Lead ${lead.name}: ${leadCheck.reason}`);
+        return res.json({ triggered: 0, blocked: true, reason: leadCheck.reason });
+    }
 
     const rules = loadAutomations();
     const results = [];
@@ -1021,11 +1082,16 @@ app.post('/api/automations/trigger', async (req, res) => {
     for (const rule of rules) {
         if (!rule.enabled) continue;
         if (!matchesTrigger(rule, event)) continue;
+
+        // Touch dedup + cooldown
+        const tc = touchCheck(rule.id, lead.id, lead.stage);
+        if (tc.blocked) { console.log(`[AUTO-BLOCKED] ${tc.reason}`); continue; }
         if (!evaluateConditions(rule.conditions, lead)) continue;
         if (rule.trigger?.type === 'stage_duration' && isDuplicate(rule.id, lead.id)) continue;
 
         const actionResults = await executeActions(rule.actions, lead, contactDirectory);
         markSent(rule.id, lead.id);
+        recordTouch(rule.id, lead.id, lead.stage);
         results.push({ rule: rule.name, ruleId: rule.id, actions: actionResults });
         appendLog({ action: 'trigger', ruleName: rule.name, ruleId: rule.id, leadId: lead.id, leadName: lead.name, event, actionResults });
     }
@@ -1073,6 +1139,13 @@ function shouldSkipDrip(lead) {
 
 // Check duration-based triggers
 app.post('/api/automations/check-durations', async (req, res) => {
+    // GLOBAL KILL SWITCH CHECK
+    const killCheck = automationBlocked('check-durations');
+    if (killCheck.blocked) {
+        console.log(`[AUTO-BLOCKED] ${killCheck.reason}`);
+        return res.json({ triggered: 0, blocked: true, reason: killCheck.reason });
+    }
+
     const { leads: leadsData, contactDirectory } = req.body;
     if (!leadsData || !Array.isArray(leadsData)) return res.status(400).json({ error: 'Missing leads array' });
 
@@ -2253,4 +2326,138 @@ app.post('/api/sms/inbound', async (req, res) => {
     res.send('<Response></Response>');
   }
 });
+// ========== EMAIL QUEUE (APPROVAL-GATED) ==========
+let emailQueue = [];
+
+app.post('/api/email-queue', authenticateToken, (req, res) => {
+    const { to, subject, body, leadId, leadName, priority, company } = req.body;
+    if (!to || !subject || !body) return res.status(400).json({ error: 'to, subject, body required' });
+    const item = {
+        id: 'eq-' + Date.now() + '-' + Math.random().toString(36).slice(2,6),
+        to, subject, body, leadId, leadName, priority: priority || 'normal',
+        company: company || 'WA',
+        status: 'pending', // pending | approved | rejected | sent
+        createdAt: new Date().toISOString(),
+        approvedBy: null, approvedAt: null, sentAt: null
+    };
+    emailQueue.push(item);
+    res.json(item);
+});
+
+app.get('/api/email-queue', authenticateToken, (req, res) => {
+    const status = req.query.status;
+    const filtered = status ? emailQueue.filter(e => e.status === status) : emailQueue;
+    res.json(filtered);
+});
+
+app.post('/api/email-queue/:id/approve', authenticateToken, async (req, res) => {
+    const item = emailQueue.find(e => e.id === req.params.id);
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    item.status = 'approved';
+    item.approvedBy = req.user.name;
+    item.approvedAt = new Date().toISOString();
+    // Send immediately on approval
+    const result = await sendEmail(item.to, item.subject, item.body, { _approved: true });
+    item.status = 'sent';
+    item.sentAt = new Date().toISOString();
+    item.sendResult = result;
+    res.json(item);
+});
+
+app.post('/api/email-queue/:id/reject', authenticateToken, (req, res) => {
+    const item = emailQueue.find(e => e.id === req.params.id);
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    item.status = 'rejected';
+    item.rejectedBy = req.user.name;
+    item.rejectedAt = new Date().toISOString();
+    item.rejectReason = req.body.reason || '';
+    res.json(item);
+});
+
+// ========== AUTOMATION STATUS ENDPOINT ==========
+app.get('/api/automations/status', authenticateToken, (req, res) => {
+    const rules = loadAutomations();
+    res.json({
+        globalKillSwitch: !AUTOMATIONS_ENABLED,
+        automationsEnabled: AUTOMATIONS_ENABLED,
+        smsBlocked: true,  // Phase 1 hard block
+        customerEmailBlocked: true, // Safe mode V2
+        totalRules: rules.length,
+        enabledRules: rules.filter(r => r.enabled).length,
+        disabledRules: rules.filter(r => !r.enabled).length,
+        safeguards: {
+            maxTouchesPerSequence: MAX_TOUCHES_PER_SEQUENCE,
+            minCooldownHours: MIN_TOUCH_COOLDOWN_MS / 3600000,
+            skipStages: SKIP_AUTOMATION_STAGES,
+            testLeadFilter: true,
+            deduplication: true
+        }
+    });
+});
+
+// ========== ADMIN EMAIL APPROVAL PAGE ==========
+app.get('/admin/emails', (req, res) => {
+    res.send(`<!DOCTYPE html>
+<html><head><title>WortheyFlow — Email Approvals</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body { font-family: Inter, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }
+  h1 { color: #3b82f6; } .card { background: #1e293b; padding: 16px; border-radius: 8px; margin: 12px 0; }
+  .pending { border-left: 4px solid #f59e0b; } .approved { border-left: 4px solid #22c55e; } .rejected { border-left: 4px solid #ef4444; }
+  button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 4px; }
+  .btn-approve { background: #22c55e; color: white; } .btn-reject { background: #ef4444; color: white; }
+  .meta { color: #94a3b8; font-size: 13px; } pre { background: #0f172a; padding: 12px; border-radius: 6px; white-space: pre-wrap; font-size: 13px; }
+  #status { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 16px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+  .badge-on { background: #22c55e; color: white; } .badge-off { background: #ef4444; color: white; }
+</style></head><body>
+<h1>📧 Email Approval Queue</h1>
+<div id="status">Loading automation status...</div>
+<div id="queue">Loading...</div>
+<script>
+const TOKEN = localStorage.getItem('token');
+if (!TOKEN) { document.body.innerHTML = '<h2>Login at <a href="/">WortheyFlow</a> first, then come back.</h2>'; }
+else {
+  async function load() {
+    const [qRes, sRes] = await Promise.all([
+      fetch('/api/email-queue', { headers: { Authorization: 'Bearer ' + TOKEN } }),
+      fetch('/api/automations/status', { headers: { Authorization: 'Bearer ' + TOKEN } })
+    ]);
+    const queue = await qRes.json();
+    const status = await sRes.json();
+    document.getElementById('status').innerHTML = 
+      '<b>Automation System:</b> ' +
+      (status.globalKillSwitch ? '<span class="badge badge-off">KILL SWITCH ON</span>' : '<span class="badge badge-on">ACTIVE</span>') +
+      ' | SMS: <span class="badge badge-off">BLOCKED</span>' +
+      ' | Customer Email: <span class="badge badge-off">BLOCKED</span>' +
+      ' | Rules: ' + status.enabledRules + '/' + status.totalRules + ' enabled' +
+      ' | Max touches: ' + status.safeguards.maxTouchesPerSequence +
+      ' | Cooldown: ' + status.safeguards.minCooldownHours + 'h';
+    const pending = queue.filter(e => e.status === 'pending');
+    const others = queue.filter(e => e.status !== 'pending');
+    let html = '<h3>Pending (' + pending.length + ')</h3>';
+    for (const e of pending) {
+      html += '<div class="card pending"><b>' + e.subject + '</b><br><span class="meta">To: ' + e.to + ' | ' + (e.leadName||'') + ' | ' + e.priority + ' | ' + e.createdAt + '</span><pre>' + (e.body||'').slice(0,500) + '</pre>' +
+        '<button class="btn-approve" onclick="approve(\'' + e.id + '\')">✅ Approve & Send</button>' +
+        '<button class="btn-reject" onclick="reject(\'' + e.id + '\')">❌ Reject</button></div>';
+    }
+    html += '<h3>History (' + others.length + ')</h3>';
+    for (const e of others.slice(-20).reverse()) {
+      html += '<div class="card ' + e.status + '"><b>' + e.subject + '</b> <span class="badge badge-' + (e.status==='sent'?'on':'off') + '">' + e.status.toUpperCase() + '</span><br><span class="meta">To: ' + e.to + ' | ' + (e.approvedBy||e.rejectedBy||'') + ' | ' + (e.sentAt||e.rejectedAt||'') + '</span></div>';
+    }
+    document.getElementById('queue').innerHTML = html;
+  }
+  async function approve(id) {
+    await fetch('/api/email-queue/' + id + '/approve', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' } });
+    load();
+  }
+  async function reject(id) {
+    await fetch('/api/email-queue/' + id + '/reject', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({ reason: prompt('Reason?') || '' }) });
+    load();
+  }
+  load(); setInterval(load, 15000);
+}
+</script></body></html>`);
+});
+
 // deploy 1774058894
