@@ -2074,6 +2074,13 @@ app.put('/api/leads/:id', authMiddleware, async (req, res) => {
             }
         }
 
+        // Auto-set closeDate when lead moves to Won or Signed
+        if (leadUpdate.stage === 'Won' || leadUpdate.stage === 'Signed') {
+            if (!leadUpdate.closeDate) {
+                leadUpdate.closeDate = new Date().toISOString();
+            }
+        }
+
         // Convert to database format
         const dbUpdate = leadToDbRow(leadUpdate);
         delete dbUpdate.id; // Don't update the ID
