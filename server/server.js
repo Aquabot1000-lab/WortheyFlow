@@ -568,10 +568,45 @@ async function recordDeliveryOnLead(leadId, delivery) {
 
 // ========== AUTH ==========
 
+// ========== USER AUTH — SUPABASE-BACKED (persistent across deploys) ==========
+async function loadUsersFromDB() {
+    try {
+        const { data, error } = await supabase.from('wortheyflow_users').select('*');
+        if (error) throw error;
+        return data.map(u => ({
+            id: u.id, name: u.name, fullName: u.full_name, email: u.email,
+            password: u.password, role: u.role, salesperson: u.salesperson,
+            mustChangePassword: u.must_change_password
+        }));
+    } catch (e) {
+        console.error('[AUTH] Supabase user load failed, falling back to JSON:', e.message);
+        try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8')); } catch (e2) { return []; }
+    }
+}
+
+// Sync wrapper for backward compat (non-critical paths)
 function loadUsers() {
     try { return JSON.parse(fs.readFileSync(USERS_FILE, 'utf-8')); } catch (e) { return []; }
 }
-function saveUsers(users) { fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2)); }
+
+async function saveUserToDB(user) {
+    try {
+        const { error } = await supabase.from('wortheyflow_users').upsert({
+            id: user.id, name: user.name, full_name: user.fullName || user.name,
+            email: user.email, password: user.password, role: user.role,
+            salesperson: user.salesperson, must_change_password: user.mustChangePassword ?? false,
+            updated_at: new Date().toISOString()
+        }, { onConflict: 'id' });
+        if (error) throw error;
+    } catch (e) {
+        console.error('[AUTH] Supabase user save failed:', e.message);
+    }
+}
+
+function saveUsers(users) {
+    // Write to file as backup, but primary is Supabase
+    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+}
 
 function authMiddleware(req, res, next) {
     const header = req.headers.authorization;
@@ -588,15 +623,25 @@ function adminOnly(req, res, next) {
     next();
 }
 
-// Login — no auth required
-app.post('/api/auth/login', (req, res) => {
-    const { email, password } = req.body;
-    if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
-    const users = loadUsers();
-    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (!user || !bcrypt.compareSync(password, user.password)) return res.status(401).json({ error: 'Invalid credentials' });
-    const token = jwt.sign({ userId: user.id, name: user.name, role: user.role, salesperson: user.salesperson }, JWT_SECRET, { expiresIn: '7d' });
-    res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, salesperson: user.salesperson, mustChangePassword: user.mustChangePassword } });
+// Login — no auth required (Supabase-backed)
+app.post('/api/auth/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+        const users = await loadUsersFromDB();
+        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+        if (!user || !bcrypt.compareSync(password, user.password)) return res.status(401).json({ error: 'Invalid credentials' });
+        // Update last_login
+        await supabase.from('wortheyflow_users').update({
+            last_login_at: new Date().toISOString(),
+            login_count: (user.loginCount || 0) + 1
+        }).eq('id', user.id);
+        const token = jwt.sign({ userId: user.id, name: user.name, role: user.role, salesperson: user.salesperson }, JWT_SECRET, { expiresIn: '7d' });
+        res.json({ token, user: { id: user.id, name: user.name, email: user.email, role: user.role, salesperson: user.salesperson, mustChangePassword: user.mustChangePassword } });
+    } catch (e) {
+        console.error('[LOGIN] Error:', e.message);
+        res.status(500).json({ error: 'Login service error' });
+    }
 });
 
 // Health check (no auth required)
@@ -957,35 +1002,53 @@ app.get('/api/bot/pipeline', aquabotAuth, async (req, res) => {
 // All other /api routes require auth
 // authMiddleware applied per-route, not globally (login must be public)
 
-// Change password
-app.post('/api/auth/change-password', (req, res) => {
-    const { currentPassword, newPassword } = req.body;
-    if (!newPassword || newPassword.length < 4) return res.status(400).json({ error: 'New password must be at least 4 characters' });
-    const users = loadUsers();
-    const user = users.find(u => u.id === req.user.userId);
-    if (!user) return res.status(404).json({ error: 'User not found' });
-    if (!bcrypt.compareSync(currentPassword, user.password)) return res.status(401).json({ error: 'Current password is incorrect' });
-    user.password = bcrypt.hashSync(newPassword, 10);
-    user.mustChangePassword = false;
-    saveUsers(users);
-    res.json({ success: true });
+// Change password (Supabase-backed)
+app.post('/api/auth/change-password', async (req, res) => {
+    try {
+        const { currentPassword, newPassword } = req.body;
+        if (!newPassword || newPassword.length < 4) return res.status(400).json({ error: 'New password must be at least 4 characters' });
+        const users = await loadUsersFromDB();
+        const user = users.find(u => u.id === req.user.userId);
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        if (!bcrypt.compareSync(currentPassword, user.password)) return res.status(401).json({ error: 'Current password is incorrect' });
+        const newHash = bcrypt.hashSync(newPassword, 10);
+        await supabase.from('wortheyflow_users').update({
+            password: newHash,
+            must_change_password: false,
+            updated_at: new Date().toISOString()
+        }).eq('id', user.id);
+        // Also update local file as backup
+        user.password = newHash;
+        user.mustChangePassword = false;
+        saveUsers(users);
+        res.json({ success: true });
+    } catch (e) {
+        console.error('[CHANGE-PW] Error:', e.message);
+        res.status(500).json({ error: 'Password change failed' });
+    }
 });
 
-// User management (admin only)
-app.get('/api/users', adminOnly, (req, res) => {
-    const users = loadUsers().map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role, salesperson: u.salesperson, mustChangePassword: u.mustChangePassword }));
-    res.json(users);
+// User management (admin only, Supabase-backed)
+app.get('/api/users', adminOnly, async (req, res) => {
+    try {
+        const users = await loadUsersFromDB();
+        res.json(users.map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role, salesperson: u.salesperson, mustChangePassword: u.mustChangePassword })));
+    } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.post('/api/users', adminOnly, (req, res) => {
-    const { name, email, role, salesperson, password } = req.body;
-    if (!name || !email || !role || !password) return res.status(400).json({ error: 'Missing required fields' });
-    const users = loadUsers();
-    if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) return res.status(409).json({ error: 'Email already exists' });
-    const newUser = { id: 'u' + Date.now(), name, email, role, salesperson: salesperson || name.split(' ')[0], password: bcrypt.hashSync(password, 10), mustChangePassword: true };
-    users.push(newUser);
-    saveUsers(users);
-    res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, salesperson: newUser.salesperson } });
+app.post('/api/users', adminOnly, async (req, res) => {
+    try {
+        const { name, email, role, salesperson, password } = req.body;
+        if (!name || !email || !role || !password) return res.status(400).json({ error: 'Missing required fields' });
+        const users = await loadUsersFromDB();
+        if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) return res.status(409).json({ error: 'Email already exists' });
+        const newUser = { id: 'u' + Date.now(), name, email, role, salesperson: salesperson || name.split(' ')[0], password: bcrypt.hashSync(password, 10), mustChangePassword: true };
+        await saveUserToDB(newUser);
+        // Also save to local file as backup
+        users.push(newUser);
+        saveUsers(users);
+        res.json({ success: true, user: { id: newUser.id, name: newUser.name, email: newUser.email, role: newUser.role, salesperson: newUser.salesperson } });
+    } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
 // ========== DEDUP CACHE ==========
