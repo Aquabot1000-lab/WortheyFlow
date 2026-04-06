@@ -5,8 +5,8 @@
     "email": "tyler@wortheyaquatics.com",
     "role": "admin",
     "salesperson": "Tyler",
-    "password": "$2a$10$S6Xzijb9mlsODJBSTir/LO7z4rm8AjWndb2/lpzfe.G6YrL2/q.g2",
-    "mustChangePassword": true
+    "password": "$2a$10$P1f1NyrvFOeBO3tl0J2t7.J8hieclT37w58vUuQ8NrUbVPq3ENVlu",
+    "mustChangePassword": false
   },
   {
     "id": "u2",
