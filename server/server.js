@@ -911,15 +911,52 @@ const mcSeedOverview = {
     },
 };
 
-app.get('/api/mc/overview', (req, res) => res.json(mcSeedOverview));
+// MC V2 endpoints — PROXIED from live Mission Control API
+const MC_API = 'https://mission-control-production-8225.up.railway.app';
 
-app.get('/api/mc/agents', (req, res) => {
-    const seedAgents = [
-        { id: 'aquabot', name: 'AquaBot', task: 'CRM lead monitoring & follow-up', business: 'Worthey Aquatics', status: 'running', runtime: '24/7', model: 'Claude Opus 4', startedAt: new Date().toISOString() },
-        { id: 'contentbot', name: 'ContentBot', task: 'Blog post generation', business: 'ProfitBlueprintCo', status: 'running', runtime: '2h 14m', model: 'Claude Sonnet 4', startedAt: new Date(Date.now() - 8040000).toISOString() },
-        { id: 'adoptimizer', name: 'AdOptimizer', task: 'Google Ads bid adjustment', business: 'OverAssessed.ai', status: 'completed', runtime: '45m', model: 'GPT-4o', startedAt: new Date(Date.now() - 2700000).toISOString() },
-    ];
-    res.json({ agents: [...seedAgents, ...mcAgents] });
+app.get('/api/mc/overview', async (req, res) => {
+    try {
+        const [healthRes, tasksRes, agentsRes] = await Promise.all([
+            fetch(`${MC_API}/api/health`).then(r => r.json()),
+            fetch(`${MC_API}/api/tasks`).then(r => r.json()),
+            fetch(`${MC_API}/api/agents`).then(r => r.json())
+        ]);
+        const activeTasks = tasksRes.filter(t => t.status !== 'completed' && t.status !== 'archived' && t.status !== 'failed');
+        const completedToday = tasksRes.filter(t => {
+            if (t.status !== 'completed' || !t.completedAt) return false;
+            return (Date.now() - new Date(t.completedAt).getTime()) < 86400000;
+        });
+        res.json({
+            agents: { total: agentsRes.length, working: healthRes.working || 0, idle: healthRes.idle || 0, stale: healthRes.stale || 0 },
+            tasks: { total: tasksRes.length, queued: healthRes.queued || 0, inProgress: healthRes.inProgress || 0, completed: healthRes.completed || 0, failed: tasksRes.filter(t => t.status === 'failed').length },
+            activeTasks: activeTasks.slice(0, 20),
+            completedToday: completedToday.slice(0, 20),
+            tasksByCompany: {
+                WA: activeTasks.filter(t => t.company === 'WA').length,
+                OA: activeTasks.filter(t => t.company === 'OA').length,
+                MP: activeTasks.filter(t => t.company === 'MP').length,
+                PLATFORM: activeTasks.filter(t => t.company === 'PLATFORM').length
+            }
+        });
+    } catch (e) {
+        console.error('[MC PROXY] overview error:', e.message);
+        res.json(mcSeedOverview); // Fallback to seed data
+    }
+});
+
+app.get('/api/mc/agents', async (req, res) => {
+    try {
+        const agents = await fetch(`${MC_API}/api/agents`).then(r => r.json());
+        res.json({ agents: agents.map(a => ({
+            id: a.id, name: a.name, task: a.lastAction || a.currentTask || 'Idle',
+            business: a.company, status: a.status === 'idle' ? 'idle' : (a.currentTaskId ? 'running' : 'idle'),
+            runtime: a.lastHeartbeat ? Math.floor((Date.now() - new Date(a.createdAt).getTime()) / 60000) + 'm' : 'unknown',
+            model: 'Agent Loop', startedAt: a.createdAt, lastHeartbeat: a.lastHeartbeat
+        }))});
+    } catch (e) {
+        console.error('[MC PROXY] agents error:', e.message);
+        res.json({ agents: mcAgents });
+    }
 });
 
 app.post('/api/mc/agents', (req, res) => {
