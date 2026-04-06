@@ -777,24 +777,23 @@ app.post('/api/webhook/ghl', async (req, res) => {
 
     console.log('[GHL WEBHOOK] Lead created:', lead.id, lead.name, '→', lead.salesperson);
 
-    // 🎯 MISSION CONTROL: Notify MC of new lead for task creation
+    // 🎯 MISSION CONTROL: Create task for new lead
     try {
-        fetch('https://mission-control-production-8225.up.railway.app/api/webhook/wa-lead', {
+        fetch('https://mission-control-production-8225.up.railway.app/api/tasks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                name: lead.name || 'Unknown',
-                email: lead.email || null,
-                phone: lead.phone || null,
-                source: lead.source || 'webhook',
-                stage: lead.stage || 'New Lead',
-                salesperson: lead.salesperson || null
+                company: 'WA',
+                category: 'crm',
+                title: `New lead: ${lead.name || 'Unknown'} (${lead.source || 'webhook'})`,
+                detail: `Phone: ${lead.phone || 'N/A'} | Email: ${lead.email || 'N/A'} | Salesperson: ${lead.salesperson || 'unassigned'} | Source: ${lead.source || 'webhook'}`,
+                priority: 'high'
             })
         }).then(r => r.json()).then(d => {
-            console.log('[MC WEBHOOK] Lead sent to MC:', d.created ? 'task created' : 'deduped');
-        }).catch(e => console.error('[MC WEBHOOK] Failed:', e.message));
+            console.log('[MC] Task created for lead:', d.id);
+        }).catch(e => console.error('[MC] Failed:', e.message));
     } catch (mcErr) {
-        console.error('[MC WEBHOOK] Error:', mcErr.message);
+        console.error('[MC] Error:', mcErr.message);
     }
 
     res.json({ success: true, action: 'created', leadId: lead.id, salesperson: lead.salesperson });
@@ -1534,20 +1533,19 @@ app.post('/api/leads', authMiddleware, async (req, res) => {
 
         console.log('[POST /api/leads] Lead created:', lead.id, lead.name);
 
-        // 🎯 MISSION CONTROL: Notify MC of manually created lead
+        // 🎯 MISSION CONTROL: Create task for manually created lead
         try {
-            fetch('https://mission-control-production-8225.up.railway.app/api/webhook/wa-lead', {
+            fetch('https://mission-control-production-8225.up.railway.app/api/tasks', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    name: lead.name || 'Unknown',
-                    email: lead.email || null,
-                    phone: lead.phone || null,
-                    source: 'manual',
-                    stage: lead.stage || 'New Lead',
-                    salesperson: lead.salesperson || null
+                    company: 'WA',
+                    category: 'crm',
+                    title: `New lead: ${lead.name || 'Unknown'} (manual)`,
+                    detail: `Phone: ${lead.phone || 'N/A'} | Email: ${lead.email || 'N/A'} | Source: manual`,
+                    priority: 'high'
                 })
-            }).catch(e => console.error('[MC WEBHOOK] Failed:', e.message));
+            }).catch(e => console.error('[MC] Failed:', e.message));
         } catch (mcErr) { /* non-blocking */ }
 
         res.json({ success: true, leadId: lead.id });
