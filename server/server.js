@@ -777,6 +777,17 @@ app.post('/api/webhook/ghl', async (req, res) => {
 
     console.log('[GHL WEBHOOK] Lead created:', lead.id, lead.name, '→', lead.salesperson);
 
+    // Record first-contact timestamp tracking
+    try {
+        await supabase.from('wortheyflow_leads').update({
+            first_contact_at: null, // Explicitly null until salesperson contacts
+            updated_at: new Date().toISOString()
+        }).eq('id', lead.id);
+    } catch (tsErr) { console.error('[GHL] first_contact_at init failed:', tsErr.message); }
+
+    // 10-minute untouched lead alert (SMS to Tyler + salesperson)
+    scheduleUntouchedAlert(lead);
+
     // 🎯 MISSION CONTROL: Create task for new lead
     try {
         fetch(`${MC_API}/api/tasks`, {
@@ -2423,6 +2434,54 @@ app.listen(PORT, '0.0.0.0', () => {
     // All automation rules disabled. Only Phase 1 lead alerts active.
     // Re-enable when Tyler approves Phase 2+
     console.log('[PHASE1] Duration check DISABLED — no automation rules active');
+
+    // ── Stale Lead Checker: Every 4 hours, flag 'New' leads with no contact after 30 min ──
+    setInterval(async () => {
+        try {
+            const { data: staleLeads } = await supabase
+                .from('wortheyflow_leads')
+                .select('id, name, salesperson, phone, email, source, created_at, first_contact_at, stage')
+                .eq('stage', 'New')
+                .is('first_contact_at', null)
+                .lt('created_at', new Date(Date.now() - 30 * 60 * 1000).toISOString());
+
+            if (staleLeads && staleLeads.length > 0) {
+                console.log(`[StaleCheck] ${staleLeads.length} leads in New with no contact`);
+                // Create MC task for visibility
+                try {
+                    fetch(`${MC_API}/api/tasks`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            company: 'WA',
+                            category: 'crm',
+                            title: `${staleLeads.length} leads in New with no first contact`,
+                            detail: staleLeads.slice(0, 10).map(l => `${l.name} (${l.salesperson}) - ${l.source}`).join('\n'),
+                            priority: staleLeads.length >= 5 ? 'high' : 'medium'
+                        })
+                    }).catch(() => {});
+                } catch (e) {}
+            } else {
+                console.log('[StaleCheck] No stale leads found');
+            }
+        } catch (err) {
+            console.error('[StaleCheck] Error:', err.message);
+        }
+    }, 4 * 60 * 60 * 1000);
+    // Run first check 2 minutes after startup
+    setTimeout(async () => {
+        try {
+            const { data: staleLeads } = await supabase
+                .from('wortheyflow_leads')
+                .select('id, name, salesperson, stage')
+                .eq('stage', 'New')
+                .is('first_contact_at', null)
+                .lt('created_at', new Date(Date.now() - 30 * 60 * 1000).toISOString());
+            if (staleLeads && staleLeads.length > 0) {
+                console.log(`[StaleCheck] Startup: ${staleLeads.length} stale leads found`);
+            }
+        } catch (err) {}
+    }, 120000);
     const _PHASE1_SKIP_DURATION = true;
     setInterval(async () => {
         if (_PHASE1_SKIP_DURATION) return;
