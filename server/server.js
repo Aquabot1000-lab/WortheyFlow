@@ -779,7 +779,7 @@ app.post('/api/webhook/ghl', async (req, res) => {
 
     // 🎯 MISSION CONTROL: Create task for new lead
     try {
-        fetch('https://mission-control-production-8225.up.railway.app/api/tasks', {
+        fetch(`${MC_API}/api/tasks`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -911,7 +911,7 @@ const mcSeedOverview = {
 };
 
 // MC V2 endpoints — PROXIED from live Mission Control API
-const MC_API = 'https://mission-control-production-8225.up.railway.app';
+const MC_API = process.env.MC_API_URL || 'https://mission-control-production-8225.up.railway.app';
 
 app.get('/api/mc/overview', async (req, res) => {
     try {
@@ -1535,7 +1535,7 @@ app.post('/api/leads', authMiddleware, async (req, res) => {
 
         // 🎯 MISSION CONTROL: Create task for manually created lead
         try {
-            fetch('https://mission-control-production-8225.up.railway.app/api/tasks', {
+            fetch(`${MC_API}/api/tasks`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
