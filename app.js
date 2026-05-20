@@ -6,6 +6,8 @@
     let currentUser = null; // { id, name, email, role, salesperson }
 
     function getToken() { return localStorage.getItem('wf_token'); }
+    function setToken(t) { localStorage.setItem('wf_token', t); }
+    function clearToken() { localStorage.removeItem('wf_token'); localStorage.removeItem('wf_user'); }
     function getStoredUser() { try { return JSON.parse(localStorage.getItem('wf_user')); } catch(e) { return null; } }
     function setStoredUser(u) { localStorage.setItem('wf_user', JSON.stringify(u)); }
 
