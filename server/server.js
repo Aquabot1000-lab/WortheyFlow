@@ -1071,7 +1071,7 @@ app.get('/api/bot/pipeline', aquabotAuth, async (req, res) => {
 // authMiddleware applied per-route, not globally (login must be public)
 
 // Change password (Supabase-backed)
-app.post('/api/auth/change-password', async (req, res) => {
+app.post('/api/auth/change-password', authMiddleware, async (req, res) => {
     try {
         const { currentPassword, newPassword } = req.body;
         if (!newPassword || newPassword.length < 4) return res.status(400).json({ error: 'New password must be at least 4 characters' });
@@ -1097,14 +1097,14 @@ app.post('/api/auth/change-password', async (req, res) => {
 });
 
 // User management (admin only, Supabase-backed)
-app.get('/api/users', adminOnly, async (req, res) => {
+app.get('/api/users', authMiddleware, adminOnly, async (req, res) => {
     try {
         const users = await loadUsersFromDB();
         res.json(users.map(u => ({ id: u.id, name: u.name, email: u.email, role: u.role, salesperson: u.salesperson, mustChangePassword: u.mustChangePassword })));
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-app.post('/api/users', adminOnly, async (req, res) => {
+app.post('/api/users', authMiddleware, adminOnly, async (req, res) => {
     try {
         const { name, email, role, salesperson, password } = req.body;
         if (!name || !email || !role || !password) return res.status(400).json({ error: 'Missing required fields' });
