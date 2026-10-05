@@ -167,8 +167,8 @@
     const JOB_TYPES = ['New Pool', 'Remodel', 'Equipment Repair', 'Service Route', 'Commercial'];
     const SOURCES = ['Google Ads', 'Facebook Ads', 'Pool Monopoly', 'Lead Rocket', 'Teckfactor', 'Marketing Show', 'Kerrville Show', 'Referral', 'Website', 'Phone Call (Inbound)', 'Nextdoor', 'Yard Sign', 'Repeat Customer', 'Other'];
     const LOSS_REASONS = ['Price', 'Went with Competitor', 'Timing', 'No Financing', 'Scope Mismatch', 'No Response', 'Other'];
-    const SALESPEOPLE = ['Ricardo', 'Anibal', 'Richard'];
-    const POOL_SALESPEOPLE = ['Ricardo', 'Anibal'];
+    const SALESPEOPLE = ['Ricardo', 'John', 'Richard'];
+    const POOL_SALESPEOPLE = ['Ricardo', 'John'];
     const SERVICE_SALESPEOPLE = ['Richard'];
     const CONSTRUCTION_TYPES = ['New Pool', 'Remodel', 'Commercial'];
     const SERVICE_TYPES = ['Equipment Repair', 'Service Route'];
@@ -188,7 +188,7 @@
     function getContactDirectory() {
         const s = JSON.parse(localStorage.getItem('wf_notif_settings') || '{}');
         return s.contactDirectory || [
-            { name: 'Anibal', fullName: 'Anibal Lopez', email: 'anibal@wortheyaquatics.com', phone: '+12105636099', role: 'Pool Construction' },
+            { name: 'John', fullName: 'John Aaron', email: 'JohnA@wortheyaquatics.com', phone: '', role: 'Pool Construction' },
             { name: 'Ricardo', fullName: 'Ricardo Jaurez', email: 'Ricardo@wortheyaquatics.com', phone: '+15124504426', role: 'Pool Construction' },
             { name: 'Richard', fullName: 'Richard Castille', email: 'Richardc@wortheyaquatics.com', phone: '+12102501416', role: 'Service/Equipment' },
             { name: 'Tyler', fullName: 'Tyler Worthey', email: 'tyler@wortheyaquatics.com', phone: '+12105598725', role: 'Owner' }
@@ -653,7 +653,7 @@
     function weekEnd() { const d = new Date(); d.setDate(d.getDate() + (6 - d.getDay())); d.setHours(23, 59, 59, 999); return d.getTime(); }
     function uid() { return 'L' + Date.now().toString(36).toUpperCase(); }
 
-    // Auto-assignment: Pool/Remodel/Commercial rotate Ricardo↔Anibal, Service/Equipment → Richard
+    // Auto-assignment: Pool/Remodel/Commercial rotate Ricardo↔John, Service/Equipment → Richard
     let poolRotationIdx = parseInt(localStorage.getItem('wf_pool_rotation') || '0');
     function autoAssign(jobType) {
         if (CONSTRUCTION_TYPES.includes(jobType)) {
@@ -2954,7 +2954,7 @@
 
     // ========== SETTINGS ==========
     const defaultContacts = [
-        { name: 'Anibal', fullName: 'Anibal Lopez', email: 'anibal@wortheyaquatics.com', phone: '+12105636099', role: 'Pool Construction' },
+        { name: 'John', fullName: 'John Aaron', email: 'JohnA@wortheyaquatics.com', phone: '', role: 'Pool Construction' },
         { name: 'Ricardo', fullName: 'Ricardo Jaurez', email: 'Ricardo@wortheyaquatics.com', phone: '+15124504426', role: 'Pool Construction' },
         { name: 'Richard', fullName: 'Richard Castille', email: 'Richardc@wortheyaquatics.com', phone: '+12102501416', role: 'Service/Equipment' },
         { name: 'Tyler', fullName: 'Tyler Worthey', email: 'tyler@wortheyaquatics.com', phone: '+12105598725', role: 'Owner' }

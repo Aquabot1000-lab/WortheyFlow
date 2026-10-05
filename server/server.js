@@ -366,7 +366,7 @@ async function sendEmail(to, subject, body, options = {}) {
     // ONLY internal team alerts allowed. NO customer-facing emails.
     const TEAM_EMAILS = [
         'tyler@wortheyaquatics.com',
-        'anibal@wortheyaquatics.com',
+        'johna@wortheyaquatics.com',
         'ricardo@wortheyaquatics.com',
         'richardc@wortheyaquatics.com',
         'paul@wortheyaquatics.com',
@@ -703,11 +703,11 @@ app.post('/api/webhook/ghl', async (req, res) => {
 
     // Auto-assign salesperson based on job type (use short names to match CRM frontend)
     if (['Pool Construction', 'Pool Remodel', 'Commercial'].includes(lead.jobType)) {
-        // Rotate between Ricardo and Anibal
+        // Rotate between Ricardo and John
         const assignFile = path.join(__dirname, 'assign-counter.json');
         let counter = 0;
         try { counter = JSON.parse(fs.readFileSync(assignFile, 'utf-8')).counter || 0; } catch(e) {}
-        lead.salesperson = counter % 2 === 0 ? 'Ricardo' : 'Anibal';
+        lead.salesperson = counter % 2 === 0 ? 'Ricardo' : 'John';
         fs.writeFileSync(assignFile, JSON.stringify({ counter: counter + 1 }));
     } else {
         lead.salesperson = 'Richard';
@@ -847,7 +847,7 @@ function loadContactDirectory() {
         return JSON.parse(fs.readFileSync(settingsFile, 'utf-8'));
     } catch(e) {
         return [
-            { name: 'Anibal', fullName: 'Anibal Lopez', phone: '+12105636099', email: 'anibal@wortheyaquatics.com', role: 'Pool Construction' },
+            { name: 'John', fullName: 'John Aaron', phone: '', email: 'JohnA@wortheyaquatics.com', role: 'Pool Construction' },
             { name: 'Ricardo', fullName: 'Ricardo Jaurez', phone: '+15124504426', email: 'Ricardo@wortheyaquatics.com', role: 'Pool Construction' },
             { name: 'Richard', fullName: 'Richard Castille', phone: '+12102501416', email: 'Richardc@wortheyaquatics.com', role: 'Service/Equipment' },
             { name: 'Tyler', fullName: 'Tyler Worthey', phone: '+12105598725', email: 'tyler@wortheyaquatics.com', role: 'Owner' }
@@ -1638,7 +1638,7 @@ app.post('/api/booth-lead', async (req, res) => {
             const assignFile = path.join(__dirname, 'assign-counter.json');
             let counter = 0;
             try { counter = JSON.parse(fs.readFileSync(assignFile, 'utf-8')).counter || 0; } catch(e) {}
-            lead.salesperson = counter % 2 === 0 ? 'Ricardo' : 'Anibal';
+            lead.salesperson = counter % 2 === 0 ? 'Ricardo' : 'John';
             fs.writeFileSync(assignFile, JSON.stringify({ counter: counter + 1 }));
         } else {
             lead.salesperson = 'Richard';

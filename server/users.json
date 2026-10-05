@@ -18,15 +18,6 @@
     "mustChangePassword": true
   },
   {
-    "id": "u3",
-    "name": "Anibal Lopez",
-    "email": "anibal@wortheyaquatics.com",
-    "role": "sales",
-    "salesperson": "Anibal",
-    "password": "$2a$10$3NYXU7Uk0J7VtylDC14UGeFAgwYtNTWW/mzwjZt7yR8MLxXWtvElS",
-    "mustChangePassword": true
-  },
-  {
     "id": "u4",
     "name": "Richard Castille",
     "email": "Richardc@wortheyaquatics.com",
