@@ -253,8 +253,11 @@
         // Force reset via URL param or missing flag
         const urlReset = new URLSearchParams(window.location.search).get('reset') === 'force';
         if (urlReset || !localStorage.getItem('wf_ghl_v6')) {
-            // Nuke ALL wf_ keys
-            Object.keys(localStorage).forEach(k => { if (k.startsWith('wf_')) localStorage.removeItem(k); });
+            // Clear ONLY lead-related cache keys. Never touch auth (wf_token, wf_user)
+            // or the cache-version flag (wf_ghl_v6) — wiping those logged users out
+            // right after a successful login.
+            const LEAD_CACHE_KEYS = ['wf_leads', 'wf_deleted_leads'];
+            LEAD_CACHE_KEYS.forEach(k => localStorage.removeItem(k));
             localStorage.setItem('wf_ghl_v6', '1');
             // Clean URL
             if (urlReset) window.history.replaceState({}, '', window.location.pathname);
