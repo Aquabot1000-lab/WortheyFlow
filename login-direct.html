@@ -55,12 +55,15 @@ if ('caches' in window) {
     addLog('No cache API');
 }
 
-// Step 3: Clear localStorage except what we're about to set
+// Step 3: Clear wf_* localStorage EXCEPT auth + cache-version flag.
+// Removing wf_ghl_v6 here made app.js loadData() treat the next load as a
+// "fresh" cache and wipe the token we set below, bouncing the user to login.
+var PRESERVE_KEYS = { wf_token: 1, wf_user: 1, wf_ghl_v6: 1 };
 try {
     var keysToRemove = [];
     for (var i = 0; i < localStorage.length; i++) {
         var key = localStorage.key(i);
-        if (key && key.indexOf('wf_') === 0) keysToRemove.push(key);
+        if (key && key.indexOf('wf_') === 0 && !PRESERVE_KEYS[key]) keysToRemove.push(key);
     }
     keysToRemove.forEach(function(k) { localStorage.removeItem(k); });
     addLog('Cleared ' + keysToRemove.length + ' localStorage entries');
@@ -108,6 +111,8 @@ document.getElementById('frm').onsubmit = function(ev) {
             addLog('✅ Login success! Token received.');
             localStorage.setItem('wf_token', d.token);
             localStorage.setItem('wf_user', JSON.stringify(d.user));
+            // Mark lead cache as current so app.js doesn't run its reset path on redirect
+            localStorage.setItem('wf_ghl_v6', '1');
             status.textContent = '✅ Login success! Redirecting...';
             // Redirect with cache bust
             window.location.href = '/?nocache=' + Date.now();
