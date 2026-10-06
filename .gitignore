@@ -4,3 +4,31 @@ server/.env
 *.env
 .env.*
 !.env.example
+
+# Dependencies (installed by `cd server && npm install` on Render)
+node_modules/
+server/node_modules/
+
+# Runtime state / logs written by the server
+server/logs/
+*.log
+server/notification-log.json
+server/dedup-cache.json
+server/users.json
+
+# Customer data dumps — keep out of git (they belong in Supabase)
+leads-data.js
+leads/
+ghl-*.json
+ghl-*.csv
+server/leads.json
+*.csv
+*.xlsx
+
+# Secrets / local tooling
+marketing/google-ads-config.yaml
+.gstack/
+
+# Editor / backup junk
+*.bak
+.DS_Store
