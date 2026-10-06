@@ -19,8 +19,8 @@ button:disabled{opacity:0.5}
 <p class="sub">Direct Login — Cache Bypass</p>
 <div class="status" id="status">Clearing cache...</div>
 <form id="frm">
-<input id="e" type="email" placeholder="Email" value="tyler@wortheyaquatics.com" required>
-<input id="p" type="password" placeholder="Password" value="tyler" required>
+<input id="e" name="email" type="email" placeholder="Email" autocomplete="username" required>
+<input id="p" name="password" type="password" placeholder="Password" autocomplete="current-password" required>
 <div id="err" class="err"></div>
 <button type="submit" id="btn">Sign In</button>
 </form>
@@ -73,11 +73,7 @@ try {
 var apiBase = window.location.origin;
 addLog('Testing API at: ' + apiBase);
 
-fetch(apiBase + '/api/auth/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'ping', password: 'ping' })
-}).then(function(r) {
+fetch(apiBase + '/api/health').then(function(r) {
     addLog('Server responded: HTTP ' + r.status);
     status.textContent = '✅ Server reachable. Ready to login.';
     status.style.color = '#22c55e';

@@ -55,10 +55,10 @@ railway up
 ```
 
 ## Environment Variables
-Add to Railway (and local `.env`):
+Set in Render > Environment (and local `server/.env`, which is gitignored):
 ```
 SUPABASE_URL=https://ylxreuqvofgbpsatfsvr.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+SUPABASE_SERVICE_ROLE_KEY=<service-role key from Supabase dashboard — never commit it>
 ```
 
 ## Testing Checklist
@@ -87,6 +87,7 @@ If issues arise:
 - Automation logic unchanged
 
 ## Migration Scripts
-- `server/create-table.js`: Create Supabase table via pg client
-- `server/migrate-to-supabase.js`: Import leads from leads-data.js
 - `server/create-table-sql.sql`: Manual SQL for table creation
+- The one-off import scripts (`create-table.js`, `migrate-to-supabase.js`, `setup-db.js`) were
+  removed in the Phase 1 security lockdown (Oct 2026): they contained hardcoded credentials and
+  depended on `leads-data.js`, which is no longer in the repo. They remain in git history.
