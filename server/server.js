@@ -7,21 +7,37 @@ const { v4: uuidv4 } = require('uuid');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const { createClient } = require('@supabase/supabase-js');
+const twilioLib = require('twilio');
+const security = require('./security');
+
+// ========== REQUIRED SECRETS (env only — no hardcoded fallbacks) ==========
+// Exits with [FATAL] if any of SUPABASE_SERVICE_ROLE_KEY, JWT_SECRET, GHL_WEBHOOK_SECRET,
+// AQUABOT_API_KEY, REPORT_SECRET is missing.
+const SECRETS = security.loadRequiredSecrets();
 
 const app = express();
+app.set('trust proxy', 1); // Render terminates TLS; needed for req.ip / req.protocol
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: false, limit: '1mb' })); // Twilio posts form bodies
 
 // Global no-cache headers — prevent stale dashboard data
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
+    res.set('X-Content-Type-Options', 'nosniff');
+    res.set('Referrer-Policy', 'same-origin');
     next();
 });
 
+// Deny-by-default: every /api/* route requires a valid JWT except the explicit
+// public list in security.js (login, health, GHL webhook, booth form, Twilio inbound,
+// AquaBot key routes, report-secret routes).
+app.use(security.apiAuthGate((req, res, next) => authMiddleware(req, res, next)));
+
 const PORT = process.env.PORT || 3001;
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-me';
+const JWT_SECRET = SECRETS.JWT_SECRET;
 const APP_URL = process.env.APP_URL || 'https://wortheyflow-production.up.railway.app';
 const AUTOMATIONS_FILE = path.join(__dirname, 'automations.json');
 const LOG_FILE = path.join(__dirname, 'notification-log.json');
@@ -49,7 +65,7 @@ const _touchLog = new Map(); // key: `${ruleId}:${leadId}:${stage}` → { count,
 function touchCheck(ruleId, leadId, stage) {
     const key = `${ruleId}:${leadId}:${stage}`;
     const entry = _touchLog.get(key) || { count: 0, lastSentAt: 0 };
-    
+
     if (entry.count >= MAX_TOUCHES_PER_SEQUENCE) {
         return { blocked: true, reason: `Max touches (${MAX_TOUCHES_PER_SEQUENCE}) reached for rule ${ruleId} on lead ${leadId}` };
     }
@@ -75,8 +91,8 @@ function shouldBlockLead(lead) {
 }
 
 // ========== SUPABASE CLIENT ==========
-const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ylxreuqvofgbpsatfsvr.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlseHJldXF2b2ZnYnBzYXRmc3ZyIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTg1NzE4MCwiZXhwIjoyMDg3NDMzMTgwfQ.DxTv7ZC0oNRHBBS0Jxquh1M0wsGV8fQ005Q9S2iILdE';
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://ylxreuqvofgbpsatfsvr.supabase.co'; // project URL is not a secret
+const SUPABASE_SERVICE_ROLE_KEY = SECRETS.SUPABASE_SERVICE_ROLE_KEY;
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     db: { schema: 'public' },
@@ -277,17 +293,17 @@ async function sendSMS(to, message) {
         const contact = contactDir.find(c => (c.phone || '').replace(/\D/g, '').slice(-10) === normalTo);
         const fallbackEmail = contact ? contact.email : 'tyler@wortheyaquatics.com';
         const contactName = contact ? (contact.fullName || contact.name) : 'Unknown';
-        
+
         // Detect alert type for priority subject line
         const isUntouched10 = message.includes('not been contacted yet') || message.includes('10 min');
         const isEscalation = message.includes('ESCALATION') || message.includes('1 HOUR') || message.includes('going cold');
         const isNewLead = message.includes('NEW LEAD') || message.includes('New lead') || message.includes('new construction') || message.includes('new service');
-        
+
         // Extract phone number from message for click-to-call
         const phoneMatch = message.match(/Phone:\s*([\d\-\(\)\s\+]+)/i);
         const leadPhone = phoneMatch ? phoneMatch[1].trim() : null;
         const callLink = leadPhone ? `<a href="tel:${leadPhone.replace(/\D/g,'')}" style="display:inline-block;background:#16a34a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:18px;font-weight:bold;margin:12px 0;">📞 CALL NOW: ${leadPhone}</a>` : '';
-        
+
         let subject, headerColor, headerText;
         if (isUntouched10) {
             subject = '🚨 URGENT — LEAD NOT CONTACTED (10 MIN)';
@@ -306,7 +322,7 @@ async function sendSMS(to, message) {
             headerColor = '#f59e0b';
             headerText = 'WORTHEYFLOW ALERT';
         }
-        
+
         const emailBody = `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;">
             <div style="background:${headerColor};color:#fff;padding:16px 20px;border-radius:8px 8px 0 0;text-align:center;">
                 <h2 style="margin:0;font-size:20px;">${headerText}</h2>
@@ -318,11 +334,11 @@ async function sendSMS(to, message) {
                 <p style="color:#94a3b8;font-size:12px;">SMS alerts temporarily redirected to email. Sent via WortheyFlow CRM.</p>
             </div>
         </div>`;
-        
+
         // Send to the target contact
         await sendEmail(fallbackEmail, subject, emailBody);
         console.log(`[SMS→EMAIL FALLBACK] Sent to ${fallbackEmail} for ${to} | Subject: ${subject}`);
-        
+
         // ALWAYS also send to Tyler for visibility
         if (fallbackEmail !== 'tyler@wortheyaquatics.com') {
             await sendEmail('tyler@wortheyaquatics.com', subject, emailBody);
@@ -331,7 +347,7 @@ async function sendSMS(to, message) {
     } catch(e) {
         console.error('[SMS→EMAIL FALLBACK FAILED]', e.message);
     }
-    
+
     return { success: true, blocked: true, fallback: 'email', to, message };
 
     const client = getTwilio();
@@ -419,7 +435,7 @@ async function sendEmail(to, subject, body, options = {}) {
         return { success: true, to, subject, elapsed, statusCode: response.statusCode };
     } catch (err1) {
         console.error(`[EMAIL ❌ ATTEMPT 1] ${to} | "${subject}" | ${err1.message}`);
-        
+
         // Retry once after 2 seconds
         await new Promise(r => setTimeout(r, 2000));
         try {
@@ -430,7 +446,7 @@ async function sendEmail(to, subject, body, options = {}) {
         } catch (err2) {
             const elapsed = Date.now() - startTime;
             console.error(`[EMAIL ❌ FAILED] ${to} | "${subject}" | ${elapsed}ms | ${err2.message}`);
-            
+
             // Telegram fallback alert
             try {
                 if (typeof sendTelegramAlert === 'function') {
@@ -439,7 +455,7 @@ async function sendEmail(to, subject, body, options = {}) {
             } catch (tgErr) {
                 console.error('[EMAIL FALLBACK] Telegram alert also failed:', tgErr.message);
             }
-            
+
             return { success: false, error: err2.message, to, subject, elapsed };
         }
     }
@@ -619,18 +635,43 @@ function authMiddleware(req, res, next) {
 }
 
 function adminOnly(req, res, next) {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
+    if (!req.user || req.user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
     next();
 }
 
+// Load just the fields needed for a permission check on one lead.
+async function loadLeadForAccess(id) {
+    const { data, error } = await supabase
+        .from('wortheyflow_leads')
+        .select('id, salesperson, job_type')
+        .eq('id', id)
+        .maybeSingle();
+    if (error) throw error;
+    return data;
+}
+
+// Responds 404 (not 403, to avoid leaking which ids exist) when the user can't access the lead.
+async function requireLeadAccess(req, res, id) {
+    const row = await loadLeadForAccess(id);
+    if (!row || !security.canAccessLead(req.user, row)) {
+        res.status(404).json({ error: 'Lead not found' });
+        return null;
+    }
+    return row;
+}
+
+// Login brute-force protection: 20 failed attempts per IP per 15 min (success resets)
+const loginLimiter = security.rateLimiter({ windowMs: 15 * 60 * 1000, max: 20, message: 'Too many login attempts. Try again in 15 minutes.' });
+
 // Login — no auth required (Supabase-backed)
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password } = req.body || {};
         if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
         const users = await loadUsersFromDB();
-        const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-        if (!user || !bcrypt.compareSync(password, user.password)) return res.status(401).json({ error: 'Invalid credentials' });
+        const user = users.find(u => (u.email || '').toLowerCase() === String(email).toLowerCase());
+        if (!user || !bcrypt.compareSync(String(password), user.password || '')) return res.status(401).json({ error: 'Invalid credentials' });
+        loginLimiter.reset(req); // successful login clears the failure counter
         // Update last_login
         await supabase.from('wortheyflow_users').update({
             last_login_at: new Date().toISOString(),
@@ -649,8 +690,8 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Marketing Dashboard — PUBLIC read-only endpoint (no auth)
-app.get('/api/marketing/data', (req, res) => {
+// Marketing Dashboard data (admin only)
+app.get('/api/marketing/data', authMiddleware, adminOnly, (req, res) => {
     try {
         const stateFile = path.join(__dirname, '..', 'marketing', 'dashboard-state.json');
         if (fs.existsSync(stateFile)) {
@@ -664,12 +705,12 @@ app.get('/api/marketing/data', (req, res) => {
 });
 
 // ========== GHL WEBHOOK (no auth — secured by secret) ==========
-const GHL_WEBHOOK_SECRET = process.env.GHL_WEBHOOK_SECRET || 'worthey-ghl-2026';
+const GHL_WEBHOOK_SECRET = SECRETS.GHL_WEBHOOK_SECRET;
 
 app.post('/api/webhook/ghl', async (req, res) => {
     // Verify secret (passed as query param or header)
     const secret = req.query.secret || req.headers['x-webhook-secret'];
-    if (secret !== GHL_WEBHOOK_SECRET) {
+    if (!security.safeEqual(String(secret || ''), GHL_WEBHOOK_SECRET)) {
         console.log('[GHL WEBHOOK] Rejected — invalid secret');
         return res.status(403).json({ error: 'Invalid secret' });
     }
@@ -867,7 +908,7 @@ function findContact(contactDir, name) {
     );
 }
 
-// ========== MISSION CONTROL V2 API (public — MC pages handle their own auth) ==========
+// ========== MISSION CONTROL V2 API (admin only) ==========
 
 // In-memory stores for MC data
 const mcAgents = [];
@@ -924,7 +965,7 @@ const mcSeedOverview = {
 // MC V2 endpoints — PROXIED from live Mission Control API
 const MC_API = process.env.MC_API_URL || 'https://mission-control-production-8225.up.railway.app';
 
-app.get('/api/mc/overview', async (req, res) => {
+app.get('/api/mc/overview', authMiddleware, adminOnly, async (req, res) => {
     try {
         const [healthRes, tasksRes, agentsRes] = await Promise.all([
             fetch(`${MC_API}/api/health`).then(r => r.json()),
@@ -954,7 +995,7 @@ app.get('/api/mc/overview', async (req, res) => {
     }
 });
 
-app.get('/api/mc/agents', async (req, res) => {
+app.get('/api/mc/agents', authMiddleware, adminOnly, async (req, res) => {
     try {
         const agents = await fetch(`${MC_API}/api/agents`).then(r => r.json());
         res.json({ agents: agents.map(a => ({
@@ -969,7 +1010,7 @@ app.get('/api/mc/agents', async (req, res) => {
     }
 });
 
-app.post('/api/mc/agents', (req, res) => {
+app.post('/api/mc/agents', authMiddleware, adminOnly, (req, res) => {
     const { name, task, business, status, model } = req.body;
     if (!name || !task) return res.status(400).json({ error: 'name and task required' });
     const agent = { id: uuidv4(), name, task, business: business || 'General', status: status || 'running', model: model || 'unknown', startedAt: new Date().toISOString() };
@@ -978,7 +1019,7 @@ app.post('/api/mc/agents', (req, res) => {
     res.json(agent);
 });
 
-app.get('/api/mc/revenue', (req, res) => {
+app.get('/api/mc/revenue', authMiddleware, adminOnly, (req, res) => {
     const monthly = [
         { month: 'Sep 2025', wa: 14200, oa: 2100, mp: 0, pb: 0, ai: 0 },
         { month: 'Oct 2025', wa: 15800, oa: 2400, mp: 0, pb: 0, ai: 0 },
@@ -991,7 +1032,7 @@ app.get('/api/mc/revenue', (req, res) => {
     res.json({ totalMRR: 26910, monthly, events: mcRevenueEvents });
 });
 
-app.post('/api/mc/revenue', (req, res) => {
+app.post('/api/mc/revenue', authMiddleware, adminOnly, (req, res) => {
     const { business, amount, type, description } = req.body;
     if (!business || amount === undefined) return res.status(400).json({ error: 'business and amount required' });
     const event = { id: uuidv4(), business, amount, type: type || 'revenue', description: description || '', timestamp: new Date().toISOString() };
@@ -1000,12 +1041,24 @@ app.post('/api/mc/revenue', (req, res) => {
     res.json(event);
 });
 
-// ========== AQUABOT API (secret-key auth, read/write access) ==========
-const AQUABOT_API_KEY = process.env.AQUABOT_API_KEY || 'wb-aquabot-2026-secret';
+// MC page HTML (admin only) — loaded by the MC loader page with the user's token
+app.get('/api/mc/page/:page', authMiddleware, adminOnly, (req, res) => {
+    const page = req.params.page;
+    if (!security.MC_PAGES.includes(page)) return res.status(404).json({ error: 'Not found' });
+    try {
+        const html = fs.readFileSync(path.join(__dirname, '..', page), 'utf-8');
+        res.type('html').send(security.injectMcShim(html));
+    } catch (e) {
+        res.status(404).json({ error: 'Not found' });
+    }
+});
+
+// ========== AQUABOT API (secret-key auth, read access) ==========
+const AQUABOT_API_KEY = SECRETS.AQUABOT_API_KEY;
 
 function aquabotAuth(req, res, next) {
     const key = req.headers['x-api-key'] || req.query.apiKey;
-    if (key !== AQUABOT_API_KEY) return res.status(401).json({ error: 'Invalid API key' });
+    if (!security.safeEqual(String(key || ''), AQUABOT_API_KEY)) return res.status(401).json({ error: 'Invalid API key' });
     req.user = { userId: 'aquabot', name: 'AquaBot', role: 'admin' };
     next();
 }
@@ -1153,12 +1206,12 @@ function markSent(ruleId, leadId) {
 // ========== ROUTES ==========
 
 // List automations
-app.get('/api/automations', (req, res) => {
+app.get('/api/automations', authMiddleware, adminOnly, (req, res) => {
     res.json(loadAutomations());
 });
 
 // Create/update automation
-app.post('/api/automations', (req, res) => {
+app.post('/api/automations', authMiddleware, adminOnly, (req, res) => {
     const rules = loadAutomations();
     const rule = req.body;
     if (!rule.id) rule.id = 'auto-' + uuidv4().slice(0, 8);
@@ -1173,7 +1226,7 @@ app.post('/api/automations', (req, res) => {
 });
 
 // Delete automation
-app.delete('/api/automations/:id', (req, res) => {
+app.delete('/api/automations/:id', authMiddleware, adminOnly, (req, res) => {
     let rules = loadAutomations();
     const before = rules.length;
     rules = rules.filter(r => r.id !== req.params.id);
@@ -1182,7 +1235,7 @@ app.delete('/api/automations/:id', (req, res) => {
 });
 
 // Send notification directly
-app.post('/api/notify', async (req, res) => {
+app.post('/api/notify', authMiddleware, async (req, res) => {
     const { type, to, message, subject, body } = req.body;
     let result;
     if (type === 'sms') {
@@ -1197,7 +1250,7 @@ app.post('/api/notify', async (req, res) => {
 });
 
 // Trigger automation evaluation
-app.post('/api/automations/trigger', async (req, res) => {
+app.post('/api/automations/trigger', authMiddleware, async (req, res) => {
     // GLOBAL KILL SWITCH CHECK
     const killCheck = automationBlocked('trigger');
     if (killCheck.blocked) {
@@ -1277,7 +1330,7 @@ function shouldSkipDrip(lead) {
 }
 
 // Check duration-based triggers
-app.post('/api/automations/check-durations', async (req, res) => {
+app.post('/api/automations/check-durations', authMiddleware, async (req, res) => {
     // GLOBAL KILL SWITCH CHECK
     const killCheck = automationBlocked('check-durations');
     if (killCheck.blocked) {
@@ -1329,11 +1382,11 @@ app.post('/api/automations/check-durations', async (req, res) => {
 });
 
 // Contact directory CRUD
-app.get('/api/contacts', (req, res) => {
+app.get('/api/contacts', authMiddleware, (req, res) => {
     res.json(loadContactDirectory());
 });
 
-app.put('/api/contacts', (req, res) => {
+app.put('/api/contacts', authMiddleware, adminOnly, (req, res) => {
     const contacts = req.body;
     if (!Array.isArray(contacts)) return res.status(400).json({ error: 'Expected array of contacts' });
     const settingsFile = path.join(__dirname, 'contact-directory.json');
@@ -1342,22 +1395,23 @@ app.put('/api/contacts', (req, res) => {
 });
 
 // Get notification log
-app.get('/api/logs', (req, res) => {
+app.get('/api/logs', authMiddleware, adminOnly, (req, res) => {
     res.json(loadLog());
 });
 
 // Get activity timeline for a lead (SMS/Email history)
-app.get('/api/activity/:leadId', authMiddleware, (req, res) => {
+app.get('/api/activity/:leadId', authMiddleware, async (req, res) => {
     try {
         const { leadId } = req.params;
 
-        // Get lead's activities from leads.json
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
-
-        const lead = leads.find(l => l.id === leadId);
-        if (!lead) return res.status(404).json({ error: 'Lead not found' });
+        // Read the lead from Supabase (previously a stale local leads.json) and enforce access
+        const { data: lead, error } = await supabase
+            .from('wortheyflow_leads')
+            .select('id, salesperson, job_type, activities')
+            .eq('id', leadId)
+            .maybeSingle();
+        if (error) throw error;
+        if (!lead || !security.canAccessLead(req.user, lead)) return res.status(404).json({ error: 'Lead not found' });
 
         // Extract activity from lead.activities array (automated messages)
         const activities = [];
@@ -1412,7 +1466,7 @@ app.post('/api/activity/:leadId', authMiddleware, async (req, res) => {
         const { leadId } = req.params;
         const { type, note, direction } = req.body; // type: call|text|email|note
         if (!type || !note) return res.status(400).json({ error: 'type and note required' });
-        
+
         const activity = {
             type,
             note,
@@ -1421,23 +1475,23 @@ app.post('/api/activity/:leadId', authMiddleware, async (req, res) => {
             by: req.user?.name || 'Unknown',
             automated: false
         };
-        
-        // Update leads.json
-        const LEADS_FILE = path.join(__dirname, 'leads.json');
-        let leads = [];
-        try { leads = JSON.parse(fs.readFileSync(LEADS_FILE, 'utf-8')); } catch(e) {}
-        const lead = leads.find(l => l.id === leadId);
-        if (!lead) return res.status(404).json({ error: 'Lead not found' });
-        if (!Array.isArray(lead.activities)) lead.activities = [];
-        lead.activities.push(activity);
-        lead.updatedAt = Date.now();
-        fs.writeFileSync(LEADS_FILE, JSON.stringify(leads, null, 2));
-        
-        // Sync to Supabase
-        await supabase.from('wortheyflow_leads')
-            .update({ activities: lead.activities, updated_at: new Date().toISOString() })
+
+        // Read current activities from Supabase (previously a stale local leads.json) and enforce access
+        const { data: lead, error: readErr } = await supabase
+            .from('wortheyflow_leads')
+            .select('id, salesperson, job_type, activities')
+            .eq('id', leadId)
+            .maybeSingle();
+        if (readErr) throw readErr;
+        if (!lead || !security.canAccessLead(req.user, lead)) return res.status(404).json({ error: 'Lead not found' });
+        const activities = Array.isArray(lead.activities) ? lead.activities : [];
+        activities.push(activity);
+
+        const { error: updErr } = await supabase.from('wortheyflow_leads')
+            .update({ activities, updated_at: new Date().toISOString() })
             .eq('id', leadId);
-        
+        if (updErr) throw updErr;
+
         res.json({ success: true, activity });
     } catch (err) {
         console.error('[Activity POST] Error:', err);
@@ -1458,8 +1512,8 @@ app.get('/api/leads', authMiddleware, async (req, res) => {
             return res.status(500).json({ error: 'Failed to load leads' });
         }
 
-        // Convert snake_case DB rows to camelCase JS objects
-        const leads = data.map(dbRowToLead);
+        // Convert snake_case DB rows to camelCase JS objects; reps only get their own leads
+        const leads = data.map(dbRowToLead).filter(l => security.canAccessLead(req.user, l));
         res.json(leads);
     } catch (err) {
         console.error('[GET /api/leads] Error:', err.message);
@@ -1481,7 +1535,7 @@ app.get('/api/leads/service', authMiddleware, async (req, res) => {
             return res.status(500).json({ error: 'Failed to load service leads' });
         }
 
-        const leads = data.map(dbRowToLead);
+        const leads = data.map(dbRowToLead).filter(l => security.canAccessLead(req.user, l));
         res.json(leads);
     } catch (err) {
         console.error('[GET /api/leads/service] Error:', err.message);
@@ -1503,7 +1557,7 @@ app.get('/api/leads/construction', authMiddleware, async (req, res) => {
             return res.status(500).json({ error: 'Failed to load construction leads' });
         }
 
-        const leads = data.map(dbRowToLead);
+        const leads = data.map(dbRowToLead).filter(l => security.canAccessLead(req.user, l));
         res.json(leads);
     } catch (err) {
         console.error('[GET /api/leads/construction] Error:', err.message);
@@ -1567,7 +1621,7 @@ app.post('/api/leads', authMiddleware, async (req, res) => {
 });
 
 // Export all leads as JSON (for backup)
-app.get('/api/leads/export', authMiddleware, async (req, res) => {
+app.get('/api/leads/export', authMiddleware, adminOnly, async (req, res) => {
     try {
         const { data, error } = await supabase
             .from('wortheyflow_leads')
@@ -1589,8 +1643,8 @@ app.get('/api/leads/export', authMiddleware, async (req, res) => {
     }
 });
 
-// ========== MARKETING DASHBOARD API (public — read-only) ==========
-app.get('/api/marketing/dashboard', (req, res) => {
+// ========== MARKETING DASHBOARD API (admin only) ==========
+app.get('/api/marketing/dashboard', authMiddleware, adminOnly, (req, res) => {
     try {
         const stateFile = path.join(__dirname, '..', 'marketing', 'dashboard-state.json');
         if (fs.existsSync(stateFile)) {
@@ -1604,8 +1658,9 @@ app.get('/api/marketing/dashboard', (req, res) => {
     }
 });
 
-// ========== BOOTH LEAD INTAKE (public, no auth) ==========
-app.post('/api/booth-lead', async (req, res) => {
+// ========== BOOTH LEAD INTAKE (public form, no auth — rate limited) ==========
+const boothLimiter = security.rateLimiter({ windowMs: 10 * 60 * 1000, max: 30, message: 'Too many submissions, please wait a few minutes.' });
+app.post('/api/booth-lead', boothLimiter, async (req, res) => {
     try {
         const { firstName, lastName, phone, email, jobType, city, notes, source } = req.body;
 
@@ -1726,17 +1781,18 @@ async function sendNewLeadSMS(lead, contactDir) {
             (c.name || '').toLowerCase() === (lead.salesperson || '').toLowerCase()
         );
 
+        const e = security.escapeHtml; // lead fields come from public forms/webhooks
         const leadAlertHtml = `<div style="font-family:Arial,sans-serif;max-width:500px;">
-            <h2 style="color:#1976d2;">🚨 New Lead: ${lead.name}</h2>
+            <h2 style="color:#1976d2;">🚨 New Lead: ${e(lead.name)}</h2>
             <table style="width:100%;border-collapse:collapse;">
-                <tr><td style="padding:6px 8px;font-weight:bold;">Name:</td><td style="padding:6px 8px;">${lead.name}</td></tr>
-                <tr><td style="padding:6px 8px;font-weight:bold;">Phone:</td><td style="padding:6px 8px;"><a href="tel:${(lead.phone || '').replace(/\D/g,'')}">${lead.phone || 'N/A'}</a></td></tr>
-                <tr><td style="padding:6px 8px;font-weight:bold;">Email:</td><td style="padding:6px 8px;">${lead.email || 'N/A'}</td></tr>
-                <tr><td style="padding:6px 8px;font-weight:bold;">Job Type:</td><td style="padding:6px 8px;">${lead.jobType}</td></tr>
-                <tr><td style="padding:6px 8px;font-weight:bold;">Source:</td><td style="padding:6px 8px;">${lead.source}</td></tr>
-                <tr><td style="padding:6px 8px;font-weight:bold;">Salesperson:</td><td style="padding:6px 8px;">${lead.salesperson}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Name:</td><td style="padding:6px 8px;">${e(lead.name)}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Phone:</td><td style="padding:6px 8px;"><a href="tel:${(lead.phone || '').replace(/\D/g,'')}">${e(lead.phone || 'N/A')}</a></td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Email:</td><td style="padding:6px 8px;">${e(lead.email || 'N/A')}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Job Type:</td><td style="padding:6px 8px;">${e(lead.jobType)}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Source:</td><td style="padding:6px 8px;">${e(lead.source)}</td></tr>
+                <tr><td style="padding:6px 8px;font-weight:bold;">Salesperson:</td><td style="padding:6px 8px;">${e(lead.salesperson)}</td></tr>
             </table>
-            ${lead.phone ? `<p style="margin-top:12px;"><a href="tel:${lead.phone.replace(/\D/g,'')}" style="display:inline-block;padding:12px 24px;background:#16a34a;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">📞 Call ${lead.phone}</a></p>` : ''}
+            ${lead.phone ? `<p style="margin-top:12px;"><a href="tel:${lead.phone.replace(/\D/g,'')}" style="display:inline-block;padding:12px 24px;background:#16a34a;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;">📞 Call ${e(lead.phone)}</a></p>` : ''}
             <p style="color:#666;font-size:12px;margin-top:12px;">WortheyFlow CRM — Phase 1 Alert</p>
         </div>`;
 
@@ -1848,16 +1904,25 @@ async function scheduleUntouchedAlert(lead) {
 
 // ========== RESPONSE TIME TRACKING API ==========
 
+// Report routes accept REPORT_SECRET (x-report-secret header or ?secret=) for crons,
+// or a valid JWT (admin-only for the daily/weekly reports).
+const REPORT_SECRET = SECRETS.REPORT_SECRET;
+function reportAuthorized(req, { adminOnly: needAdmin }) {
+    const secret = req.headers['x-report-secret'] || req.query.secret;
+    if (secret && security.safeEqual(String(secret), REPORT_SECRET)) return true;
+    const header = req.headers.authorization;
+    if (!header || !header.startsWith('Bearer ')) return false;
+    try {
+        const user = jwt.verify(header.slice(7), JWT_SECRET);
+        req.user = user;
+        return needAdmin ? user.role === 'admin' : true;
+    } catch (e) { return false; }
+}
+
 // GET /api/response-metrics — dashboard metrics for lead response times
 app.get('/api/response-metrics', async (req, res) => {
-    // Allow auth via JWT or report secret (for crons)
-    const secret = req.query.secret || req.headers['x-report-secret'];
-    const expectedSecret = process.env.REPORT_SECRET || 'worthey2026';
-    const authHeader = req.headers.authorization;
-    if (secret !== expectedSecret && !authHeader) return res.status(401).json({ error: 'Unauthorized' });
-    if (authHeader && secret !== expectedSecret) {
-        try { jwt.verify(authHeader.slice(7), JWT_SECRET); } catch(e) { return res.status(401).json({ error: 'Invalid token' }); }
-    }
+    // Allow auth via JWT (any logged-in user) or report secret (for crons)
+    if (!reportAuthorized(req, { adminOnly: false })) return res.status(401).json({ error: 'Unauthorized' });
     try {
         const days = parseInt(req.query.days) || 30;
         const since = Date.now() - (days * 24 * 60 * 60 * 1000);
@@ -1891,7 +1956,6 @@ app.get('/api/response-metrics', async (req, res) => {
             if (lead.first_contact_at && lead.created_at) {
                 const responseMs = lead.first_contact_at - lead.created_at;
                 const responseMins = responseMs / 60000;
-
                 salespersonStats[sp].responded++;
                 salespersonStats[sp].totalResponseMs += responseMs;
                 salespersonStats[sp].responseTimes.push(responseMins);
@@ -1958,9 +2022,7 @@ app.get('/api/response-metrics', async (req, res) => {
 // GET /api/daily-report — daily lead response report (called by cron or on-demand)
 app.get('/api/daily-report', async (req, res) => {
     try {
-        const secret = req.query.secret || req.headers['x-report-secret'];
-        const expectedSecret = process.env.REPORT_SECRET || 'worthey2026';
-        if (secret !== expectedSecret) return res.status(401).json({ error: 'Unauthorized' });
+        if (!reportAuthorized(req, { adminOnly: true })) return res.status(401).json({ error: 'Unauthorized' });
 
         const todayStart = new Date();
         todayStart.setHours(0, 0, 0, 0);
@@ -2055,8 +2117,7 @@ app.get('/api/daily-report', async (req, res) => {
 // GET /api/weekly-report — weekly sales performance report
 app.get('/api/weekly-report', async (req, res) => {
     try {
-        const secret = req.query.secret || req.headers['x-report-secret'];
-        if (secret !== (process.env.REPORT_SECRET || 'worthey2026')) return res.status(401).json({ error: 'Unauthorized' });
+        if (!reportAuthorized(req, { adminOnly: true })) return res.status(401).json({ error: 'Unauthorized' });
 
         const days = parseInt(req.query.days) || 7;
         const since = Date.now() - (days * 24 * 60 * 60 * 1000);
@@ -2192,7 +2253,7 @@ app.get('/api/webhook-leads', authMiddleware, async (req, res) => {
             return res.json([]);
         }
 
-        const webhookLeads = data.map(dbRowToLead);
+        const webhookLeads = data.map(dbRowToLead).filter(l => security.canAccessLead(req.user, l));
         res.json(webhookLeads);
     } catch(err) {
         console.error('[GET /api/webhook-leads] Error:', err.message);
@@ -2204,7 +2265,12 @@ app.get('/api/webhook-leads', authMiddleware, async (req, res) => {
 app.put('/api/leads/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const leadUpdate = req.body;
+        const leadUpdate = req.body || {};
+
+        // Permission: reps may only update their own leads, and may not reassign them
+        const accessRow = await requireLeadAccess(req, res, id);
+        if (!accessRow) return;
+        if (req.user.role !== 'admin') leadUpdate.salesperson = accessRow.salesperson;
 
         // Auto-set firstContactAt when lead is touched for the first time
         // Triggers: stage change from New, new activity logged, or explicit firstContactAt
@@ -2257,8 +2323,8 @@ app.put('/api/leads/:id', authMiddleware, async (req, res) => {
     }
 });
 
-// Delete a lead (soft delete - just mark as deleted)
-app.delete('/api/leads/:id', authMiddleware, async (req, res) => {
+// Delete a lead (hard delete) — admin only
+app.delete('/api/leads/:id', authMiddleware, adminOnly, async (req, res) => {
     try {
         const { id } = req.params;
 
@@ -2306,13 +2372,13 @@ app.post('/api/email-queue', authMiddleware, (req, res) => {
     res.json(item);
 });
 
-app.get('/api/email-queue', authMiddleware, (req, res) => {
+app.get('/api/email-queue', authMiddleware, adminOnly, (req, res) => {
     const status = req.query.status;
     const filtered = status ? emailQueue.filter(e => e.status === status) : emailQueue;
     res.json(filtered);
 });
 
-app.post('/api/email-queue/:id/approve', authMiddleware, async (req, res) => {
+app.post('/api/email-queue/:id/approve', authMiddleware, adminOnly, async (req, res) => {
     const item = emailQueue.find(e => e.id === req.params.id);
     if (!item) return res.status(404).json({ error: 'Not found' });
     item.status = 'approved';
@@ -2325,7 +2391,7 @@ app.post('/api/email-queue/:id/approve', authMiddleware, async (req, res) => {
     res.json(item);
 });
 
-app.post('/api/email-queue/:id/reject', authMiddleware, (req, res) => {
+app.post('/api/email-queue/:id/reject', authMiddleware, adminOnly, (req, res) => {
     const item = emailQueue.find(e => e.id === req.params.id);
     if (!item) return res.status(404).json({ error: 'Not found' });
     item.status = 'rejected';
@@ -2356,74 +2422,27 @@ app.get('/api/automations/status', authMiddleware, (req, res) => {
 });
 
 app.get('/admin/emails', (req, res) => {
-    res.send(`<!DOCTYPE html>\n<html><head><title>WortheyFlow — Email Approvals</title>\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<style>\n  body { font-family: Inter, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }\n  h1 { color: #3b82f6; } .card { background: #1e293b; padding: 16px; border-radius: 8px; margin: 12px 0; }\n  .pending { border-left: 4px solid #f59e0b; } .approved { border-left: 4px solid #22c55e; } .rejected { border-left: 4px solid #ef4444; }\n  button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 4px; }\n  .btn-approve { background: #22c55e; color: white; } .btn-reject { background: #ef4444; color: white; }\n  .meta { color: #94a3b8; font-size: 13px; } pre { background: #0f172a; padding: 12px; border-radius: 6px; white-space: pre-wrap; font-size: 13px; }\n  #status { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 16px; }\n  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }\n  .badge-on { background: #22c55e; color: white; } .badge-off { background: #ef4444; color: white; }\n</style></head><body>\n<h1>📧 Email Approval Queue</h1>\n<div id="status">Loading...</div>\n<div id="queue">Loading...</div>\n<script>\nconst TOKEN = localStorage.getItem('token');\nif (!TOKEN) { document.body.innerHTML = '<h2>Login at <a href="/">WortheyFlow</a> first, then come back.</h2>'; }\nelse {\n  async function load() {\n    const [qRes, sRes] = await Promise.all([fetch('/api/email-queue', { headers: { Authorization: 'Bearer ' + TOKEN } }), fetch('/api/automations/status', { headers: { Authorization: 'Bearer ' + TOKEN } })]);\n    const queue = await qRes.json(); const status = await sRes.json();\n    document.getElementById('status').innerHTML = '<b>System:</b> ' + (status.globalKillSwitch ? '<span class="badge badge-off">KILL SWITCH ON</span>' : '<span class="badge badge-on">ACTIVE</span>') + ' | SMS: <span class="badge badge-off">BLOCKED</span> | Email: <span class="badge badge-off">BLOCKED</span> | Rules: ' + status.enabledRules + '/' + status.totalRules;\n    const pending = queue.filter(e => e.status === 'pending'); const others = queue.filter(e => e.status !== 'pending');\n    let html = '<h3>Pending (' + pending.length + ')</h3>';\n    for (const e of pending) { html += '<div class="card pending"><b>' + e.subject + '</b><br><span class="meta">To: ' + e.to + ' | ' + (e.leadName||'') + ' | ' + e.priority + '</span><pre>' + (e.body||'').slice(0,500) + '</pre><button class="btn-approve" onclick="approve(\''+e.id+'\')">✅ Approve</button><button class="btn-reject" onclick="reject(\''+e.id+'\')">❌ Reject</button></div>'; }\n    html += '<h3>History (' + others.length + ')</h3>';\n    for (const e of others.slice(-20).reverse()) { html += '<div class="card ' + e.status + '"><b>' + e.subject + '</b> <span class="badge badge-' + (e.status==='sent'?'on':'off') + '">' + e.status.toUpperCase() + '</span><br><span class="meta">' + (e.approvedBy||e.rejectedBy||'') + ' | ' + (e.sentAt||e.rejectedAt||'') + '</span></div>'; }\n    document.getElementById('queue').innerHTML = html;\n  }\n  async function approve(id) { await fetch('/api/email-queue/' + id + '/approve', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' } }); load(); }\n  async function reject(id) { await fetch('/api/email-queue/' + id + '/reject', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({ reason: prompt('Reason?') || '' }) }); load(); }\n  load(); setInterval(load, 15000);\n}\n</script></body></html>`);
+    res.send(`<!DOCTYPE html>\n<html><head><title>WortheyFlow — Email Approvals</title>\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<style>\n  body { font-family: Inter, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }\n  h1 { color: #3b82f6; } .card { background: #1e293b; padding: 16px; border-radius: 8px; margin: 12px 0; }\n  .pending { border-left: 4px solid #f59e0b; } .approved { border-left: 4px solid #22c55e; } .rejected { border-left: 4px solid #ef4444; }\n  button { padding: 8px 16px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin: 4px; }\n  .btn-approve { background: #22c55e; color: white; } .btn-reject { background: #ef4444; color: white; }\n  .meta { color: #94a3b8; font-size: 13px; } pre { background: #0f172a; padding: 12px; border-radius: 6px; white-space: pre-wrap; font-size: 13px; }\n  #status { background: #1e293b; padding: 12px; border-radius: 8px; margin-bottom: 16px; }\n  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }\n  .badge-on { background: #22c55e; color: white; } .badge-off { background: #ef4444; color: white; }\n</style></head><body>\n<h1>📧 Email Approval Queue</h1>\n<div id="status">Loading...</div>\n<div id="queue">Loading...</div>\n<script>\nconst TOKEN = localStorage.getItem('wf_token') || localStorage.getItem('token');\nif (!TOKEN) { document.body.innerHTML = '<h2>Login at <a href="/">WortheyFlow</a> first, then come back.</h2>'; }\nelse {\n  async function load() {\n    const [qRes, sRes] = await Promise.all([fetch('/api/email-queue', { headers: { Authorization: 'Bearer ' + TOKEN } }), fetch('/api/automations/status', { headers: { Authorization: 'Bearer ' + TOKEN } })]);\n    const queue = await qRes.json(); const status = await sRes.json();\n    document.getElementById('status').innerHTML = '<b>System:</b> ' + (status.globalKillSwitch ? '<span class="badge badge-off">KILL SWITCH ON</span>' : '<span class="badge badge-on">ACTIVE</span>') + ' | SMS: <span class="badge badge-off">BLOCKED</span> | Email: <span class="badge badge-off">BLOCKED</span> | Rules: ' + status.enabledRules + '/' + status.totalRules;\n    const pending = queue.filter(e => e.status === 'pending'); const others = queue.filter(e => e.status !== 'pending');\n    let html = '<h3>Pending (' + pending.length + ')</h3>';\n    for (const e of pending) { html += '<div class="card pending"><b>' + e.subject + '</b><br><span class="meta">To: ' + e.to + ' | ' + (e.leadName||'') + ' | ' + e.priority + '</span><pre>' + (e.body||'').slice(0,500) + '</pre><button class="btn-approve" onclick="approve(\''+e.id+'\')">✅ Approve</button><button class="btn-reject" onclick="reject(\''+e.id+'\')">❌ Reject</button></div>'; }\n    html += '<h3>History (' + others.length + ')</h3>';\n    for (const e of others.slice(-20).reverse()) { html += '<div class="card ' + e.status + '"><b>' + e.subject + '</b> <span class="badge badge-' + (e.status==='sent'?'on':'off') + '">' + e.status.toUpperCase() + '</span><br><span class="meta">' + (e.approvedBy||e.rejectedBy||'') + ' | ' + (e.sentAt||e.rejectedAt||'') + '</span></div>'; }\n    document.getElementById('queue').innerHTML = html;\n  }\n  async function approve(id) { await fetch('/api/email-queue/' + id + '/approve', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' } }); load(); }\n  async function reject(id) { await fetch('/api/email-queue/' + id + '/reject', { method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN, 'Content-Type': 'application/json' }, body: JSON.stringify({ reason: prompt('Reason?') || '' }) }); load(); }\n  load(); setInterval(load, 15000);\n}\n</script></body></html>`);
 });
 
-app.use(express.static(path.join(__dirname, '..')));
+// Static files: explicit allowlist only (see security.PUBLIC_FILES). The repo root is
+// NOT served — data dumps, server/, marketing/, .env, logs etc. all 404.
+app.use(security.publicStatic(path.join(__dirname, '..')));
 
-// Serve MC pages directly, fallback to index.html for SPA routes
-const mcPages = ['mission-control.html', 'mc-agents.html', 'mc-revenue.html', 'mc-marketing.html', 'booth.html'];
+// Mission Control pages (admin) are served via an authenticated loader;
+// unknown /api paths → JSON 404; other file-like paths → 404; SPA routes → index.html
 app.get('*', (req, res) => {
     const requested = req.path.replace(/^\//, '');
-    if (mcPages.includes(requested)) {
-        return res.sendFile(path.join(__dirname, '..', requested));
+    if (security.MC_PAGES.includes(requested)) {
+        return res.type('html').send(security.mcLoaderHtml(requested));
     }
+    if (req.path.startsWith('/api/')) return res.status(404).json({ error: 'Not found' });
+    const last = requested.split('/').pop();
+    if (last.includes('.') || requested.startsWith('.')) return res.status(404).type('text').send('Not found');
     res.sendFile(path.join(__dirname, '..', 'index.html'));
 });
 
-// ══════════════════════════════════════════════════════════
-// 🧪 TEMPORARY SMS TEST ROUTE — Tyler's phone only
-// Added 2026-04-03 for SMS validation before cutover
-// DELETE after testing is complete
-// ══════════════════════════════════════════════════════════
-app.post('/api/test-sms', async (req, res) => {
-    const TYLER_PHONE = '+12105598725';
-    const secret = req.query.secret || req.headers['x-webhook-secret'];
-    if (secret !== GHL_WEBHOOK_SECRET) {
-        return res.status(403).json({ error: 'Invalid secret' });
-    }
-
-    const { leadName, salesperson, phone, jobType } = req.body;
-    if (!leadName) return res.status(400).json({ error: 'leadName required' });
-
-    try {
-        const client = getTwilio();
-        if (!client) return res.json({ success: false, error: 'Twilio not configured' });
-
-        const msgServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
-        const message = `🧪 SMS TEST — New lead: ${leadName}\nJob: ${jobType || 'Pool Construction'}\nPhone: ${phone || 'N/A'}\nAssigned: ${salesperson || 'Unassigned'}\n\n— WortheyFlow CRM (test mode)`;
-
-        const params = {
-            body: message,
-            to: TYLER_PHONE
-        };
-        if (msgServiceSid) {
-            params.messagingServiceSid = msgServiceSid;
-        } else {
-            params.from = process.env.TWILIO_PHONE_NUMBER;
-        }
-
-        const result = await client.messages.create(params);
-        console.log(`[SMS-TEST] Sent to Tyler: ${result.sid}`);
-
-        // Dedup check — track in global set
-        if (!global._smsTestDedupSet) global._smsTestDedupSet = new Set();
-        const dedupKey = `sms-test:${leadName}:${Date.now()}`;
-        const wasDupe = global._smsTestDedupSet.has(dedupKey);
-        global._smsTestDedupSet.add(dedupKey);
-
-        res.json({
-            success: true,
-            sid: result.sid,
-            to: TYLER_PHONE,
-            duplicate: wasDupe,
-            message: message
-        });
-    } catch (err) {
-        console.error('[SMS-TEST] Error:', err.message);
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
+// (temporary /api/test-sms route removed in Phase 1 security lockdown)
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`WortheyFlow Automation Server running on port ${PORT}`);
@@ -2528,11 +2547,11 @@ app.listen(PORT, '0.0.0.0', () => {
 
 // ─── Inbound SMS Handler (Twilio Webhook) ──────────────────────────
 // When a lead replies to a CRM text, forward to assigned salesperson + Tyler
-app.post('/api/sms/inbound', async (req, res) => {
+app.post('/api/sms/inbound', security.twilioSignature(twilioLib), async (req, res) => {
   try {
-    const { From, Body, To } = req.body;
+    const { From = '', Body = '', To } = req.body || {};
     console.log(`📨 Inbound SMS from ${From}: ${Body}`);
-    
+
     // Find the lead by phone number from Supabase
     const normalizePhone = (p) => (p || '').replace(/\D/g, '').slice(-10);
     const fromNorm = normalizePhone(From);
@@ -2547,34 +2566,35 @@ app.post('/api/sms/inbound', async (req, res) => {
 
     const contactDir = loadContactDirectory();
     const tyler = contactDir.find(c => c.name === 'Tyler Worthey') || { phone: '+12105598725' };
-    
+
     // Format the forward message
     const leadName = lead ? lead.name : 'Unknown';
     const salesperson = lead ? lead.salesperson : 'Unassigned';
     const fwdMsg = `💬 LEAD REPLY from ${leadName} (${From}):\n"${Body}"\n\nAssigned to: ${salesperson}`;
-    
+
     // Find salesperson phone
     let salespersonPhone = null;
     if (lead && lead.salesperson) {
       const sp = contactDir.find(c => c.name.toLowerCase().includes(lead.salesperson.toLowerCase()));
       if (sp) salespersonPhone = sp.phone;
     }
-    
+
     // 🚨 SMS KILL SWITCH — Forward lead replies via high-priority email
     console.log(`  [SMS BLOCKED] Forwarding via email instead: ${fwdMsg}`);
-    const callLink = `<a href="tel:${From.replace(/\D/g,'')}" style="display:inline-block;background:#16a34a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:18px;font-weight:bold;margin:12px 0;">📞 CALL BACK: ${From}</a>`;
+    const esc = security.escapeHtml; // SMS content is untrusted
+    const callLink = `<a href="tel:${String(From).replace(/\D/g,'')}" style="display:inline-block;background:#16a34a;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-size:18px;font-weight:bold;margin:12px 0;">📞 CALL BACK: ${esc(From)}</a>`;
     const emailFwdSubject = `💬 LEAD REPLIED — ${leadName} — CALL BACK NOW`;
     const emailFwdBody = `<div style="font-family:sans-serif;max-width:500px;margin:0 auto;">
       <div style="background:#2563eb;color:#fff;padding:16px 20px;border-radius:8px 8px 0 0;text-align:center;">
         <h2 style="margin:0;font-size:20px;">💬 LEAD REPLIED VIA TEXT</h2>
       </div>
       <div style="background:#1e293b;color:#e2e8f0;padding:20px;border-radius:0 0 8px 8px;">
-        <p><strong>From:</strong> ${leadName} (${From})</p>
+        <p><strong>From:</strong> ${esc(leadName)} (${esc(From)})</p>
         <p><strong>Message:</strong></p>
         <div style="background:#0f172a;padding:12px;border-radius:6px;border-left:4px solid #3b82f6;margin:8px 0;">
-          <p style="font-size:16px;margin:0;">"${Body}"</p>
+          <p style="font-size:16px;margin:0;">"${esc(Body)}"</p>
         </div>
-        <p><strong>Assigned to:</strong> ${salesperson}</p>
+        <p><strong>Assigned to:</strong> ${esc(salesperson)}</p>
         <div style="text-align:center;margin:16px 0;">${callLink}</div>
         <hr style="border:1px solid #334155;margin:16px 0;">
         <p style="color:#94a3b8;font-size:12px;">SMS forwarding temporarily redirected to email.</p>
@@ -2587,17 +2607,17 @@ app.post('/api/sms/inbound', async (req, res) => {
       await sendEmail(sp.email, emailFwdSubject, emailFwdBody);
       console.log(`  ✅ Inbound reply forwarded to ${sp.name} via email`);
     }
-    
+
     // Log it
-    appendLog({ 
-      action: 'sms_inbound_forwarded', 
-      from: From, 
-      body: Body, 
-      leadName, 
-      salesperson, 
+    appendLog({
+      action: 'sms_inbound_forwarded',
+      from: From,
+      body: Body,
+      leadName,
+      salesperson,
       forwardedTo: [tyler.phone, salespersonPhone].filter(Boolean)
     });
-    
+
     // Respond with TwiML (empty response - don't auto-reply)
     res.type('text/xml');
     res.send('<Response></Response>');
@@ -2607,6 +2627,9 @@ app.post('/api/sms/inbound', async (req, res) => {
     res.send('<Response></Response>');
   }
 });
+// Unmatched /api requests (any method) → JSON 404
+app.use('/api', (req, res) => res.status(404).json({ error: 'Not found' }));
+
 // (email queue + admin routes moved before static middleware — DELETED DUPLICATES BELOW)
 // --- OLD DUPLICATE ROUTES REMOVED ---
 // deploy 1774058894
